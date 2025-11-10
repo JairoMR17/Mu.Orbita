@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mu.Orbita - Inteligencia satelital empresarial para agricultura de precisión. Transforma datos espaciales en decisiones accionables.">
+    <title>Mu.Orbita | Precisión desde Órbita – Sostenibilidad desde Datos</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Stripe Payment Integration -->
+    <script src="https://js.stripe.com/v3/"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #000000;
+            --near-black: #0a0a0a;
+            --dark-gray: #1a1a1a;
+            --mid-gray: #2a2a2a;
+            --light-gray: #888888;
+            --white: #ffffff;
+            --off-white: #f5f5f5;
+            --accent-green: #00ff00;
+            --elegant-green: #00cc00;
+            --subtle-green: #004d00;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--white);
+            background: var(--black);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Subtle Planet Background */
+        .planet-bg {
+            position: fixed;
+            top: -30%;
+            right: -15%;
+            width: 1200px;
+            height: 1200px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.015), transparent 55%);
+            border: 1px solid rgba(255,255,255,0.02);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 1.2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--light-gray);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-links a:hover {
+            color: var(--white);
+        }
+
+        .nav-cta {
+            background: var(--white);
+            color: var(--black) !important;
+            padding: 0.7rem 1.8rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-cta:hover {
+            background: var(--off-white);
+            transform: translateY(-1px);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: var(--black);
+            z-index: 1;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            padding: 2rem;
+        }
+
+        .hero-logo-container {
+            margin-bottom: 3rem;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .hero-logo-svg {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto;
+            filter: drop-shadow(0 0 60px rgba(255, 255, 255, 0.15));
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            color: var(--white);
+            letter-spacing: -1px;
+            animation: fadeIn 1.5s ease-out 0.3s both;
+        }
+
+        .hero h1 .mu {
+            font-family: Georgia, serif;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .hero-tagline {
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: var(--light-gray);
+            letter-spacing: 1px;
+            animation: fadeIn 1.5s ease-out 0.6s both;
+        }
+
+        .hero-values {
+            display: flex;
+            gap: 3rem;
+            justify-content: center;
+            margin-top: 3rem;
+            animation: fadeIn 1.5s ease-out 0.9s both;
+        }
+
+        .hero-value {
+            font-size: 0.9rem;
+            color: var(--light-gray);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+        }
+
+        /* Section Styles */
+        .section-dark {
+            background: var(--near-black);
+            padding: 8rem 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .section-darker {
+            background: var(--black);
+            padding: 8rem 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--light-gray);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: var(--light-gray);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Technology Section with Satellite Image */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-top: 4rem;
+        }
+
+        .tech-image {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .tech-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: brightness(0.9) contrast(1.1);
+        }
+
+        .tech-content {
+            padding: 2rem;
+        }
+
+        .tech-feature {
+            margin-bottom: 2.5rem;
+            padding-left: 2rem;
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tech-feature h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: var(--white);
+        }
+
+        .tech-feature p {
+            color: var(--light-gray);
+            line-height: 1.7;
+        }
+
+        /* Dashboard Preview Section */
+        .dashboard-preview {
+            margin-top: 4rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .dashboard-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--light-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Pricing Section */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .pricing-card {
+            background: var(--dark-gray);
+            padding: 3rem 2.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .pricing-card.featured {
+            background: var(--mid-gray);
+            border-color: var(--white);
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-8px);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--white);
+            color: var(--black);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pricing-tier {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--light-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--light-gray);
+        }
+
+        .pricing-description {
+            color: var(--light-gray);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2.5rem;
+        }
+
+        .pricing-features li {
+            padding: 0.7rem 0;
+            color: var(--light-gray);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.9rem;
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        .pricing-cta {
+            display: block;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--white);
+            color: var(--black);
+        }
+
+        .btn-primary:hover {
+            background: var(--off-white);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Payment Section */
+        .payment-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--dark-gray);
+            padding: 3rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .payment-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .payment-logo img {
+            height: 30px;
+            opacity: 0.8;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--light-gray);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 1rem;
+            background: var(--mid-gray);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--white);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--white);
+            background: var(--near-black);
+        }
+
+        #card-element {
+            padding: 1rem;
+            background: var(--mid-gray);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+        }
+
+        #card-errors {
+            color: #ff6b6b;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--white);
+            color: var(--black);
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+        }
+
+        .submit-button:hover {
+            background: var(--off-white);
+            transform: translateY(-2px);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--near-black);
+            padding: 4rem 3rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .footer-brand p {
+            color: var(--light-gray);
+            line-height: 1.7;
+        }
+
+        .footer-column h4 {
+            margin-bottom: 1.5rem;
+            color: var(--white);
+            font-size: 1rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column ul li a {
+            color: var(--light-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--white);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            color: var(--light-gray);
+            font-size: 0.85rem;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .tech-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="planet-bg"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="nav-logo">Mu.Orbita</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#tecnologia">Tecnología</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#metricas">Métricas</a></li>
+                <li><a href="#precios">Precios</a></li>
+                <li><a href="#pago" class="nav-cta">Comenzar Ahora</a></li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-logo-container">
+                <svg class="hero-logo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="100" cy="100" r="80" fill="none" stroke="white" stroke-width="1" opacity="0.3"/>
+                    <circle cx="100" cy="100" r="60" fill="none" stroke="white" stroke-width="1" opacity="0.5"/>
+                    <circle cx="100" cy="100" r="40" fill="none" stroke="white" stroke-width="2" opacity="0.7"/>
+                    <path d="M 100 20 L 100 40 M 100 160 L 100 180 M 20 100 L 40 100 M 160 100 L 180 100" stroke="white" stroke-width="1" opacity="0.5"/>
+                    <text x="100" y="110" font-family="Georgia, serif" font-size="48" font-style="italic" fill="white" text-anchor="middle">μ</text>
+                </svg>
+            </div>
+            <h1><span class="mu">μ</span>orbita</h1>
+            <p class="hero-tagline">Precisión desde Órbita – Sostenibilidad desde Datos</p>
+            <div class="hero-values">
+                <span class="hero-value">Inteligencia Satelital</span>
+                <span class="hero-value">Agricultura de Precisión</span>
+                <span class="hero-value">Decisiones Automatizadas</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section id="tecnologia" class="section-dark">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">Tecnología</div>
+                <h2 class="section-title">Monitoreo Espacial<br>de Alta Precisión</h2>
+                <p class="section-description">
+                    Transformamos datos satelitales de múltiples fuentes en insights accionables para optimizar cada hectárea de tu explotación.
+                </p>
+            </div>
+
+            <div class="tech-grid">
+                <div class="tech-image fade-in">
+                    <img src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=800&q=85" alt="Vista satelital de agricultura de precisión">
+                </div>
+                <div class="tech-content">
+                    <div class="tech-feature fade-in">
+                        <h3>Multi-Satélite</h3>
+                        <p>Procesamiento automático de Sentinel-2 (10m), Landsat 8/9 (30m) y MODIS para cobertura temporal completa. Actualizaciones cada 2-5 días con máscara automática de nubes.</p>
+                    </div>
+                    <div class="tech-feature fade-in">
+                        <h3>Índices Especializados</h3>
+                        <p>NDVI, NDWI, EVI, NDCI calibrados para olivar, viña y almendro. Detección temprana de estrés hídrico, térmico y nutricional con algoritmos validados.</p>
+                    </div>
+                    <div class="tech-feature fade-in">
+                        <h3>Inteligencia Climática</h3>
+                        <p>Integración con ERA5-Land y MODIS LST para temperatura superficial, GDD acumulados y predicción de ventanas de riesgo (heladas, olas de calor).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="section-darker">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">Plataforma</div>
+                <h2 class="section-title">Dashboard de Control<br>Integral</h2>
+                <p class="section-description">
+                    Visualiza, analiza y actúa desde una interfaz profesional diseñada para decisiones rápidas y fundamentadas en datos.
+                </p>
+            </div>
+
+            <div class="dashboard-preview fade-in">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=85" alt="Dashboard de análisis agrícola con métricas y gráficos">
+            </div>
+
+            <div class="stats-grid" style="margin-top: 5rem;">
+                <div class="fade-in">
+                    <div class="stat-number">18</div>
+                    <div class="stat-label">Productos de Datos</div>
+                </div>
+                <div class="fade-in">
+                    <div class="stat-number">5 días</div>
+                    <div class="stat-label">Frecuencia Actualización</div>
+                </div>
+                <div class="fade-in">
+                    <div class="stat-number">10m</div>
+                    <div class="stat-label">Resolución Espacial</div>
+                </div>
+                <div class="fade-in">
+                    <div class="stat-number">95%+</div>
+                    <div class="stat-label">Precisión Predictiva</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metrics Section -->
+    <section id="metricas" class="section-dark">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">Impacto Cuantificable</div>
+                <h2 class="section-title">Resultados Medibles<br>en Tu Explotación</h2>
+                <p class="section-description">
+                    Nuestros clientes reportan mejoras significativas en eficiencia operacional y sostenibilidad desde el primer trimestre.
+                </p>
+            </div>
+
+            <div class="tech-grid" style="margin-top: 4rem;">
+                <div class="tech-content">
+                    <div class="tech-feature fade-in">
+                        <h3>Ahorro de Agua: 22%</h3>
+                        <p>Optimización de riego mediante mapas de déficit hídrico (NDWI) y zonificación variable. Reducción de costes energéticos de bombeo en 18%.</p>
+                    </div>
+                    <div class="tech-feature fade-in">
+                        <h3>Detección Temprana de Estrés</h3>
+                        <p>Alertas automáticas cuando NDVI cae >15% en 7 días o aparecen zonas con vigor anómalo (<0.35). Intervención preventiva antes de pérdidas de cosecha.</p>
+                    </div>
+                    <div class="tech-feature fade-in">
+                        <h3>Cumplimiento PAC Simplificado</h3>
+                        <p>Generación automática de reportes de sostenibilidad con series temporales de NDVI, superficie verde efectiva y mapas de cobertura para auditorías.</p>
+                    </div>
+                </div>
+                <div class="tech-image fade-in">
+                    <img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=800&q=85" alt="Análisis de cultivos con tecnología de precisión">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="precios" class="section-darker">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">Planes de Precios</div>
+                <h2 class="section-title">Elige Tu Nivel<br>de Inteligencia</h2>
+                <p class="section-description">
+                    Transparencia total. Sin costes ocultos. Cancela cuando quieras.
+                </p>
+            </div>
+
+            <div class="pricing-grid">
+                <!-- Essential Plan -->
+                <div class="pricing-card fade-in">
+                    <div class="pricing-tier">Nivel I</div>
+                    <div class="pricing-name">Essential</div>
+                    <div class="pricing-price">€6<span>/ha/año</span></div>
+                    <div class="pricing-description">Monitoreo satelital básico para eficiencia operacional.</div>
+                    <ul class="pricing-features">
+                        <li>Índices NDVI, NDWI, EVI</li>
+                        <li>Reportes mensuales</li>
+                        <li>Series temporales básicas</li>
+                        <li>Soporte por email</li>
+                        <li>Un tipo de cultivo</li>
+                        <li>Dashboard cloud</li>
+                    </ul>
+                    <a href="#pago" class="btn-secondary pricing-cta">Comenzar</a>
+                </div>
+
+                <!-- Professional Plan (Featured) -->
+                <div class="pricing-card featured fade-in">
+                    <div class="pricing-badge">Más Popular</div>
+                    <div class="pricing-tier">Nivel II</div>
+                    <div class="pricing-name">Professional</div>
+                    <div class="pricing-price">€12<span>/ha/año</span></div>
+                    <div class="pricing-description">Analítica avanzada con inteligencia predictiva.</div>
+                    <ul class="pricing-features">
+                        <li>Todo en Essential</li>
+                        <li>Reportes bisemanales automatizados</li>
+                        <li>Mapeo zonas VRA (3 zonas)</li>
+                        <li>Alertas detección estrés</li>
+                        <li>Analítica climática (GDD, días calor)</li>
+                        <li>Soporte email prioritario</li>
+                        <li>Soporte multi-cultivo</li>
+                        <li>Acceso API (solo lectura)</li>
+                    </ul>
+                    <a href="#pago" class="btn-primary pricing-cta">Comenzar</a>
+                </div>
+
+                <!-- Enterprise Plan -->
+                <div class="pricing-card fade-in">
+                    <div class="pricing-tier">Nivel III</div>
+                    <div class="pricing-name">Enterprise</div>
+                    <div class="pricing-price">€20<span>/ha/año</span></div>
+                    <div class="pricing-description">Plataforma completa de inteligencia con insights IA.</div>
+                    <ul class="pricing-features">
+                        <li>Todo en Professional</li>
+                        <li>Recomendaciones impulsadas por IA</li>
+                        <li>Frecuencia reporte personalizada</li>
+                        <li>Reportes cumplimiento PAC</li>
+                        <li>VRA avanzado (5+ zonas)</li>
+                        <li>Gestor cuenta dedicado</li>
+                        <li>Acceso API completo + webhooks</li>
+                        <li>Integraciones personalizadas</li>
+                        <li>Opción marca blanca</li>
+                        <li>Soporte telefónico prioritario</li>
+                    </ul>
+                    <a href="#pago" class="btn-secondary pricing-cta">Contactar Ventas</a>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 4rem;" class="fade-in">
+                <p style="color: var(--light-gray); font-size: 0.9rem;">Compromiso mínimo: €250/año por cliente • Todos los precios excluyen IVA • Precios empresariales personalizados disponibles para 1000+ hectáreas</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Section -->
+    <section id="pago" class="section-dark">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">Activación Inmediata</div>
+                <h2 class="section-title">Comenzar Ahora</h2>
+                <p class="section-description">
+                    Pago seguro procesado por Stripe. Activa tu monitoreo satelital en menos de 2 minutos.
+                </p>
+            </div>
+
+            <div class="payment-container fade-in">
+                <div class="payment-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Powered by Stripe">
+                </div>
+
+                <form id="payment-form">
+                    <div class="form-group">
+                        <label class="form-label">Nombre Completo</label>
+                        <input type="text" class="form-input" id="name" placeholder="Juan García López" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="email" placeholder="juan@explotacion.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Teléfono</label>
+                        <input type="tel" class="form-input" id="phone" placeholder="+34 600 000 000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tamaño Explotación (hectáreas)</label>
+                        <input type="number" class="form-input" id="hectares" placeholder="50" min="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Cultivo</label>
+                        <select class="form-select" id="crop" required>
+                            <option value="">Selecciona...</option>
+                            <option value="olive">Olivo</option>
+                            <option value="vineyard">Viñedo</option>
+                            <option value="almond">Almendro</option>
+                            <option value="other">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Plan Seleccionado</label>
+                        <select class="form-select" id="plan" required>
+                            <option value="">Selecciona un plan...</option>
+                            <option value="essential">Essential - €6/ha/año</option>
+                            <option value="professional">Professional - €12/ha/año (Recomendado)</option>
+                            <option value="enterprise">Enterprise - €20/ha/año</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Información de Pago</label>
+                        <div id="card-element"></div>
+                        <div id="card-errors" role="alert"></div>
+                    </div>
+
+                    <button type="submit" class="submit-button" id="submit-button">
+                        <span id="button-text">Activar Monitoreo Satelital</span>
+                    </button>
+
+                    <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--light-gray);">
+                        🔒 Pago seguro con encriptación SSL • Facturación automática • Cancela cuando quieras
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Mu.Orbita</h3>
+                <p>Inteligencia satelital empresarial para agricultura de precisión.</p>
+                <p style="font-size: 0.85rem; margin-top: 1.5rem;">© 2025 Mu.Orbita. Todos los derechos reservados.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4>Producto</h4>
+                <ul>
+                    <li><a href="#tecnologia">Tecnología</a></li>
+                    <li><a href="#dashboard">Dashboard</a></li>
+                    <li><a href="#precios">Precios</a></li>
+                    <li><a href="#">Documentación</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Empresa</h4>
+                <ul>
+                    <li><a href="#">Nosotros</a></li>
+                    <li><a href="#">Carreras</a></li>
+                    <li><a href="#">Socios</a></li>
+                    <li><a href="#">Prensa</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Contacto</h4>
+                <ul>
+                    <li><a href="mailto:info@muorbita.com">info@muorbita.com</a></li>
+                    <li><a href="mailto:ventas@muorbita.com">ventas@muorbita.com</a></li>
+                    <li><a href="mailto:soporte@muorbita.com">soporte@muorbita.com</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>Datos: Copernicus (ESA) • Landsat (NASA/USGS) • MODIS (NASA) • ERA5 (ECMWF)</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+        }
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (navLinks) {
+                        navLinks.classList.remove('active');
+                    }
+                }
+            });
+        });
+
+        // Stripe Integration
+        // NOTA: Reemplaza 'pk_test_...' con tu clave pública de Stripe real
+        const stripe = Stripe('pk_test_51234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // ⚠️ REEMPLAZAR CON TU CLAVE PÚBLICA
+        const elements = stripe.elements();
+        
+        const style = {
+            base: {
+                color: '#ffffff',
+                fontFamily: '"Inter", sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#888888'
+                }
+            },
+            invalid: {
+                color: '#ff6b6b',
+                iconColor: '#ff6b6b'
+            }
+        };
+
+        const cardElement = elements.create('card', {style: style});
+        cardElement.mount('#card-element');
+
+        cardElement.on('change', function(event) {
+            const displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        const form = document.getElementById('payment-form');
+        const submitButton = document.getElementById('submit-button');
+        const buttonText = document.getElementById('button-text');
+
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            submitButton.disabled = true;
+            buttonText.textContent = 'Procesando...';
+
+            // Calcular el precio total
+            const hectares = parseFloat(document.getElementById('hectares').value);
+            const plan = document.getElementById('plan').value;
+            let pricePerHa = 0;
+            
+            if (plan === 'essential') pricePerHa = 6;
+            else if (plan === 'professional') pricePerHa = 12;
+            else if (plan === 'enterprise') pricePerHa = 20;
+            
+            const totalPrice = hectares * pricePerHa;
+            const minimumPrice = 250;
+            const finalPrice = Math.max(totalPrice, minimumPrice);
+
+            // En producción, aquí llamarías a tu backend para crear un PaymentIntent
+            // y obtener el client_secret
+            
+            // EJEMPLO DE INTEGRACIÓN COMPLETA:
+            /*
+            const response = await fetch('/create-payment-intent', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    amount: finalPrice * 100, // Stripe usa centavos
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    hectares: hectares,
+                    crop: document.getElementById('crop').value,
+                    plan: plan
+                })
+            });
+            
+            const {clientSecret} = await response.json();
+            
+            const {error, paymentIntent} = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: cardElement,
+                    billing_details: {
+                        name: document.getElementById('name').value,
+                        email: document.getElementById('email').value,
+                        phone: document.getElementById('phone').value
+                    }
+                }
+            });
+
+            if (error) {
+                document.getElementById('card-errors').textContent = error.message;
+                submitButton.disabled = false;
+                buttonText.textContent = 'Activar Monitoreo Satelital';
+            } else {
+                // Pago exitoso
+                alert('¡Pago procesado con éxito! Tu monitoreo satelital se activará en las próximas 24 horas. Recibirás un email de confirmación.');
+                form.reset();
+                submitButton.disabled = false;
+                buttonText.textContent = 'Activar Monitoreo Satelital';
+            }
+            */
+
+            // DEMO MODE - Solo para demostración
+            setTimeout(() => {
+                alert(`¡Pago simulado exitoso!\n\nPlan: ${plan}\nHectáreas: ${hectares} ha\nPrecio total: €${finalPrice.toFixed(2)}\n\nEn producción, este formulario procesaría el pago real a través de Stripe y activaría tu cuenta automáticamente.`);
+                submitButton.disabled = false;
+                buttonText.textContent = 'Activar Monitoreo Satelital';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
