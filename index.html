@@ -6,12 +6,19 @@
     <meta name="description" content="Mu.Orbita - Inteligencia satelital empresarial para agricultura de precisión. Transforma datos espaciales en decisiones accionables.">
     <title>Mu.Orbita | Precisión desde Órbita – Sostenibilidad desde Datos</title>
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Stripe Payment Integration -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    
     <script src="https://js.stripe.com/v3/"></script>
     
     <style>
@@ -29,6 +36,10 @@
             --light-gray: #888888;
             --white: #ffffff;
             --off-white: #f5f5f5;
+            --green: #00cc66;
+            --yellow: #ffcc00;
+            --red: #ff4444;
+            --blue: #0099ff;
             --accent-green: #00ff00;
             --elegant-green: #00cc00;
             --subtle-green: #004d00;
@@ -45,6 +56,15 @@
             overflow-x: hidden;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+        }
+
+        /* View Container (para cambiar entre Landing y Dashboard) */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
         }
 
         /* Subtle Planet Background */
@@ -88,6 +108,7 @@
             color: var(--white);
             text-decoration: none;
             letter-spacing: -0.5px;
+            cursor: pointer;
         }
 
         .nav-links {
@@ -104,6 +125,7 @@
             font-size: 0.9rem;
             transition: color 0.3s ease;
             letter-spacing: 0.3px;
+            cursor: pointer;
         }
 
         .nav-links a:hover {
@@ -124,6 +146,25 @@
             transform: translateY(-1px);
         }
 
+        /* NUEVO: Selector de Idioma */
+        .lang-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: 1rem; /* Espacio antes del botón de CTA */
+        }
+        .lang-selector a {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--light-gray); /* Match other links */
+        }
+        .lang-selector a.active {
+            background: var(--white);
+            color: var(--black);
+            border-color: var(--white);
+        }
+
         .mobile-menu-btn {
             display: none;
             background: none;
@@ -133,7 +174,7 @@
             cursor: pointer;
         }
 
-        /* Hero Section */
+        /* Hero Section (Estilos de WebMuOrbita_i7.html) */
         .hero {
             height: 100vh;
             display: flex;
@@ -189,24 +230,40 @@
             letter-spacing: 1px;
             animation: fadeIn 1.5s ease-out 0.6s both;
         }
-
-        .hero-values {
-            display: flex;
-            gap: 3rem;
-            justify-content: center;
-            margin-top: 3rem;
-            animation: fadeIn 1.5s ease-out 0.9s both;
+        
+        /* Indicador de Scroll (de WebMuOrbita_i7.html) */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            cursor: pointer;
         }
 
-        .hero-value {
-            font-size: 0.9rem;
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-15px); }
+            60% { transform: translateX(-50%) translateY(-8px); }
+        }
+
+        .scroll-indicator-line {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, transparent, var(--white), transparent);
+            margin: 0 auto 10px;
+        }
+
+        .scroll-indicator-text {
             color: var(--light-gray);
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             font-weight: 500;
         }
 
-        /* Section Styles */
+
+        /* Section Styles (de index.html) */
         .section-dark {
             background: var(--near-black);
             padding: 8rem 3rem;
@@ -255,7 +312,7 @@
             line-height: 1.8;
         }
 
-        /* Technology Section with Satellite Image */
+        /* Technology Section (de index.html) */
         .tech-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -299,7 +356,7 @@
             line-height: 1.7;
         }
 
-        /* Dashboard Preview Section */
+        /* Dashboard Preview Section (de index.html) */
         .dashboard-preview {
             margin-top: 4rem;
             border-radius: 12px;
@@ -314,7 +371,7 @@
             display: block;
         }
 
-        /* Stats Grid */
+        /* Stats Grid (de index.html) */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -336,7 +393,7 @@
             letter-spacing: 1px;
         }
 
-        /* Pricing Section */
+        /* Pricing Section (de index.html) */
         .pricing-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -464,7 +521,7 @@
             border-color: rgba(255, 255, 255, 0.4);
         }
 
-        /* Payment Section */
+        /* Payment Section (de index.html) */
         .payment-container {
             max-width: 600px;
             margin: 0 auto;
@@ -513,6 +570,22 @@
             border-color: var(--white);
             background: var(--near-black);
         }
+        
+        /* NUEVO: Estilo para el input de hectáreas deshabilitado */
+        .form-input:read-only {
+            background: var(--near-black);
+            font-weight: bold;
+            color: var(--green);
+            cursor: not-allowed;
+        }
+
+        /* Mapa de pago */
+        #payment-map {
+            height: 400px; 
+            border-radius: 6px; 
+            background: var(--mid-gray);
+            margin-bottom: 1rem;
+        }
 
         #card-element {
             padding: 1rem;
@@ -551,7 +624,7 @@
             cursor: not-allowed;
         }
 
-        /* Footer */
+        /* Footer (de index.html) */
         footer {
             background: var(--near-black);
             padding: 4rem 3rem 2rem;
@@ -613,7 +686,7 @@
             font-size: 0.85rem;
         }
 
-        /* Animations */
+        /* Animations (de index.html) */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
@@ -625,7 +698,345 @@
             transform: translateY(0);
         }
 
+        /* ================================ */
+        /* DASHBOARD STYLES (de Dashboard_i2.html) */
+        /* ================================ */
+        
+        #dashboard-view {
+            padding-top: 65px; /* Altura de la nav-bar fija */
+        }
+
+        .dashboard-header {
+            background: var(--near-black);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 65px; /* Debajo de la nav principal */
+            width: 100%;
+            z-index: 900;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .farm-selector select {
+            background: var(--dark-gray);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--light-gray);
+        }
+
+        .sync-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--mid-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 130px; /* Debajo de nav (65px) + header (65px) */
+            width: 220px;
+            height: calc(100vh - 130px);
+            background: var(--near-black);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem 0;
+            overflow-y: auto;
+            z-index: 800;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.85rem 1.5rem;
+            color: var(--light-gray);
+            text-decoration: none;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--dark-gray);
+            color: var(--white);
+        }
+
+        .nav-item.active {
+            border-left: 3px solid var(--green);
+        }
+
+        .main-content {
+            margin-left: 220px;
+            padding: 2rem;
+            min-height: calc(100vh - 130px);
+            padding-top: 85px; /* Espacio para el header fijo del dashboard */
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--near-black);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            color: var(--light-gray);
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-badge.good {
+            background: rgba(0, 204, 102, 0.15);
+            color: var(--green);
+        }
+
+        .status-badge.warning {
+            background: rgba(255, 204, 0, 0.15);
+            color: var(--yellow);
+        }
+
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-label {
+            font-size: 0.9rem;
+            color: var(--light-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-change {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .card-change.positive { color: var(--green); }
+        .card-change.negative { color: var(--red); }
+        .card-change.neutral { color: var(--light-gray); }
+
+        .map-container {
+            min-height: 500px;
+            grid-column: span 2;
+        }
+
+        #map {
+            width: 100%;
+            height: 450px;
+            border-radius: 8px;
+            background-color: var(--dark-gray); /* Fondo mientras carga */
+        }
+
+        .index-maps-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .index-map {
+            width: 100%;
+            height: 300px;
+            border-radius: 8px;
+            margin-top: 1rem;
+            background-color: var(--dark-gray); /* Fondo mientras carga */
+        }
+
+        .chart-container {
+            grid-column: span 2;
+            min-height: 400px;
+        }
+
+        #timeSeriesChart {
+            max-height: 350px;
+        }
+
+        .legend {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--dark-gray);
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .alert {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--near-black);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .alert.warning {
+            border-left: 4px solid var(--yellow);
+        }
+
+        .alert.info {
+            border-left: 4px solid var(--blue);
+        }
+
+        .alert-icon {
+            font-size: 1.5rem;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .alert-description {
+            color: var(--light-gray);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .alert-action {
+            background: var(--dark-gray);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .recommendation-card {
+            background: var(--near-black);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .recommendation-priority {
+            padding: 0.35rem 0.85rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .priority-high {
+            background: rgba(255, 68, 68, 0.15);
+            color: var(--red);
+        }
+
+        .priority-medium {
+            background: rgba(255, 204, 0, 0.15);
+            color: var(--yellow);
+        }
+
         /* Responsive */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 60px;
+            }
+            .main-content {
+                margin-left: 60px;
+            }
+            .nav-item span:last-child {
+                display: none;
+            }
+        }
+        
         @media (max-width: 1024px) {
             .tech-grid {
                 grid-template-columns: 1fr;
@@ -643,11 +1054,20 @@
             .footer-content {
                 grid-template-columns: 1fr 1fr;
             }
+
+            .index-maps-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2.5rem;
+            }
+            
+            .hero-logo-svg {
+                width: 150px;
+                height: 150px;
             }
 
             .section-title {
@@ -656,6 +1076,23 @@
 
             .nav-links {
                 display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--black);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+
+            /* Mover el selector de idioma al menú móvil */
+            .lang-selector {
+                margin-left: 0;
+                justify-content: center;
             }
 
             .mobile-menu-btn {
@@ -669,499 +1106,1050 @@
             .footer-content {
                 grid-template-columns: 1fr;
             }
+
+            /* Responsive Dashboard */
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                top: 0;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                padding: 0.5rem 0;
+            }
+            .main-content {
+                margin-left: 0;
+                padding-top: 145px; /* Nav + Header + Sidebar */
+            }
+            .nav-item {
+                border-left: none;
+            }
+            .nav-item.active {
+                border-left: none;
+                border-bottom: 3px solid var(--green);
+            }
+            .nav-item span:last-child {
+                display: inline-block; /* Mostrar texto en móvil */
+            }
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1rem;
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
+                top: 65px;
+            }
+            #dashboard-view {
+                padding-top: 125px; /* Nav + Header ajustado */
+            }
+            .sidebar {
+                top: 190px; /* Nav + Header ajustado */
+            }
+            .main-content {
+                 padding-top: 60px; /* espacio para sidebar */
+            }
         }
     </style>
 </head>
 <body>
     <div class="planet-bg"></div>
 
-    <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <a href="#" class="nav-logo">Mu.Orbita</a>
+            <a class="nav-logo" onclick="showLanding()">Mu.Orbita</a>
             <ul class="nav-links" id="navLinks">
-                <li><a href="#tecnologia">Tecnología</a></li>
-                <li><a href="#dashboard">Dashboard</a></li>
-                <li><a href="#metricas">Métricas</a></li>
-                <li><a href="#precios">Precios</a></li>
-                <li><a href="#pago" class="nav-cta">Comenzar Ahora</a></li>
+                <li><a onclick="showLanding()" href="#tecnologia">Tecnología</a></li>
+                <li><a onclick="showLanding()" href="#dashboard">Plataforma</a></li>
+                <li><a onclick="showLanding()" href="#metricas">Métricas</a></li>
+                <li><a onclick="showLanding()" href="#precios">Precios</a></li>
+                <li><a onclick="showLanding()" href="#pago">Comenzar</a></li>
+                <li class="lang-selector">
+                    <a href="index.html" class="active">ES</a>
+                    <a href="index-en.html">EN</a>
+                </li>
+                <li><a onclick="showDashboard()" class="nav-cta">🔐 Área Cliente</a></li>
             </ul>
             <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <div class="hero-logo-container">
-                <svg class="hero-logo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="100" cy="100" r="80" fill="none" stroke="white" stroke-width="1" opacity="0.3"/>
-                    <circle cx="100" cy="100" r="60" fill="none" stroke="white" stroke-width="1" opacity="0.5"/>
-                    <circle cx="100" cy="100" r="40" fill="none" stroke="white" stroke-width="2" opacity="0.7"/>
-                    <path d="M 100 20 L 100 40 M 100 160 L 100 180 M 20 100 L 40 100 M 160 100 L 180 100" stroke="white" stroke-width="1" opacity="0.5"/>
-                    <text x="100" y="110" font-family="Georgia, serif" font-size="48" font-style="italic" fill="white" text-anchor="middle">μ</text>
-                </svg>
-            </div>
-            <h1><span class="mu">μ</span>orbita</h1>
-            <p class="hero-tagline">Precisión desde Órbita – Sostenibilidad desde Datos</p>
-            <div class="hero-values">
-                <span class="hero-value">Inteligencia Satelital</span>
-                <span class="hero-value">Agricultura de Precisión</span>
-                <span class="hero-value">Decisiones Automatizadas</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Technology Section -->
-    <section id="tecnologia" class="section-dark">
-        <div class="container">
-            <div class="section-header fade-in">
-                <div class="section-label">Tecnología</div>
-                <h2 class="section-title">Monitoreo Espacial<br>de Alta Precisión</h2>
-                <p class="section-description">
-                    Transformamos datos satelitales de múltiples fuentes en insights accionables para optimizar cada hectárea de tu explotación.
-                </p>
-            </div>
-
-            <div class="tech-grid">
-                <div class="tech-image fade-in">
-                    <img src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=800&q=85" alt="Vista satelital de agricultura de precisión">
+    <div id="landing-view" class="view active">
+        
+        <section class="hero" id="hero">
+            <div class="hero-content">
+                <div class="hero-logo-container">
+                    <svg class="hero-logo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <text x="100" y="130" font-size="140" font-family="Georgia, serif" fill="white" text-anchor="middle" font-style="italic" font-weight="400">μ</text>
+                        <ellipse cx="100" cy="100" rx="90" ry="45" fill="none" stroke="white" stroke-width="1.5" opacity="0.3" transform="rotate(-25 100 100)"/>
+                        <circle cx="175" cy="75" r="3" fill="white" opacity="0.6"/>
+                    </svg>
                 </div>
-                <div class="tech-content">
-                    <div class="tech-feature fade-in">
-                        <h3>Multi-Satélite</h3>
-                        <p>Procesamiento automático de Sentinel-2 (10m), Landsat 8/9 (30m) y MODIS para cobertura temporal completa. Actualizaciones cada 2-5 días con máscara automática de nubes.</p>
-                    </div>
-                    <div class="tech-feature fade-in">
-                        <h3>Índices Especializados</h3>
-                        <p>NDVI, NDWI, EVI, NDCI calibrados para olivar, viña y almendro. Detección temprana de estrés hídrico, térmico y nutricional con algoritmos validados.</p>
-                    </div>
-                    <div class="tech-feature fade-in">
-                        <h3>Inteligencia Climática</h3>
-                        <p>Integración con ERA5-Land y MODIS LST para temperatura superficial, GDD acumulados y predicción de ventanas de riesgo (heladas, olas de calor).</p>
-                    </div>
-                </div>
+                <h1><span class="mu">μ</span>.Orbita</h1>
+                <p class="hero-tagline">Precisión desde Órbita – Sostenibilidad desde Datos</p>
             </div>
-        </div>
-    </section>
-
-    <!-- Dashboard Section -->
-    <section id="dashboard" class="section-darker">
-        <div class="container">
-            <div class="section-header fade-in">
-                <div class="section-label">Plataforma</div>
-                <h2 class="section-title">Dashboard de Control<br>Integral</h2>
-                <p class="section-description">
-                    Visualiza, analiza y actúa desde una interfaz profesional diseñada para decisiones rápidas y fundamentadas en datos.
-                </p>
+            
+            <div class="scroll-indicator" onclick="document.getElementById('tecnologia').scrollIntoView({behavior: 'smooth'})">
+                <div class="scroll-indicator-line"></div>
+                <div class="scroll-indicator-text">Scroll</div>
             </div>
+        </section>
 
-            <div class="dashboard-preview fade-in">
-                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=85" alt="Dashboard de análisis agrícola con métricas y gráficos">
-            </div>
-
-            <div class="stats-grid" style="margin-top: 5rem;">
-                <div class="fade-in">
-                    <div class="stat-number">18</div>
-                    <div class="stat-label">Productos de Datos</div>
-                </div>
-                <div class="fade-in">
-                    <div class="stat-number">5 días</div>
-                    <div class="stat-label">Frecuencia Actualización</div>
-                </div>
-                <div class="fade-in">
-                    <div class="stat-number">10m</div>
-                    <div class="stat-label">Resolución Espacial</div>
-                </div>
-                <div class="fade-in">
-                    <div class="stat-number">95%+</div>
-                    <div class="stat-label">Precisión Predictiva</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Metrics Section -->
-    <section id="metricas" class="section-dark">
-        <div class="container">
-            <div class="section-header fade-in">
-                <div class="section-label">Impacto Cuantificable</div>
-                <h2 class="section-title">Resultados Medibles<br>en Tu Explotación</h2>
-                <p class="section-description">
-                    Nuestros clientes reportan mejoras significativas en eficiencia operacional y sostenibilidad desde el primer trimestre.
-                </p>
-            </div>
-
-            <div class="tech-grid" style="margin-top: 4rem;">
-                <div class="tech-content">
-                    <div class="tech-feature fade-in">
-                        <h3>Ahorro de Agua: 22%</h3>
-                        <p>Optimización de riego mediante mapas de déficit hídrico (NDWI) y zonificación variable. Reducción de costes energéticos de bombeo en 18%.</p>
-                    </div>
-                    <div class="tech-feature fade-in">
-                        <h3>Detección Temprana de Estrés</h3>
-                        <p>Alertas automáticas cuando NDVI cae >15% en 7 días o aparecen zonas con vigor anómalo (<0.35). Intervención preventiva antes de pérdidas de cosecha.</p>
-                    </div>
-                    <div class="tech-feature fade-in">
-                        <h3>Cumplimiento PAC Simplificado</h3>
-                        <p>Generación automática de reportes de sostenibilidad con series temporales de NDVI, superficie verde efectiva y mapas de cobertura para auditorías.</p>
-                    </div>
-                </div>
-                <div class="tech-image fade-in">
-                    <img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=800&q=85" alt="Análisis de cultivos con tecnología de precisión">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing Section -->
-    <section id="precios" class="section-darker">
-        <div class="container">
-            <div class="section-header fade-in">
-                <div class="section-label">Planes de Precios</div>
-                <h2 class="section-title">Elige Tu Nivel<br>de Inteligencia</h2>
-                <p class="section-description">
-                    Transparencia total. Sin costes ocultos. Cancela cuando quieras.
-                </p>
-            </div>
-
-            <div class="pricing-grid">
-                <!-- Essential Plan -->
-                <div class="pricing-card fade-in">
-                    <div class="pricing-tier">Nivel I</div>
-                    <div class="pricing-name">Essential</div>
-                    <div class="pricing-price">€6<span>/ha/año</span></div>
-                    <div class="pricing-description">Monitoreo satelital básico para eficiencia operacional.</div>
-                    <ul class="pricing-features">
-                        <li>Índices NDVI, NDWI, EVI</li>
-                        <li>Reportes mensuales</li>
-                        <li>Series temporales básicas</li>
-                        <li>Soporte por email</li>
-                        <li>Un tipo de cultivo</li>
-                        <li>Dashboard cloud</li>
-                    </ul>
-                    <a href="#pago" class="btn-secondary pricing-cta">Comenzar</a>
-                </div>
-
-                <!-- Professional Plan (Featured) -->
-                <div class="pricing-card featured fade-in">
-                    <div class="pricing-badge">Más Popular</div>
-                    <div class="pricing-tier">Nivel II</div>
-                    <div class="pricing-name">Professional</div>
-                    <div class="pricing-price">€12<span>/ha/año</span></div>
-                    <div class="pricing-description">Analítica avanzada con inteligencia predictiva.</div>
-                    <ul class="pricing-features">
-                        <li>Todo en Essential</li>
-                        <li>Reportes bisemanales automatizados</li>
-                        <li>Mapeo zonas VRA (3 zonas)</li>
-                        <li>Alertas detección estrés</li>
-                        <li>Analítica climática (GDD, días calor)</li>
-                        <li>Soporte email prioritario</li>
-                        <li>Soporte multi-cultivo</li>
-                        <li>Acceso API (solo lectura)</li>
-                    </ul>
-                    <a href="#pago" class="btn-primary pricing-cta">Comenzar</a>
-                </div>
-
-                <!-- Enterprise Plan -->
-                <div class="pricing-card fade-in">
-                    <div class="pricing-tier">Nivel III</div>
-                    <div class="pricing-name">Enterprise</div>
-                    <div class="pricing-price">€20<span>/ha/año</span></div>
-                    <div class="pricing-description">Plataforma completa de inteligencia con insights IA.</div>
-                    <ul class="pricing-features">
-                        <li>Todo en Professional</li>
-                        <li>Recomendaciones impulsadas por IA</li>
-                        <li>Frecuencia reporte personalizada</li>
-                        <li>Reportes cumplimiento PAC</li>
-                        <li>VRA avanzado (5+ zonas)</li>
-                        <li>Gestor cuenta dedicado</li>
-                        <li>Acceso API completo + webhooks</li>
-                        <li>Integraciones personalizadas</li>
-                        <li>Opción marca blanca</li>
-                        <li>Soporte telefónico prioritario</li>
-                    </ul>
-                    <a href="#pago" class="btn-secondary pricing-cta">Contactar Ventas</a>
-                </div>
-            </div>
-
-            <div style="text-align: center; margin-top: 4rem;" class="fade-in">
-                <p style="color: var(--light-gray); font-size: 0.9rem;">Compromiso mínimo: €250/año por cliente • Todos los precios excluyen IVA • Precios empresariales personalizados disponibles para 1000+ hectáreas</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Payment Section -->
-    <section id="pago" class="section-dark">
-        <div class="container">
-            <div class="section-header fade-in">
-                <div class="section-label">Activación Inmediata</div>
-                <h2 class="section-title">Comenzar Ahora</h2>
-                <p class="section-description">
-                    Pago seguro procesado por Stripe. Activa tu monitoreo satelital en menos de 2 minutos.
-                </p>
-            </div>
-
-            <div class="payment-container fade-in">
-                <div class="payment-logo">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Powered by Stripe">
-                </div>
-
-                <form id="payment-form">
-                    <div class="form-group">
-                        <label class="form-label">Nombre Completo</label>
-                        <input type="text" class="form-input" id="name" placeholder="Juan García López" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-input" id="email" placeholder="juan@explotacion.com" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Teléfono</label>
-                        <input type="tel" class="form-input" id="phone" placeholder="+34 600 000 000" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Tamaño Explotación (hectáreas)</label>
-                        <input type="number" class="form-input" id="hectares" placeholder="50" min="1" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Tipo de Cultivo</label>
-                        <select class="form-select" id="crop" required>
-                            <option value="">Selecciona...</option>
-                            <option value="olive">Olivo</option>
-                            <option value="vineyard">Viñedo</option>
-                            <option value="almond">Almendro</option>
-                            <option value="other">Otro</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Plan Seleccionado</label>
-                        <select class="form-select" id="plan" required>
-                            <option value="">Selecciona un plan...</option>
-                            <option value="essential">Essential - €6/ha/año</option>
-                            <option value="professional">Professional - €12/ha/año (Recomendado)</option>
-                            <option value="enterprise">Enterprise - €20/ha/año</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Información de Pago</label>
-                        <div id="card-element"></div>
-                        <div id="card-errors" role="alert"></div>
-                    </div>
-
-                    <button type="submit" class="submit-button" id="submit-button">
-                        <span id="button-text">Activar Monitoreo Satelital</span>
-                    </button>
-
-                    <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--light-gray);">
-                        🔒 Pago seguro con encriptación SSL • Facturación automática • Cancela cuando quieras
+        <section id="tecnologia" class="section-dark">
+            <div class="container">
+                <div class="section-header fade-in">
+                    <div class="section-label">Tecnología</div>
+                    <h2 class="section-title">Monitoreo Espacial<br>de Alta Precisión</h2>
+                    <p class="section-description">
+                        Transformamos datos satelitales de múltiples fuentes en insights accionables para optimizar cada hectárea de tu explotación.
                     </p>
-                </form>
+                </div>
+
+                <div class="tech-grid">
+                    <div class="tech-image fade-in">
+                        <img src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=800&q=85" alt="Vista satelital de agricultura de precisión">
+                    </div>
+                    <div class="tech-content">
+                        <div class="tech-feature fade-in">
+                            <h3>Multi-Satélite</h3>
+                            <p>Procesamiento automático de Sentinel-2 (10m), Landsat 8/9 (30m) y MODIS para cobertura temporal completa. Actualizaciones cada 2-5 días con máscara automática de nubes.</p>
+                        </div>
+                        <div class="tech-feature fade-in">
+                            <h3>Índices Especializados</h3>
+                            <p>NDVI, NDWI, EVI, NDCI calibrados para olivar, viña y almendro. Detección temprana de estrés hídrico, térmico y nutricional con algoritmos validados.</p>
+                        </div>
+                        <div class="tech-feature fade-in">
+                            <h3>Inteligencia Climática</h3>
+                            <p>Integración con ERA5-Land y MODIS LST para temperatura superficial, GDD acumulados y predicción de ventanas de riesgo (heladas, olas de calor).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="dashboard" class="section-darker">
+            <div class="container">
+                <div class="section-header fade-in">
+                    <div class="section-label">Plataforma</div>
+                    <h2 class="section-title">Dashboard de Control<br>Integral</h2>
+                    <p class="section-description">
+                        Visualiza, analiza y actúa desde una interfaz profesional diseñada para decisiones rápidas y fundamentadas en datos.
+                    </p>
+                </div>
+
+                <div class="dashboard-preview fade-in">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=85" alt="Dashboard de análisis agrícola con métricas y gráficos">
+                </div>
+
+                <div class="stats-grid" style="margin-top: 5rem;">
+                    <div class="fade-in">
+                        <div class="stat-number">18</div>
+                        <div class="stat-label">Productos de Datos</div>
+                    </div>
+                    <div class="fade-in">
+                        <div class="stat-number">5 días</div>
+                        <div class="stat-label">Frecuencia Actualización</div>
+                    </div>
+                    <div class="fade-in">
+                        <div class="stat-number">10m</div>
+                        <div class="stat-label">Resolución Espacial</div>
+                    </div>
+                    <div class="fade-in">
+                        <div class="stat-number">95%+</div>
+                        <div class="stat-label">Precisión Predictiva</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="metricas" class="section-dark">
+            <div class="container">
+                <div class="section-header fade-in">
+                    <div class="section-label">Impacto Cuantificable</div>
+                    <h2 class="section-title">Resultados Medibles<br>en Tu Explotación</h2>
+                    <p class="section-description">
+                        Nuestros clientes reportan mejoras significativas en eficiencia operacional y sostenibilidad desde el primer trimestre.
+                    </p>
+                </div>
+
+                <div class="tech-grid" style="margin-top: 4rem;">
+                    <div class="tech-content">
+                        <div class="tech-feature fade-in">
+                            <h3>Ahorro de Agua: 22%</h3>
+                            <p>Optimización de riego mediante mapas de déficit hídrico (NDWI) y zonificación variable. Reducción de costes energéticos de bombeo en 18%.</p>
+                        </div>
+                        <div class="tech-feature fade-in">
+                            <h3>Detección Temprana de Estrés</h3>
+                            <p>Alertas automáticas cuando NDVI cae >15% en 7 días o aparecen zonas con vigor anómalo (<0.35). Intervención preventiva antes de pérdidas de cosecha.</p>
+                        </div>
+                        <div class="tech-feature fade-in">
+                            <h3>Cumplimiento PAC Simplificado</h3>
+                            <p>Generación automática de reportes de sostenibilidad con series temporales de NDVI, superficie verde efectiva y mapas de cobertura para auditorías.</p>
+                        </div>
+                    </div>
+                    <div class="tech-image fade-in">
+                        <img src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=800&q=85" alt="Análisis de cultivos con tecnología de precisión">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="precios" class="section-darker">
+            <div class="container">
+                <div class="section-header fade-in">
+                    <div class="section-label">Planes de Precios</div>
+                    <h2 class="section-title">Elige Tu Nivel<br>de Inteligencia</h2>
+                    <p class="section-description">
+                        Transparencia total. Sin costes ocultos. Cancela cuando quieras.
+                    </p>
+                </div>
+
+                <div class="pricing-grid">
+                    <div class="pricing-card fade-in">
+                        <div class="pricing-tier">Nivel I</div>
+                        <div class="pricing-name">Essential</div>
+                        <div class="pricing-price">€6<span>/ha/año</span></div>
+                        <div class="pricing-description">Monitoreo satelital básico para eficiencia operacional.</div>
+                        <ul class="pricing-features">
+                            <li>Índices NDVI, NDWI, EVI</li>
+                            <li>Reportes mensuales</li>
+                            <li>Series temporales básicas</li>
+                            <li>Soporte por email</li>
+                            <li>Un tipo de cultivo</li>
+                            <li>Dashboard cloud</li>
+                        </ul>
+                        <a href="#pago" class="btn-secondary pricing-cta">Comenzar</a>
+                    </div>
+
+                    <div class="pricing-card featured fade-in">
+                        <div class="pricing-badge">Más Popular</div>
+                        <div class="pricing-tier">Nivel II</div>
+                        <div class="pricing-name">Professional</div>
+                        <div class="pricing-price">€12<span>/ha/año</span></div>
+                        <div class="pricing-description">Analítica avanzada con inteligencia predictiva.</div>
+                        <ul class="pricing-features">
+                            <li>Todo en Essential</li>
+                            <li>Reportes bisemanales automatizados</li>
+                            <li>Mapeo zonas VRA (3 zonas)</li>
+                            <li>Alertas detección estrés</li>
+                            <li>Analítica climática (GDD, días calor)</li>
+                            <li>Soporte email prioritario</li>
+                            <li>Soporte multi-cultivo</li>
+                            <li>Acceso API (solo lectura)</li>
+                        </ul>
+                        <a href="#pago" class="btn-primary pricing-cta">Comenzar</a>
+                    </div>
+
+                    <div class="pricing-card fade-in">
+                        <div class="pricing-tier">Nivel III</div>
+                        <div class="pricing-name">Enterprise</div>
+                        <div class="pricing-price">€20<span>/ha/año</span></div>
+                        <div class="pricing-description">Plataforma completa de inteligencia con insights IA.</div>
+                        <ul class="pricing-features">
+                            <li>Todo en Professional</li>
+                            <li>Recomendaciones impulsadas por IA</li>
+                            <li>Frecuencia reporte personalizada</li>
+                            <li>Reportes cumplimiento PAC</li>
+                            <li>VRA avanzado (5+ zonas)</li>
+                            <li>Gestor cuenta dedicado</li>
+                            <li>Acceso API completo + webhooks</li>
+                            <li>Integraciones personalizadas</li>
+                            <li>Opción marca blanca</li>
+                            <li>Soporte telefónico prioritario</li>
+                        </ul>
+                        <a href="#pago" class="btn-secondary pricing-cta">Contactar Ventas</a>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 4rem;" class="fade-in">
+                    <p style="color: var(--light-gray); font-size: 0.9rem;">Compromiso mínimo: €250/año por cliente • Todos los precios excluyen IVA • Precios empresariales personalizados disponibles para 1000+ hectáreas</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="pago" class="section-dark">
+            <div class="container">
+                <div class="section-header fade-in">
+                    <div class="section-label">Activación Inmediata</div>
+                    <h2 class="section-title">Comenzar Ahora</h2>
+                    <p class="section-description">
+                        Pago seguro procesado por Stripe. Activa tu monitoreo satelital en menos de 2 minutos.
+                    </p>
+                </div>
+
+                <div class="payment-container fade-in">
+                    <div class="payment-logo">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Powered by Stripe">
+                    </div>
+
+                    <form id="payment-form">
+                        <div class="form-group">
+                            <label class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-input" id="name" placeholder="Juan García López" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="email" placeholder="juan@explotacion.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Teléfono</label>
+                            <input type="tel" class="form-input" id="phone" placeholder="+34 600 000 000" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Dibuja tu Finca</label>
+                            <p style="font-size: 0.85rem; color: var(--light-gray); margin-bottom: 1rem;">
+                                Usa la herramienta de polígono (■) en el mapa para dibujar el contorno de tu explotación.
+                            </p>
+                            <div id="payment-map"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Área Calculada</label>
+                            <input type="text" class="form-input" id="calculated-hectares" placeholder="0.00 ha" readonly>
+                            <input type="hidden" id="hectares" name="hectares" value="0">
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="form-label">Tipo de Cultivo</label>
+                            <select class="form-select" id="crop" required>
+                                <option value="">Selecciona...</option>
+                                <option value="olive">Olivo</option>
+                                <option value="vineyard">Viñedo</option>
+                                <option value="almond">Almendro</option>
+                                <option value="other">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Plan Seleccionado</label>
+                            <select class="form-select" id="plan" required>
+                                <option value="">Selecciona un plan...</option>
+                                <option value="essential">Essential - €6/ha/año</option>
+                                <option value="professional">Professional - €12/ha/año (Recomendado)</option>
+                                <option value="enterprise">Enterprise - €20/ha/año</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Información de Pago</label>
+                            <div id="card-element"></div>
+                            <div id="card-errors" role="alert"></div>
+                        </div>
+
+                        <button type="submit" class="submit-button" id="submit-button" disabled>
+                            <span id="button-text">Dibuja tu finca para activar</span>
+                        </button>
+
+                        <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--light-gray);">
+                            🔒 Pago seguro con encriptación SSL • Facturación automática • Cancela cuando quieras
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Mu.Orbita</h3>
+                    <p>Inteligencia satelital empresarial para agricultura de precisión.</p>
+                    <p style="font-size: 0.85rem; margin-top: 1.5rem;">© 2025 Mu.Orbita. Todos los derechos reservados.</p>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Producto</h4>
+                    <ul>
+                        <li><a href="#tecnologia">Tecnología</a></li>
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#precios">Precios</a></li>
+                        <li><a href="#">Documentación</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Empresa</h4>
+                    <ul>
+                        <li><a href="#">Nosotros</a></li>
+                        <li><a href="#">Carreras</a></li>
+                        <li><a href="#">Socios</a></li>
+                        <li><a href="#">Prensa</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Contacto</h4>
+                    <ul>
+                        <li><a href="mailto:info@muorbita.com">info@muorbita.com</a></li>
+                        <li><a href="mailto:ventas@muorbita.com">ventas@muorbita.com</a></li>
+                        <li><a href="mailto:soporte@muorbita.com">soporte@muorbita.com</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>Datos: Copernicus (ESA) • Landsat (NASA/USGS) • MODIS (NASA) • ERA5 (ECMWF)</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <div id="dashboard-view" class="view">
+        <div class="dashboard-header">
+            <div class="header-left">
+                <div class="farm-selector">
+                    <select>
+                        <option>Explotación Olivar Sur (152.3 ha)</option>
+                        <option>Viñedo Norte (87.5 ha)</option>
+                        <option>Almendral Este (203.8 ha)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="sync-status">
+                    <div class="sync-indicator"></div>
+                    <span>Última actualización: Hace 3 horas</span>
+                </div>
+                <div class="user-menu">
+                    <div class="user-avatar">JG</div>
+                    <span>Juan García</span>
+                </div>
             </div>
         </div>
-    </section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-brand">
-                <h3>Mu.Orbita</h3>
-                <p>Inteligencia satelital empresarial para agricultura de precisión.</p>
-                <p style="font-size: 0.85rem; margin-top: 1.5rem;">© 2025 Mu.Orbita. Todos los derechos reservados.</p>
+        <aside class="sidebar">
+            <a href="#dashboard-main" class="nav-item active">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="#mapas" class="nav-item">
+                <span>🗺️</span>
+                <span>Mapas</span>
+            </a>
+            <a href="#temporal" class="nav-item">
+                <span>📈</span>
+                <span>Análisis</span>
+            </a>
+            <a href="#alertas" class="nav-item">
+                <span>⚠️</span>
+                <span>Alertas</span>
+            </a>
+            <a href="#reportes" class="nav-item">
+                <span>📄</span>
+                <span>Reportes</span>
+            </a>
+            <a onclick="showLanding()" class="nav-item">
+                <span>🏠</span>
+                <span>Volver</span>
+            </a>
+        </aside>
+
+        <main class="main-content">
+            <div id="dashboard-main">
+                <h1 style="font-size: 2rem; font-weight: 300; margin-bottom: 0.5rem;">Olivar Sur</h1>
+                <p style="color: var(--light-gray); margin-bottom: 2rem;">Monitoreo en tiempo real • Última imagen: 07/11/2025 (Sentinel-2)</p>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">NDVI Medio</div>
+                            <div class="status-badge good">Óptimo</div>
+                        </div>
+                        <div class="card-value" style="color: var(--green);">0.62</div>
+                        <div class="card-label">Vigor Vegetativo Alto</div>
+                        <div class="card-change positive">↑ +5.1% vs hace 14 días</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">NDWI Medio</div>
+                            <div class="status-badge warning">Vigilar</div>
+                        </div>
+                        <div class="card-value" style="color: var(--yellow);">0.18</div>
+                        <div class="card-label">Estrés Hídrico Leve</div>
+                        <div class="card-change negative">↓ -8.2% vs hace 14 días</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Temp. Superficial</div>
+                            <div class="status-badge good">Normal</div>
+                        </div>
+                        <div class="card-value" style="color: var(--blue);">28.3°C</div>
+                        <div class="card-label">LST Media (MODIS)</div>
+                        <div class="card-change neutral">→ -0.4°C vs histórico</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Área con Estrés</div>
+                            <div class="status-badge warning">Atención</div>
+                        </div>
+                        <div class="card-value" style="color: var(--yellow);">18.4 ha</div>
+                        <div class="card-label">12.1% del total (NDVI <0.45)</div>
+                        <div class="card-change negative">↑ +2.3 ha vs hace 14 días</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="footer-column">
-                <h4>Producto</h4>
-                <ul>
-                    <li><a href="#tecnologia">Tecnología</a></li>
-                    <li><a href="#dashboard">Dashboard</a></li>
-                    <li><a href="#precios">Precios</a></li>
-                    <li><a href="#">Documentación</a></li>
-                </ul>
+            <h2 id="mapas" style="font-size: 1.5rem; font-weight: 600; margin-top: 3rem; margin-bottom: 1.5rem;">Mapas de Índices Espectrales</h2>
+            
+            <div class="index-maps-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">NDVI - Vigor Vegetativo</div>
+                    </div>
+                    <div id="ndviMap" class="index-map"></div>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #004c00;"></div>
+                            <span>Alto (>0.6)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #74a901;"></div>
+                            <span>Moderado (0.4-0.6)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #ce7e45;"></div>
+                            <span>Bajo (<0.4)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">NDWI - Estado Hídrico</div>
+                    </div>
+                    <div id="ndwiMap" class="index-map"></div>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #0000FF;"></div>
+                            <span>Óptimo (>0.3)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #00FFFF;"></div>
+                            <span>Moderado (0.1-0.3)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #ce7e45;"></div>
+                            <span>Déficit (<0.1)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">NDCI - Contenido de Clorofila</div>
+                    </div>
+                    <div id="ndciMap" class="index-map"></div>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #006600;"></div>
+                            <span>Alto (>0.4)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #00FF00;"></div>
+                            <span>Moderado (0.2-0.4)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #E8E8E8;"></div>
+                            <span>Bajo (<0.2)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">EVI - Productividad</div>
+                    </div>
+                    <div id="eviMap" class="index-map"></div>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #006600;"></div>
+                            <span>Alta (>0.6)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #00FF00;"></div>
+                            <span>Moderada (0.3-0.6)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #E8E8E8;"></div>
+                            <span>Baja (<0.3)</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="footer-column">
-                <h4>Empresa</h4>
-                <ul>
-                    <li><a href="#">Nosotros</a></li>
-                    <li><a href="#">Carreras</a></li>
-                    <li><a href="#">Socios</a></li>
-                    <li><a href="#">Prensa</a></li>
-                </ul>
+            <h2 id="temporal" style="font-size: 1.5rem; font-weight: 600; margin-top: 3rem; margin-bottom: 1.5rem;">Vista General y Evolución Temporal</h2>
+            
+            <div class="dashboard-grid">
+                <div class="card map-container">
+                    <div class="card-title">MAPA DE LA EXPLOTACIÓN (OLIVAR SUR)</div>
+                    <div id="map"></div>
+                </div>
+
+                <div class="card chart-container">
+                    <div class="card-header">
+                        <div class="card-title">Evolución Temporal NDVI/NDWI</div>
+                    </div>
+                    <canvas id="timeSeriesChart"></canvas>
+                </div>
             </div>
 
-            <div class="footer-column">
-                <h4>Contacto</h4>
-                <ul>
-                    <li><a href="mailto:info@muorbita.com">info@muorbita.com</a></li>
-                    <li><a href="mailto:ventas@muorbita.com">ventas@muorbita.com</a></li>
-                    <li><a href="mailto:soporte@muorbita.com">soporte@muorbita.com</a></li>
-                </ul>
+            <h2 id="alertas" style="font-size: 1.5rem; font-weight: 600; margin-top: 3rem; margin-bottom: 1.5rem;">Alertas Activas (3)</h2>
+            
+            <div class="alert warning">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-content">
+                    <div class="alert-title">Estrés Hídrico Detectado - Sector Noreste</div>
+                    <div class="alert-description">
+                        <strong>Trigger:</strong> NDWI cayó de 0.24 a 0.16 (-33%) en 14 días.<br>
+                        <strong>Acción:</strong> Inspección visual en 3-5 días. Considerar riego suplementario.
+                    </div>
+                </div>
+                <button class="alert-action">Ver Zona</button>
             </div>
-        </div>
 
-        <div class="footer-bottom">
-            <p>Datos: Copernicus (ESA) • Landsat (NASA/USGS) • MODIS (NASA) • ERA5 (ECMWF)</p>
-        </div>
-    </footer>
+            <div class="alert info">
+                <div class="alert-icon">ℹ️</div>
+                <div class="alert-content">
+                    <div class="alert-title">Heterogeneidad Intra-Parcela Alta</div>
+                    <div class="alert-description">
+                        <strong>Recomendación:</strong> Aplicación de riego variable (VRA). Potencial ahorro: 15-20%.
+                    </div>
+                </div>
+                <button class="alert-action">Generar Mapa VRA</button>
+            </div>
+
+            <div class="alert warning">
+                <div class="alert-icon">🌡️</div>
+                <div class="alert-content">
+                    <div class="alert-title">Previsión Ola de Calor - Próximos 7 Días</div>
+                    <div class="alert-description">
+                        <strong>Predicción:</strong> 5 días con Tmax ≥37°C entre el 12-16 Nov.<br>
+                        <strong>Acción:</strong> Aplicar riego de soporte antes del 11 Nov.
+                    </div>
+                </div>
+                <button class="alert-action">Programar Riego</button>
+            </div>
+
+            <h2 id="reportes" style="font-size: 1.5rem; font-weight: 600; margin-top: 3rem; margin-bottom: 1.5rem;">Recomendaciones Prioritarias</h2>
+            
+            <div class="recommendation-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <span class="recommendation-priority priority-high">Prioridad Alta</span>
+                    <span style="color: var(--light-gray); font-size: 0.85rem;">Plazo: 3-5 días</span>
+                </div>
+                <h3 style="margin-bottom: 0.5rem;">Inspección de Zona con Estrés Hídrico</h3>
+                <p style="color: var(--light-gray); font-size: 0.9rem;">
+                    Verificar sistema de riego en 18.4 ha del sector noreste con NDWI <0.18
+                </p>
+            </div>
+
+            <div class="recommendation-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <span class="recommendation-priority priority-high">Prioridad Alta</span>
+                    <span style="color: var(--light-gray); font-size: 0.85rem;">Plazo: 7 días</span>
+                </div>
+                <h3 style="margin-bottom: 0.5rem;">Riego de Soporte Pre-Ola de Calor</h3>
+                <p style="color: var(--light-gray); font-size: 0.9rem;">
+                    Aplicar 15-20 mm antes del 11/11 para prevenir estrés térmico combinado
+                </p>
+            </div>
+
+            <div class="recommendation-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <span class="recommendation-priority priority-medium">Prioridad Media</span>
+                    <span style="color: var(--light-gray); font-size: 0.85rem;">Plazo: 14 días</span>
+                </div>
+                <h3 style="margin-bottom: 0.5rem;">Implementación de Riego Variable (VRA)</h3>
+                <p style="color: var(--light-gray); font-size: 0.9rem;">
+                    Generar mapas de prescripción basados en zonificación NDVI (ahorro estimado 15-20%)
+                </p>
+            </div>
+        </main>
+    </div>
 
     <script>
-        // Mobile menu
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const navLinks = document.getElementById('navLinks');
+        // ===================================
+        // LÓGICA DE CAMBIO DE VISTA Y DASHBOARD
+        // ===================================
+        
+        let mapsInitialized = false;
 
-        if (mobileMenuBtn) {
-            mobileMenuBtn.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
+        function showLanding() {
+            document.getElementById('landing-view').classList.add('active');
+            document.getElementById('dashboard-view').classList.remove('active');
+            window.scrollTo(0, 0);
+        }
+
+        function showDashboard() {
+            document.getElementById('landing-view').classList.remove('active');
+            document.getElementById('dashboard-view').classList.add('active');
+            window.scrollTo(0, 0);
+            
+            // Inicializar mapas y gráficos solo la primera vez que se muestra el dashboard
+            setTimeout(initializeDashboard, 100);
+        }
+
+        function initializeDashboard() {
+            if (mapsInitialized || !document.getElementById('map')) return; // No re-inicializar
+            mapsInitialized = true;
+
+            try {
+                const fieldCoords = [
+                    [36.66142740600855, -6.192790515087148],
+                    [36.655643665060126, -6.172362811229726],
+                    [36.665282991898934, -6.17425108637621],
+                    [36.6684499358268, -6.178542620800038],
+                    [36.672167486321754, -6.174422747753163],
+                    [36.677536964408084, -6.181975848339101],
+                    [36.6813917432145, -6.181975848339101],
+                    [36.67863834949196, -6.199656970165273],
+                    [36.66142740600855, -6.192790515087148]
+                ];
+
+                // Mapa principal
+                const map = L.map('map').setView([36.670, -6.185], 14);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                    subdomains: 'abcd',
+                    maxZoom: 20
+                }).addTo(map);
+
+                L.polygon(fieldCoords, {
+                    color: '#00cc66',
+                    fillColor: '#00cc66',
+                    fillOpacity: 0.2
+                }).addTo(map).bindPopup('Olivar Sur - 152.3 ha');
+
+                // Mapas de índices
+                const initIndexMap = (elementId, fillColor) => {
+                    if (!document.getElementById(elementId)) return;
+                    const indexMap = L.map(elementId).setView([36.670, -6.185], 13);
+                    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(indexMap);
+                    L.polygon(fieldCoords, {
+                        color: fillColor,
+                        fillColor: fillColor,
+                        fillOpacity: 0.3
+                    }).addTo(indexMap);
+                };
+
+                initIndexMap('ndviMap', '#74a901');
+                initIndexMap('ndwiMap', '#00FFFF');
+                initIndexMap('ndciMap', '#00FF00');
+                initIndexMap('eviMap', '#00FF00');
+
+                // Gráfico de series temporales
+                const ctx = document.getElementById('timeSeriesChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov'],
+                        datasets: [
+                            {
+                                label: 'NDVI',
+                                data: [0.52, 0.54, 0.58, 0.61, 0.64, 0.62, 0.59, 0.57, 0.59, 0.61, 0.62],
+                                borderColor: '#00cc66',
+                                backgroundColor: 'rgba(0, 204, 102, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            },
+                            {
+                                label: 'NDWI',
+                                data: [0.28, 0.29, 0.27, 0.25, 0.23, 0.20, 0.17, 0.15, 0.16, 0.19, 0.18],
+                                borderColor: '#0099ff',
+                                backgroundColor: 'rgba(0, 153, 255, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: '#ffffff' } }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#888888' }
+                            },
+                            x: {
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#888888' }
+                            }
+                        }
+                    }
+                });
+
+            } catch (e) {
+                console.error("Error al inicializar el dashboard:", e);
+            }
+        }
+
+
+        // ===================================
+        // LÓGICA DE LANDING PAGE
+        // ===================================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+        
+            // --- Menú móvil ---
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const navLinks = document.getElementById('navLinks');
+
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+            }
+
+            // --- Animaciones de scroll ---
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // --- Smooth scroll para anclas ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    
+                    if(document.getElementById('dashboard-view').classList.contains('active')) {
+                       const target = document.querySelector(href);
+                       if (target) {
+                           e.preventDefault();
+                           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                       }
+                       return;
+                    }
+
+                    if (href.startsWith('#') && href.length > 1 && href !== "#") {
+                        e.preventDefault();
+                        showLanding();
+                        
+                        const target = document.getElementById(href.substring(1));
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            if (navLinks) {
+                                navLinks.classList.remove('active');
+                            }
+                        }
+                    }
+                });
+            });
+
+            // --- NUEVO: Lógica del Mapa de Pago ---
+            initializePaymentMap();
+
+            // --- Lógica de Stripe ---
+            initializeStripe();
+        });
+
+        // --- NUEVA FUNCIÓN: Inicializar Mapa de Pago ---
+        function initializePaymentMap() {
+            if (!document.getElementById('payment-map') || typeof L.Control.Draw === 'undefined') {
+                console.log("No se encuentra el div del mapa de pago o Leaflet.Draw no está cargado.");
+                return;
+            }
+
+            // Centrar el mapa en España
+            const paymentMap = L.map('payment-map').setView([40.416775, -3.703790], 6);
+            
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(paymentMap);
+
+            const drawnItems = new L.FeatureGroup();
+            paymentMap.addLayer(drawnItems);
+
+            const drawControl = new L.Control.Draw({
+                edit: {
+                    featureGroup: drawnItems,
+                    poly: {
+                        allowIntersection: false
+                    }
+                },
+                draw: {
+                    polygon: {
+                        allowIntersection: false,
+                        showArea: true,
+                        shapeOptions: {
+                            color: '#00cc66',
+                            fillColor: '#00cc66',
+                            fillOpacity: 0.3
+                        }
+                    },
+                    // Deshabilitar otras herramientas de dibujo
+                    polyline: false,
+                    rectangle: false,
+                    circle: false,
+                    marker: false,
+                    circlemarker: false
+                }
+            });
+            paymentMap.addControl(drawControl);
+
+            const submitButton = document.getElementById('submit-button');
+            const buttonText = document.getElementById('button-text');
+            const calculatedHectaresInput = document.getElementById('calculated-hectares');
+            const hiddenHectaresInput = document.getElementById('hectares');
+
+            paymentMap.on(L.Draw.Event.CREATED, function (event) {
+                const layer = event.layer;
+                
+                // Limpiar dibujos anteriores
+                drawnItems.clearLayers();
+                drawnItems.addLayer(layer);
+
+                // Calcular área usando Turf.js
+                const geojson = layer.toGeoJSON();
+                const areaInMeters = turf.area(geojson);
+                const areaInHectares = areaInMeters / 10000;
+
+                // Actualizar los campos del formulario
+                calculatedHectaresInput.value = `${areaInHectares.toFixed(2)} ha`;
+                hiddenHectaresInput.value = areaInHectares.toFixed(2);
+
+                // Habilitar el botón de pago
+                submitButton.disabled = false;
+                buttonText.textContent = 'Activar Monitoreo Satelital';
+            });
+
+            paymentMap.on(L.Draw.Event.EDITED, function (event) {
+                 const layers = event.layers;
+                 layers.eachLayer(function(layer) {
+                    // Recalcular área
+                    const geojson = layer.toGeoJSON();
+                    const areaInMeters = turf.area(geojson);
+                    const areaInHectares = areaInMeters / 10000;
+
+                    calculatedHectaresInput.value = `${areaInHectares.toFixed(2)} ha`;
+                    hiddenHectaresInput.value = areaInHectares.toFixed(2);
+                 });
+            });
+
+            paymentMap.on(L.Draw.Event.DELETED, function () {
+                // Si el polígono se borra, deshabilitar el botón
+                calculatedHectaresInput.value = "0.00 ha";
+                hiddenHectaresInput.value = "0";
+                submitButton.disabled = true;
+                buttonText.textContent = 'Dibuja tu finca para activar';
             });
         }
 
-        // Scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    if (navLinks) {
-                        navLinks.classList.remove('active');
+        // --- NUEVA FUNCIÓN: Inicializar Stripe ---
+        function initializeStripe() {
+            try {
+                const stripe = Stripe('pk_test_51234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // ⚠️ REEMPLAZAR CON TU CLAVE PÚBLICA
+                const elements = stripe.elements();
+                
+                const style = {
+                    base: {
+                        color: '#ffffff',
+                        fontFamily: '"Inter", sans-serif',
+                        fontSmoothing: 'antialiased',
+                        fontSize: '16px',
+                        '::placeholder': {
+                            color: '#888888'
+                        }
+                    },
+                    invalid: {
+                        color: '#ff6b6b',
+                        iconColor: '#ff6b6b'
                     }
+                };
+
+                const cardElement = elements.create('card', {style: style});
+                if (document.getElementById('card-element')) {
+                     cardElement.mount('#card-element');
                 }
-            });
-        });
 
-        // Stripe Integration
-        // NOTA: Reemplaza 'pk_test_...' con tu clave pública de Stripe real
-        const stripe = Stripe('pk_test_51234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // ⚠️ REEMPLAZAR CON TU CLAVE PÚBLICA
-        const elements = stripe.elements();
-        
-        const style = {
-            base: {
-                color: '#ffffff',
-                fontFamily: '"Inter", sans-serif',
-                fontSmoothing: 'antialiased',
-                fontSize: '16px',
-                '::placeholder': {
-                    color: '#888888'
-                }
-            },
-            invalid: {
-                color: '#ff6b6b',
-                iconColor: '#ff6b6b'
-            }
-        };
-
-        const cardElement = elements.create('card', {style: style});
-        cardElement.mount('#card-element');
-
-        cardElement.on('change', function(event) {
-            const displayError = document.getElementById('card-errors');
-            if (event.error) {
-                displayError.textContent = event.error.message;
-            } else {
-                displayError.textContent = '';
-            }
-        });
-
-        const form = document.getElementById('payment-form');
-        const submitButton = document.getElementById('submit-button');
-        const buttonText = document.getElementById('button-text');
-
-        form.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            
-            submitButton.disabled = true;
-            buttonText.textContent = 'Procesando...';
-
-            // Calcular el precio total
-            const hectares = parseFloat(document.getElementById('hectares').value);
-            const plan = document.getElementById('plan').value;
-            let pricePerHa = 0;
-            
-            if (plan === 'essential') pricePerHa = 6;
-            else if (plan === 'professional') pricePerHa = 12;
-            else if (plan === 'enterprise') pricePerHa = 20;
-            
-            const totalPrice = hectares * pricePerHa;
-            const minimumPrice = 250;
-            const finalPrice = Math.max(totalPrice, minimumPrice);
-
-            // En producción, aquí llamarías a tu backend para crear un PaymentIntent
-            // y obtener el client_secret
-            
-            // EJEMPLO DE INTEGRACIÓN COMPLETA:
-            /*
-            const response = await fetch('/create-payment-intent', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    amount: finalPrice * 100, // Stripe usa centavos
-                    name: document.getElementById('name').value,
-                    email: document.getElementById('email').value,
-                    phone: document.getElementById('phone').value,
-                    hectares: hectares,
-                    crop: document.getElementById('crop').value,
-                    plan: plan
-                })
-            });
-            
-            const {clientSecret} = await response.json();
-            
-            const {error, paymentIntent} = await stripe.confirmCardPayment(clientSecret, {
-                payment_method: {
-                    card: cardElement,
-                    billing_details: {
-                        name: document.getElementById('name').value,
-                        email: document.getElementById('email').value,
-                        phone: document.getElementById('phone').value
+                cardElement.on('change', function(event) {
+                    const displayError = document.getElementById('card-errors');
+                    if (event.error) {
+                        displayError.textContent = event.error.message;
+                    } else {
+                        displayError.textContent = '';
                     }
+                });
+
+                const form = document.getElementById('payment-form');
+                const submitButton = document.getElementById('submit-button');
+                const buttonText = document.getElementById('button-text');
+
+                if (form) {
+                    form.addEventListener('submit', async function(event) {
+                        event.preventDefault();
+                        
+                        submitButton.disabled = true;
+                        buttonText.textContent = 'Procesando...';
+
+                        // AHORA LEE EL VALOR DEL CAMPO OCULTO (actualizado por el mapa)
+                        const hectares = parseFloat(document.getElementById('hectares').value);
+                        const plan = document.getElementById('plan').value;
+                        let pricePerHa = 0;
+                        
+                        if (plan === 'essential') pricePerHa = 6;
+                        else if (plan === 'professional') pricePerHa = 12;
+                        else if (plan === 'enterprise') pricePerHa = 20;
+                        
+                        const totalPrice = hectares * pricePerHa;
+                        const minimumPrice = 250;
+                        const finalPrice = Math.max(totalPrice, minimumPrice);
+
+                        // --- MODO DEMO ---
+                        console.log("Iniciando pago simulado...");
+                        setTimeout(() => {
+                            alert(`¡Pago simulado exitoso!\n\nPlan: ${plan}\nHectáreas: ${hectares.toFixed(2)} ha\nPrecio total: €${finalPrice.toFixed(2)}\n\nEn producción, este formulario procesaría el pago real.`);
+                            
+                            // Habilitar botón, pero mantenerlo deshabilitado hasta que se dibuje
+                            // submitButton.disabled = false;
+                            // buttonText.textContent = 'Activar Monitoreo Satelital';
+                            
+                            // Mejor resetear:
+                            form.reset();
+                            cardElement.clear();
+                            document.getElementById('calculated-hectares').value = "0.00 ha";
+                            document.getElementById('hectares').value = "0";
+                            submitButton.disabled = true;
+                            buttonText.textContent = 'Dibuja tu finca para activar';
+                            
+                            // Limpiar el mapa (requiere acceso a 'drawnItems' del scope del mapa)
+                            // Por simplicidad, recargamos la sección o pedimos al usuario que vuelva a dibujar.
+                            // En una app real, la capa 'drawnItems' estaría en un scope más global.
+                            
+                        }, 2000);
+                    });
                 }
-            });
 
-            if (error) {
-                document.getElementById('card-errors').textContent = error.message;
-                submitButton.disabled = false;
-                buttonText.textContent = 'Activar Monitoreo Satelital';
-            } else {
-                // Pago exitoso
-                alert('¡Pago procesado con éxito! Tu monitoreo satelital se activará en las próximas 24 horas. Recibirás un email de confirmación.');
-                form.reset();
-                submitButton.disabled = false;
-                buttonText.textContent = 'Activar Monitoreo Satelital';
+            } catch (e) {
+                console.error("Error al inicializar Stripe:", e);
             }
-            */
+        }
 
-            // DEMO MODE - Solo para demostración
-            setTimeout(() => {
-                alert(`¡Pago simulado exitoso!\n\nPlan: ${plan}\nHectáreas: ${hectares} ha\nPrecio total: €${finalPrice.toFixed(2)}\n\nEn producción, este formulario procesaría el pago real a través de Stripe y activaría tu cuenta automáticamente.`);
-                submitButton.disabled = false;
-                buttonText.textContent = 'Activar Monitoreo Satelital';
-            }, 2000);
-        });
     </script>
 </body>
 </html>
