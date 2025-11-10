@@ -28,7 +28,11 @@
             box-sizing: border-box;
         }
 
+        /* ================================ */
+        /* == GESTIÓN DE TEMAS (NUEVO) == */
+        /* ================================ */
         :root {
+            /* Tema Oscuro (Default) */
             --black: #000000;
             --near-black: #0a0a0a;
             --dark-gray: #1a1a1a;
@@ -36,6 +40,7 @@
             --light-gray: #888888;
             --white: #ffffff;
             --off-white: #f5f5f5;
+            
             --green: #00cc66;
             --yellow: #ffcc00;
             --red: #ff4444;
@@ -43,7 +48,37 @@
             --accent-green: #00ff00;
             --elegant-green: #00cc00;
             --subtle-green: #004d00;
+
+            --nav-bg: rgba(0, 0, 0, 0.95);
+            --border-color-faded: rgba(255, 255, 255, 0.05);
+            --border-color-medium: rgba(255, 255, 255, 0.1);
+            --border-color-strong: rgba(255, 255, 255, 0.2);
+            --shadow-color-faded: rgba(0, 0, 0, 0.4);
+            --shadow-color-medium: rgba(0, 0, 0, 0.5);
+            --shadow-color-strong: rgba(0, 0, 0, 0.6);
         }
+
+        body.light-mode {
+            /* Tema Claro */
+            --black: #ffffff;
+            --near-black: #f5f5f5;
+            --dark-gray: #e9e9e9;
+            --mid-gray: #f4f4f4;
+            --light-gray: #555555;
+            --white: #0a0a0a;
+            --off-white: #e0e0e0;
+            
+            --nav-bg: rgba(255, 255, 255, 0.95);
+            --border-color-faded: rgba(0, 0, 0, 0.05);
+            --border-color-medium: rgba(0, 0, 0, 0.1);
+            --border-color-strong: rgba(0, 0, 0, 0.2);
+            --shadow-color-faded: rgba(0, 0, 0, 0.05);
+            --shadow-color-medium: rgba(0, 0, 0, 0.1);
+            --shadow-color-strong: rgba(0, 0, 0, 0.15);
+        }
+        /* ================================ */
+        /* ================================ */
+
 
         html {
             scroll-behavior: smooth;
@@ -56,16 +91,12 @@
             overflow-x: hidden;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* View Container (para cambiar entre Landing y Dashboard) */
-        .view {
-            display: none;
-        }
-
-        .view.active {
-            display: block;
-        }
+        /* View Container */
+        .view { display: none; }
+        .view.active { display: block; }
 
         /* Subtle Planet Background */
         .planet-bg {
@@ -80,6 +111,11 @@
             pointer-events: none;
             z-index: 0;
         }
+        
+        /* Ocultar fondo de planeta en modo claro */
+        body.light-mode .planet-bg {
+            display: none;
+        }
 
         /* Navigation */
         nav {
@@ -87,9 +123,9 @@
             top: 0;
             width: 100%;
             z-index: 1000;
-            background: rgba(0, 0, 0, 0.95);
+            background: var(--nav-bg);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border-color-faded);
             transition: all 0.3s ease;
         }
 
@@ -113,7 +149,7 @@
 
         .nav-links {
             display: flex;
-            gap: 3rem;
+            gap: 2rem; /* Reducido para hacer espacio */
             list-style: none;
             align-items: center;
         }
@@ -140,29 +176,50 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
+        body.light-mode .nav-cta {
+             background: var(--black); /* Fondo oscuro para CTA en modo claro */
+             color: var(--white) !important;
+        }
 
         .nav-cta:hover {
             background: var(--off-white);
             transform: translateY(-1px);
         }
 
-        /* NUEVO: Selector de Idioma */
+        /* Selector de Idioma */
         .lang-selector {
             display: flex;
             gap: 0.5rem;
-            margin-left: 1rem; /* Espacio antes del botón de CTA */
+            margin-left: 1rem;
         }
         .lang-selector a {
             padding: 0.4rem 0.8rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color-medium);
             border-radius: 4px;
             font-size: 0.85rem;
-            color: var(--light-gray); /* Match other links */
+            color: var(--light-gray);
         }
         .lang-selector a.active {
             background: var(--white);
             color: var(--black);
             border-color: var(--white);
+        }
+        body.light-mode .lang-selector a.active {
+            background: var(--black);
+            color: var(--white);
+            border-color: var(--black);
+        }
+
+        /* NUEVO: Botón de Tema */
+        #theme-toggle {
+            font-size: 1.2rem;
+            padding: 0.4rem;
+            background: var(--dark-gray);
+            border-radius: 6px;
+            line-height: 1;
+        }
+        body.light-mode #theme-toggle {
+            background: var(--dark-gray); /* Mismo fondo que en modo oscuro */
         }
 
         .mobile-menu-btn {
@@ -174,7 +231,7 @@
             cursor: pointer;
         }
 
-        /* Hero Section (Estilos de WebMuOrbita_i7.html) */
+        /* Hero Section */
         .hero {
             height: 100vh;
             display: flex;
@@ -189,6 +246,7 @@
             text-align: center;
             z-index: 10;
             padding: 2rem;
+            /* CAMBIO 2: Padding inferior eliminado para centrar */
         }
 
         .hero-logo-container {
@@ -206,6 +264,20 @@
             height: 220px;
             margin: 0 auto;
             filter: drop-shadow(0 0 60px rgba(255, 255, 255, 0.15));
+        }
+        
+        body.light-mode .hero-logo-svg {
+            /* Adaptar logo a modo claro */
+            filter: drop-shadow(0 0 40px rgba(0, 0, 0, 0.15));
+        }
+        body.light-mode .hero-logo-svg text,
+        body.light-mode .hero-logo-svg ellipse,
+        body.light-mode .hero-logo-svg circle {
+            stroke: var(--white); /* Texto/líneas oscuras */
+            fill: var(--white);
+        }
+        body.light-mode .hero-logo-svg ellipse {
+            opacity: 0.5;
         }
 
         .hero h1 {
@@ -231,49 +303,20 @@
             animation: fadeIn 1.5s ease-out 0.6s both;
         }
         
-        /* Indicador de Scroll (de WebMuOrbita_i7.html) */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: bounce 2s infinite;
-            cursor: pointer;
-        }
+        /* CAMBIO 1: Indicador de Scroll ELIMINADO */
+        
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-            40% { transform: translateX(-50%) translateY(-15px); }
-            60% { transform: translateX(-50%) translateY(-8px); }
-        }
-
-        .scroll-indicator-line {
-            width: 1px;
-            height: 60px;
-            background: linear-gradient(to bottom, transparent, var(--white), transparent);
-            margin: 0 auto 10px;
-        }
-
-        .scroll-indicator-text {
-            color: var(--light-gray);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 500;
-        }
-
-
-        /* Section Styles (de index.html) */
+        /* Section Styles */
         .section-dark {
             background: var(--near-black);
             padding: 8rem 3rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border-color-faded);
         }
 
         .section-darker {
             background: var(--black);
             padding: 8rem 3rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border-color-faded);
         }
 
         .container {
@@ -312,7 +355,7 @@
             line-height: 1.8;
         }
 
-        /* Technology Section (de index.html) */
+        /* Technology Section */
         .tech-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -324,7 +367,7 @@
         .tech-image {
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 60px var(--shadow-color-medium);
         }
 
         .tech-image img {
@@ -333,6 +376,10 @@
             display: block;
             filter: brightness(0.9) contrast(1.1);
         }
+        body.light-mode .tech-image img {
+            filter: none;
+        }
+
 
         .tech-content {
             padding: 2rem;
@@ -341,7 +388,7 @@
         .tech-feature {
             margin-bottom: 2.5rem;
             padding-left: 2rem;
-            border-left: 2px solid rgba(255, 255, 255, 0.1);
+            border-left: 2px solid var(--border-color-medium);
         }
 
         .tech-feature h3 {
@@ -356,13 +403,13 @@
             line-height: 1.7;
         }
 
-        /* Dashboard Preview Section (de index.html) */
+        /* Dashboard Preview Section */
         .dashboard-preview {
             margin-top: 4rem;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 30px 80px var(--shadow-color-strong);
+            border: 1px solid var(--border-color-faded);
         }
 
         .dashboard-preview img {
@@ -371,7 +418,7 @@
             display: block;
         }
 
-        /* Stats Grid (de index.html) */
+        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -393,7 +440,7 @@
             letter-spacing: 1px;
         }
 
-        /* Pricing Section (de index.html) */
+        /* Pricing Section */
         .pricing-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -405,21 +452,24 @@
             background: var(--dark-gray);
             padding: 3rem 2.5rem;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color-faded);
             transition: all 0.3s ease;
             position: relative;
         }
 
         .pricing-card:hover {
             transform: translateY(-8px);
-            border-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border-color: var(--border-color-strong);
+            box-shadow: 0 20px 60px var(--shadow-color-faded);
         }
 
         .pricing-card.featured {
             background: var(--mid-gray);
             border-color: var(--white);
             transform: scale(1.05);
+        }
+        body.light-mode .pricing-card.featured {
+            border-color: var(--black);
         }
 
         .pricing-card.featured:hover {
@@ -438,6 +488,10 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+        body.light-mode .pricing-badge {
+            background: var(--black);
+            color: var(--white);
         }
 
         .pricing-tier {
@@ -482,7 +536,7 @@
         .pricing-features li {
             padding: 0.7rem 0;
             color: var(--light-gray);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border-color-faded);
             font-size: 0.9rem;
         }
 
@@ -504,41 +558,47 @@
             background: var(--white);
             color: var(--black);
         }
+        body.light-mode .btn-primary {
+            background: var(--black);
+            color: var(--white);
+        }
 
         .btn-primary:hover {
             background: var(--off-white);
             transform: translateY(-2px);
         }
+        body.light-mode .btn-primary:hover {
+             background: #333; /* Un poco más claro que el negro */
+        }
+
 
         .btn-secondary {
             background: transparent;
             color: var(--white);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border-color-strong);
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.4);
+            background: var(--border-color-faded);
+            border-color: var(--border-color-strong);
         }
 
-        /* Payment Section (de index.html) */
+        /* Payment Section */
         .payment-container {
             max-width: 600px;
             margin: 0 auto;
             background: var(--dark-gray);
             padding: 3rem;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color-medium);
         }
 
         .payment-logo {
             text-align: center;
             margin-bottom: 2rem;
         }
-
-        .payment-logo img {
-            height: 30px;
-            opacity: 0.8;
+        body.light-mode .payment-logo img {
+            filter: invert(1);
         }
 
         .form-group {
@@ -557,7 +617,7 @@
             width: 100%;
             padding: 1rem;
             background: var(--mid-gray);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color-medium);
             border-radius: 6px;
             color: var(--white);
             font-size: 1rem;
@@ -570,8 +630,11 @@
             border-color: var(--white);
             background: var(--near-black);
         }
-        
-        /* NUEVO: Estilo para el input de hectáreas deshabilitado */
+        body.light-mode .form-input:focus, 
+        body.light-mode .form-select:focus {
+             border-color: var(--black);
+        }
+
         .form-input:read-only {
             background: var(--near-black);
             font-weight: bold;
@@ -579,7 +642,6 @@
             cursor: not-allowed;
         }
 
-        /* Mapa de pago */
         #payment-map {
             height: 400px; 
             border-radius: 6px; 
@@ -590,8 +652,12 @@
         #card-element {
             padding: 1rem;
             background: var(--mid-gray);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color-medium);
             border-radius: 6px;
+        }
+        /* Estilos de Stripe para modo claro */
+        body.light-mode #card-element {
+            background: var(--mid-gray);
         }
 
         #card-errors {
@@ -613,10 +679,17 @@
             transition: all 0.3s ease;
             margin-top: 1.5rem;
         }
+        body.light-mode .submit-button {
+            background: var(--black);
+            color: var(--white);
+        }
 
         .submit-button:hover {
             background: var(--off-white);
             transform: translateY(-2px);
+        }
+        body.light-mode .submit-button:hover {
+             background: #333;
         }
 
         .submit-button:disabled {
@@ -624,11 +697,11 @@
             cursor: not-allowed;
         }
 
-        /* Footer (de index.html) */
+        /* Footer */
         footer {
             background: var(--near-black);
             padding: 4rem 3rem 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border-color-faded);
         }
 
         .footer-content {
@@ -657,13 +730,8 @@
             font-size: 1rem;
         }
 
-        .footer-column ul {
-            list-style: none;
-        }
-
-        .footer-column ul li {
-            margin-bottom: 0.8rem;
-        }
+        .footer-column ul { list-style: none; }
+        .footer-column ul li { margin-bottom: 0.8rem; }
 
         .footer-column ul li a {
             color: var(--light-gray);
@@ -680,13 +748,13 @@
             max-width: 1400px;
             margin: 0 auto;
             padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border-color-faded);
             text-align: center;
             color: var(--light-gray);
             font-size: 0.85rem;
         }
 
-        /* Animations (de index.html) */
+        /* Animations */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
@@ -699,22 +767,22 @@
         }
 
         /* ================================ */
-        /* DASHBOARD STYLES (de Dashboard_i2.html) */
+        /* DASHBOARD STYLES */
         /* ================================ */
         
         #dashboard-view {
-            padding-top: 65px; /* Altura de la nav-bar fija */
+            padding-top: 65px;
         }
 
         .dashboard-header {
             background: var(--near-black);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--border-color-medium);
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: fixed;
-            top: 65px; /* Debajo de la nav principal */
+            top: 65px;
             width: 100%;
             z-index: 900;
         }
@@ -728,7 +796,7 @@
         .farm-selector select {
             background: var(--dark-gray);
             color: var(--white);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color-medium);
             padding: 0.5rem 1rem;
             border-radius: 6px;
             font-size: 0.9rem;
@@ -783,11 +851,11 @@
         .sidebar {
             position: fixed;
             left: 0;
-            top: 130px; /* Debajo de nav (65px) + header (65px) */
+            top: 130px;
             width: 220px;
             height: calc(100vh - 130px);
             background: var(--near-black);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid var(--border-color-medium);
             padding: 1.5rem 0;
             overflow-y: auto;
             z-index: 800;
@@ -818,7 +886,7 @@
             margin-left: 220px;
             padding: 2rem;
             min-height: calc(100vh - 130px);
-            padding-top: 85px; /* Espacio para el header fijo del dashboard */
+            padding-top: 85px;
         }
 
         .dashboard-grid {
@@ -830,14 +898,14 @@
 
         .card {
             background: var(--near-black);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color-medium);
             border-radius: 12px;
             padding: 1.5rem;
             transition: all 0.3s;
         }
 
         .card:hover {
-            border-color: rgba(255, 255, 255, 0.2);
+            border-color: var(--border-color-strong);
             transform: translateY(-2px);
         }
 
@@ -861,12 +929,10 @@
             font-size: 0.75rem;
             font-weight: 600;
         }
-
         .status-badge.good {
             background: rgba(0, 204, 102, 0.15);
             color: var(--green);
         }
-
         .status-badge.warning {
             background: rgba(255, 204, 0, 0.15);
             color: var(--yellow);
@@ -888,7 +954,6 @@
             font-size: 0.85rem;
             font-weight: 600;
         }
-
         .card-change.positive { color: var(--green); }
         .card-change.negative { color: var(--red); }
         .card-change.neutral { color: var(--light-gray); }
@@ -902,7 +967,7 @@
             width: 100%;
             height: 450px;
             border-radius: 8px;
-            background-color: var(--dark-gray); /* Fondo mientras carga */
+            background-color: var(--dark-gray);
         }
 
         .index-maps-grid {
@@ -917,7 +982,7 @@
             height: 300px;
             border-radius: 8px;
             margin-top: 1rem;
-            background-color: var(--dark-gray); /* Fondo mientras carga */
+            background-color: var(--dark-gray);
         }
 
         .chart-container {
@@ -957,26 +1022,15 @@
             gap: 1rem;
             padding: 1.5rem;
             background: var(--near-black);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color-medium);
             border-radius: 12px;
             margin-bottom: 1rem;
         }
+        .alert.warning { border-left: 4px solid var(--yellow); }
+        .alert.info { border-left: 4px solid var(--blue); }
 
-        .alert.warning {
-            border-left: 4px solid var(--yellow);
-        }
-
-        .alert.info {
-            border-left: 4px solid var(--blue);
-        }
-
-        .alert-icon {
-            font-size: 1.5rem;
-        }
-
-        .alert-content {
-            flex: 1;
-        }
+        .alert-icon { font-size: 1.5rem; }
+        .alert-content { flex: 1; }
 
         .alert-title {
             font-weight: 600;
@@ -992,7 +1046,7 @@
         .alert-action {
             background: var(--dark-gray);
             color: var(--white);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color-medium);
             padding: 0.5rem 1rem;
             border-radius: 6px;
             cursor: pointer;
@@ -1001,7 +1055,7 @@
 
         .recommendation-card {
             background: var(--near-black);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color-medium);
             border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 1rem;
@@ -1013,12 +1067,10 @@
             font-size: 0.8rem;
             font-weight: 600;
         }
-
         .priority-high {
             background: rgba(255, 68, 68, 0.15);
             color: var(--red);
         }
-
         .priority-medium {
             background: rgba(255, 204, 0, 0.15);
             color: var(--yellow);
@@ -1026,53 +1078,24 @@
 
         /* Responsive */
         @media (max-width: 1200px) {
-            .sidebar {
-                width: 60px;
-            }
-            .main-content {
-                margin-left: 60px;
-            }
-            .nav-item span:last-child {
-                display: none;
-            }
+            .nav-links { gap: 1.5rem; } /* Más espacio */
+            .sidebar { width: 60px; }
+            .main-content { margin-left: 60px; }
+            .nav-item span:last-child { display: none; }
         }
         
         @media (max-width: 1024px) {
-            .tech-grid {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-            }
-
-            .pricing-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .index-maps-grid {
-                grid-template-columns: 1fr;
-            }
+            .tech-grid { grid-template-columns: 1fr; gap: 3rem; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-content { grid-template-columns: 1fr 1fr; }
+            .index-maps-grid { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero-logo-svg {
-                width: 150px;
-                height: 150px;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
+            .hero h1 { font-size: 2.5rem; }
+            .hero-logo-svg { width: 150px; height: 150px; }
+            .section-title { font-size: 2rem; }
 
             .nav-links {
                 display: none;
@@ -1080,32 +1103,22 @@
                 top: 100%;
                 left: 0;
                 width: 100%;
-                background: var(--black);
+                background: var(--nav-bg); /* Usar variable de nav */
                 flex-direction: column;
                 padding: 2rem;
                 gap: 1.5rem;
+                border-bottom: 1px solid var(--border-color-faded);
             }
-            .nav-links.active {
-                display: flex;
-            }
+            .nav-links.active { display: flex; }
 
-            /* Mover el selector de idioma al menú móvil */
-            .lang-selector {
+            .lang-selector, #theme-toggle {
                 margin-left: 0;
                 justify-content: center;
             }
 
-            .mobile-menu-btn {
-                display: block;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-            }
+            .mobile-menu-btn { display: block; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr; }
 
             /* Responsive Dashboard */
             .sidebar {
@@ -1114,7 +1127,7 @@
                 position: relative;
                 top: 0;
                 border-right: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                border-bottom: 1px solid var(--border-color-medium);
                 display: flex;
                 flex-direction: row;
                 justify-content: space-around;
@@ -1122,18 +1135,14 @@
             }
             .main-content {
                 margin-left: 0;
-                padding-top: 145px; /* Nav + Header + Sidebar */
+                padding-top: 145px;
             }
-            .nav-item {
-                border-left: none;
-            }
+            .nav-item { border-left: none; }
             .nav-item.active {
                 border-left: none;
                 border-bottom: 3px solid var(--green);
             }
-            .nav-item span:last-child {
-                display: inline-block; /* Mostrar texto en móvil */
-            }
+            .nav-item span:last-child { display: inline-block; }
             .dashboard-header {
                 flex-direction: column;
                 gap: 1rem;
@@ -1141,15 +1150,9 @@
                 padding-bottom: 0.5rem;
                 top: 65px;
             }
-            #dashboard-view {
-                padding-top: 125px; /* Nav + Header ajustado */
-            }
-            .sidebar {
-                top: 190px; /* Nav + Header ajustado */
-            }
-            .main-content {
-                 padding-top: 60px; /* espacio para sidebar */
-            }
+            #dashboard-view { padding-top: 125px; }
+            .sidebar { top: 190px; }
+            .main-content { padding-top: 60px; }
         }
     </style>
 </head>
@@ -1165,10 +1168,17 @@
                 <li><a onclick="showLanding()" href="#metricas">Métricas</a></li>
                 <li><a onclick="showLanding()" href="#precios">Precios</a></li>
                 <li><a onclick="showLanding()" href="#pago">Comenzar</a></li>
-                <li class="lang-selector">
-                    <a href="index.html" class="active">ES</a>
-                    <a href="index-en.html">EN</a>
+                
+                <li>
+                    <a id="theme-toggle" title="Cambiar a modo claro" style="cursor: pointer; font-size: 1.2rem;">
+                        ☀️
+                    </a>
                 </li>
+                
+                <li class="lang-selector">
+                    <a href="#" class="active">ES</a>
+                    <a href="#">EN</a> </li>
+                
                 <li><a onclick="showDashboard()" class="nav-cta">🔐 Área Cliente</a></li>
             </ul>
             <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
@@ -1190,8 +1200,7 @@
                 <p class="hero-tagline">Precisión desde Órbita – Sostenibilidad desde Datos</p>
             </div>
             
-            
-        </section>
+            </section>
 
         <section id="tecnologia" class="section-dark">
             <div class="container">
@@ -1773,6 +1782,22 @@
 
     <script>
         // ===================================
+        // GESTIÓN DE TEMAS Y MAPAS (NUEVO)
+        // ===================================
+        let dashboardMap, ndviMap, ndwiMap, ndciMap, eviMap;
+        let dashboardTileLayer, ndviTileLayer, ndwiTileLayer, ndciTileLayer, eviTileLayer;
+        let paymentMapInstance;
+        let paymentTileLayer;
+
+        const darkTileUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+        const lightTileUrl = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+        const tileAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+
+        function getCurrentTileUrl() {
+            return document.body.classList.contains('light-mode') ? lightTileUrl : darkTileUrl;
+        }
+
+        // ===================================
         // LÓGICA DE CAMBIO DE VISTA Y DASHBOARD
         // ===================================
         
@@ -1789,12 +1814,11 @@
             document.getElementById('dashboard-view').classList.add('active');
             window.scrollTo(0, 0);
             
-            // Inicializar mapas y gráficos solo la primera vez que se muestra el dashboard
             setTimeout(initializeDashboard, 100);
         }
 
         function initializeDashboard() {
-            if (mapsInitialized || !document.getElementById('map')) return; // No re-inicializar
+            if (mapsInitialized || !document.getElementById('map')) return;
             mapsInitialized = true;
 
             try {
@@ -1810,30 +1834,35 @@
                     [36.66142740600855, -6.192790515087148]
                 ];
 
-                // Mapa principal
-                const map = L.map('map').setView([36.670, -6.185], 14);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                dashboardMap = L.map('map').setView([36.670, -6.185], 14);
+                dashboardTileLayer = L.tileLayer(getCurrentTileUrl(), {
+                    attribution: tileAttribution,
                     subdomains: 'abcd',
                     maxZoom: 20
-                }).addTo(map);
+                }).addTo(dashboardMap);
 
                 L.polygon(fieldCoords, {
                     color: '#00cc66',
                     fillColor: '#00cc66',
                     fillOpacity: 0.2
-                }).addTo(map).bindPopup('Olivar Sur - 152.3 ha');
+                }).addTo(dashboardMap).bindPopup('Olivar Sur - 152.3 ha');
 
-                // Mapas de índices
                 const initIndexMap = (elementId, fillColor) => {
                     if (!document.getElementById(elementId)) return;
-                    const indexMap = L.map(elementId).setView([36.670, -6.185], 13);
-                    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(indexMap);
+                    const mapInstance = L.map(elementId).setView([36.670, -6.185], 13);
+                    const tileLayerInstance = L.tileLayer(getCurrentTileUrl(), { attribution: tileAttribution, subdomains: 'abcd' }).addTo(mapInstance);
+                    
                     L.polygon(fieldCoords, {
                         color: fillColor,
                         fillColor: fillColor,
                         fillOpacity: 0.3
-                    }).addTo(indexMap);
+                    }).addTo(mapInstance);
+
+                    // Asignar a variables globales
+                    if (elementId === 'ndviMap') { ndviMap = mapInstance; ndviTileLayer = tileLayerInstance; }
+                    else if (elementId === 'ndwiMap') { ndwiMap = mapInstance; ndwiTileLayer = tileLayerInstance; }
+                    else if (elementId === 'ndciMap') { ndciMap = mapInstance; ndciTileLayer = tileLayerInstance; }
+                    else if (elementId === 'eviMap') { eviMap = mapInstance; eviTileLayer = tileLayerInstance; }
                 };
 
                 initIndexMap('ndviMap', '#74a901');
@@ -1841,8 +1870,11 @@
                 initIndexMap('ndciMap', '#00FF00');
                 initIndexMap('eviMap', '#00FF00');
 
-                // Gráfico de series temporales
+                // Lógica de Gráfico
                 const ctx = document.getElementById('timeSeriesChart').getContext('2d');
+                const chartLabelColor = document.body.classList.contains('light-mode') ? '#555555' : '#888888';
+                const chartGridColor = document.body.classList.contains('light-mode') ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)';
+                
                 new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -1870,17 +1902,17 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
-                            legend: { labels: { color: '#ffffff' } }
+                            legend: { labels: { color: chartLabelColor } }
                         },
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                                ticks: { color: '#888888' }
+                                grid: { color: chartGridColor },
+                                ticks: { color: chartLabelColor }
                             },
                             x: {
-                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                                ticks: { color: '#888888' }
+                                grid: { color: chartGridColor },
+                                ticks: { color: chartLabelColor }
                             }
                         }
                     }
@@ -1898,10 +1930,61 @@
         
         document.addEventListener('DOMContentLoaded', function() {
         
-            // --- Menú móvil ---
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
             const navLinks = document.getElementById('navLinks');
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
 
+            // --- Lógica de Tema (NUEVO) ---
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                body.classList.add('light-mode');
+                themeToggle.innerHTML = '🌙';
+                themeToggle.title = 'Cambiar a modo oscuro';
+            } else {
+                themeToggle.innerHTML = '☀️';
+                themeToggle.title = 'Cambiar a modo claro';
+            }
+
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('light-mode');
+                
+                const isLight = body.classList.contains('light-mode');
+                localStorage.setItem('theme', isLight ? 'light' : 'dark');
+                
+                themeToggle.innerHTML = isLight ? '🌙' : '☀️';
+                themeToggle.title = isLight ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro';
+                
+                // Actualizar mapas
+                const newTileUrl = isLight ? lightTileUrl : darkTileUrl;
+                if (dashboardTileLayer) dashboardTileLayer.setUrl(newTileUrl);
+                if (ndviTileLayer) ndviTileLayer.setUrl(newTileUrl);
+                if (ndwiTileLayer) ndwiTileLayer.setUrl(newTileUrl);
+                if (ndciTileLayer) ndciTileLayer.setUrl(newTileUrl);
+                if (eviTileLayer) eviTileLayer.setUrl(newTileUrl);
+                if (paymentTileLayer) paymentTileLayer.setUrl(newTileUrl);
+
+                // Actualizar estilos de Stripe
+                initializeStripe();
+                
+                // Forzar redibujado de gráficos (si están inicializados)
+                if (window.Chart && window.Chart.instances) {
+                    for (let id in window.Chart.instances) {
+                         const chart = window.Chart.instances[id];
+                         const chartLabelColor = isLight ? '#555555' : '#888888';
+                         const chartGridColor = isLight ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)';
+                         chart.options.plugins.legend.labels.color = chartLabelColor;
+                         chart.options.scales.y.grid.color = chartGridColor;
+                         chart.options.scales.y.ticks.color = chartLabelColor;
+                         chart.options.scales.x.grid.color = chartGridColor;
+                         chart.options.scales.x.ticks.color = chartLabelColor;
+                         chart.update();
+                    }
+                }
+            });
+
+
+            // --- Menú móvil ---
             if (mobileMenuBtn) {
                 mobileMenuBtn.addEventListener('click', () => {
                     navLinks.classList.toggle('active');
@@ -1913,7 +1996,6 @@
                 threshold: 0.1,
                 rootMargin: '0px 0px -100px 0px'
             };
-
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -1921,16 +2003,20 @@
                     }
                 });
             }, observerOptions);
-
             document.querySelectorAll('.fade-in').forEach(el => {
                 observer.observe(el);
             });
 
-            // --- Smooth scroll para anclas ---
+            // --- Smooth scroll ---
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     const href = this.getAttribute('href');
                     
+                    if (href === "#") {
+                        e.preventDefault(); 
+                        return;
+                    }
+
                     if(document.getElementById('dashboard-view').classList.contains('active')) {
                        const target = document.querySelector(href);
                        if (target) {
@@ -1940,7 +2026,7 @@
                        return;
                     }
 
-                    if (href.startsWith('#') && href.length > 1 && href !== "#") {
+                    if (href.startsWith('#') && href.length > 1) {
                         e.preventDefault();
                         showLanding();
                         
@@ -1955,38 +2041,34 @@
                 });
             });
 
-            // --- NUEVO: Lógica del Mapa de Pago ---
             initializePaymentMap();
-
-            // --- Lógica de Stripe ---
             initializeStripe();
         });
 
-        // --- NUEVA FUNCIÓN: Inicializar Mapa de Pago ---
+        // --- Lógica del Mapa de Pago ---
         function initializePaymentMap() {
-            if (!document.getElementById('payment-map') || typeof L.Control.Draw === 'undefined') {
-                console.log("No se encuentra el div del mapa de pago o Leaflet.Draw no está cargado.");
+            if (!document.getElementById('payment-map') || typeof L === 'undefined' || typeof L.Control.Draw === 'undefined') {
+                console.log("No se encuentra el div del mapa de pago o Leaflet/Leaflet.Draw no está cargado.");
                 return;
             }
+            // Evitar reinicialización si ya existe
+            if(paymentMapInstance) return; 
 
-            // Centrar el mapa en España
-            const paymentMap = L.map('payment-map').setView([40.416775, -3.703790], 6);
+            paymentMapInstance = L.map('payment-map').setView([40.416775, -3.703790], 6);
             
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            paymentTileLayer = L.tileLayer(getCurrentTileUrl(), {
+                attribution: tileAttribution,
                 subdomains: 'abcd',
                 maxZoom: 20
-            }).addTo(paymentMap);
+            }).addTo(paymentMapInstance);
 
             const drawnItems = new L.FeatureGroup();
-            paymentMap.addLayer(drawnItems);
+            paymentMapInstance.addLayer(drawnItems);
 
             const drawControl = new L.Control.Draw({
                 edit: {
                     featureGroup: drawnItems,
-                    poly: {
-                        allowIntersection: false
-                    }
+                    poly: { allowIntersection: false }
                 },
                 draw: {
                     polygon: {
@@ -1998,46 +2080,35 @@
                             fillOpacity: 0.3
                         }
                     },
-                    // Deshabilitar otras herramientas de dibujo
-                    polyline: false,
-                    rectangle: false,
-                    circle: false,
-                    marker: false,
-                    circlemarker: false
+                    polyline: false, rectangle: false, circle: false, marker: false, circlemarker: false
                 }
             });
-            paymentMap.addControl(drawControl);
+            paymentMapInstance.addControl(drawControl);
 
             const submitButton = document.getElementById('submit-button');
             const buttonText = document.getElementById('button-text');
             const calculatedHectaresInput = document.getElementById('calculated-hectares');
             const hiddenHectaresInput = document.getElementById('hectares');
 
-            paymentMap.on(L.Draw.Event.CREATED, function (event) {
+            paymentMapInstance.on(L.Draw.Event.CREATED, function (event) {
                 const layer = event.layer;
-                
-                // Limpiar dibujos anteriores
                 drawnItems.clearLayers();
                 drawnItems.addLayer(layer);
 
-                // Calcular área usando Turf.js
                 const geojson = layer.toGeoJSON();
                 const areaInMeters = turf.area(geojson);
                 const areaInHectares = areaInMeters / 10000;
 
-                // Actualizar los campos del formulario
                 calculatedHectaresInput.value = `${areaInHectares.toFixed(2)} ha`;
                 hiddenHectaresInput.value = areaInHectares.toFixed(2);
 
-                // Habilitar el botón de pago
                 submitButton.disabled = false;
                 buttonText.textContent = 'Activar Monitoreo Satelital';
             });
 
-            paymentMap.on(L.Draw.Event.EDITED, function (event) {
+            paymentMapInstance.on(L.Draw.Event.EDITED, function (event) {
                  const layers = event.layers;
                  layers.eachLayer(function(layer) {
-                    // Recalcular área
                     const geojson = layer.toGeoJSON();
                     const areaInMeters = turf.area(geojson);
                     const areaInHectares = areaInMeters / 10000;
@@ -2047,8 +2118,7 @@
                  });
             });
 
-            paymentMap.on(L.Draw.Event.DELETED, function () {
-                // Si el polígono se borra, deshabilitar el botón
+            paymentMapInstance.on(L.Draw.Event.DELETED, function () {
                 calculatedHectaresInput.value = "0.00 ha";
                 hiddenHectaresInput.value = "0";
                 submitButton.disabled = true;
@@ -2057,20 +2127,29 @@
         }
 
 
-        // --- NUEVA FUNCIÓN: Inicializar Stripe ---
+        // --- Lógica de Stripe ---
+        let stripeInstance, cardElementInstance;
+        
         function initializeStripe() {
             try {
-                const stripe = Stripe('pk_test_51234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // ⚠️ REEMPLAZAR CON TU CLAVE PÚBLICA
-                const elements = stripe.elements();
+                // Si ya existe, destruye el elemento de tarjeta anterior para recrearlo
+                if (cardElementInstance) {
+                    cardElementInstance.destroy();
+                }
+
+                stripeInstance = Stripe('pk_test_51234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // ⚠️ REEMPLAZAR CON TU CLAVE PÚBLICA
+                const elements = stripeInstance.elements();
+                
+                const isLight = document.body.classList.contains('light-mode');
                 
                 const style = {
                     base: {
-                        color: '#ffffff',
+                        color: isLight ? '#0a0a0a' : '#ffffff', // Color de texto
                         fontFamily: '"Inter", sans-serif',
                         fontSmoothing: 'antialiased',
                         fontSize: '16px',
                         '::placeholder': {
-                            color: '#888888'
+                            color: isLight ? '#555555' : '#888888' // Color de placeholder
                         }
                     },
                     invalid: {
@@ -2079,12 +2158,12 @@
                     }
                 };
 
-                const cardElement = elements.create('card', {style: style});
+                cardElementInstance = elements.create('card', {style: style});
                 if (document.getElementById('card-element')) {
-                     cardElement.mount('#card-element');
+                     cardElementInstance.mount('#card-element');
                 }
 
-                cardElement.on('change', function(event) {
+                cardElementInstance.on('change', function(event) {
                     const displayError = document.getElementById('card-errors');
                     if (event.error) {
                         displayError.textContent = event.error.message;
@@ -2097,50 +2176,55 @@
                 const submitButton = document.getElementById('submit-button');
                 const buttonText = document.getElementById('button-text');
 
-                if (form) {
-                    form.addEventListener('submit', async function(event) {
-                        event.preventDefault();
-                        
-                        submitButton.disabled = true;
-                        buttonText.textContent = 'Procesando...';
+                // Asegurarse de que el listener de submit solo se añada una vez
+                // (Quitamos el anterior si existe y lo volvemos a poner)
+                const newForm = form.cloneNode(true);
+                form.parentNode.replaceChild(newForm, form);
 
-                        // AHORA LEE EL VALOR DEL CAMPO OCULTO (actualizado por el mapa)
-                        const hectares = parseFloat(document.getElementById('hectares').value);
-                        const plan = document.getElementById('plan').value;
-                        let pricePerHa = 0;
-                        
-                        if (plan === 'essential') pricePerHa = 6;
-                        else if (plan === 'professional') pricePerHa = 12;
-                        else if (plan === 'enterprise') pricePerHa = 20;
-                        
-                        const totalPrice = hectares * pricePerHa;
-                        const minimumPrice = 250;
-                        const finalPrice = Math.max(totalPrice, minimumPrice);
+                newForm.addEventListener('submit', async function(event) {
+                    event.preventDefault();
+                    
+                    const submitBtn = document.getElementById('submit-button'); // Re-seleccionar
+                    const btnText = document.getElementById('button-text'); // Re-seleccionar
 
-                        // --- MODO DEMO ---
-                        console.log("Iniciando pago simulado...");
-                        setTimeout(() => {
-                            alert(`¡Pago simulado exitoso!\n\nPlan: ${plan}\nHectáreas: ${hectares.toFixed(2)} ha\nPrecio total: €${finalPrice.toFixed(2)}\n\nEn producción, este formulario procesaría el pago real.`);
-                            
-                            // Habilitar botón, pero mantenerlo deshabilitado hasta que se dibuje
-                            // submitButton.disabled = false;
-                            // buttonText.textContent = 'Activar Monitoreo Satelital';
-                            
-                            // Mejor resetear:
-                            form.reset();
-                            cardElement.clear();
-                            document.getElementById('calculated-hectares').value = "0.00 ha";
-                            document.getElementById('hectares').value = "0";
-                            submitButton.disabled = true;
-                            buttonText.textContent = 'Dibuja tu finca para activar';
-                            
-                            // Limpiar el mapa (requiere acceso a 'drawnItems' del scope del mapa)
-                            // Por simplicidad, recargamos la sección o pedimos al usuario que vuelva a dibujar.
-                            // En una app real, la capa 'drawnItems' estaría en un scope más global.
-                            
-                        }, 2000);
-                    });
-                }
+                    submitBtn.disabled = true;
+                    btnText.textContent = 'Procesando...';
+
+                    const hectares = parseFloat(document.getElementById('hectares').value);
+                    const plan = document.getElementById('plan').value;
+                    let pricePerHa = 0;
+                    
+                    if (plan === 'essential') pricePerHa = 6;
+                    else if (plan === 'professional') pricePerHa = 12;
+                    else if (plan === 'enterprise') pricePerHa = 20;
+                    
+                    const totalPrice = hectares * pricePerHa;
+                    const minimumPrice = 250;
+                    const finalPrice = Math.max(totalPrice, minimumPrice);
+
+                    // --- MODO DEMO ---
+                    console.log("Iniciando pago simulado...");
+                    setTimeout(() => {
+                        alert(`¡Pago simulado exitoso!\n\nPlan: ${plan}\nHectáreas: ${hectares.toFixed(2)} ha\nPrecio total: €${finalPrice.toFixed(2)}\n\nEn producción, este formulario procesaría el pago real.`);
+                        
+                        newForm.reset();
+                        cardElementInstance.clear();
+                        document.getElementById('calculated-hectares').value = "0.00 ha";
+                        document.getElementById('hectares').value = "0";
+                        submitBtn.disabled = true;
+                        btnText.textContent = 'Dibuja tu finca para activar';
+                        
+                        // Limpiar el mapa
+                        if (paymentMapInstance) {
+                            paymentMapInstance.eachLayer((layer) => {
+                                if (!!layer.toGeoJSON) { // Es el polígono dibujado
+                                    paymentMapInstance.removeLayer(layer);
+                                }
+                            });
+                        }
+                        
+                    }, 2000);
+                });
 
             } catch (e) {
                 console.error("Error al inicializar Stripe:", e);
@@ -2150,4 +2234,3 @@
     </script>
 </body>
 </html>
-
