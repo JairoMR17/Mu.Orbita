@@ -2390,27 +2390,22 @@ function initializePaymentMap() {
 
     console.log('Inicializando mapa de pago en landing…');
 
-    // Igual que en test-mapa.html
     const paymentMap = L.map('payment-map').setView([40.416775, -3.703790], 6);
 
-    // Guardamos la capa por si en el futuro quieres cambiar tema
-paymentTileLayer = L.tileLayer(
-    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    {
-        attribution: '&copy; OpenStreetMap contributors',
-        maxZoom: 19
-    }
-).addTo(paymentMap);
-
+    // Fondo OSM (si no carga, se verá liso, pero el mapa funciona igual)
+    paymentTileLayer = L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        {
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 19
+        }
+    ).addTo(paymentMap);
 
     const drawnItems = new L.FeatureGroup();
     paymentMap.addLayer(drawnItems);
 
     const drawControl = new L.Control.Draw({
-        edit: {
-            featureGroup: drawnItems,
-            poly: { allowIntersection: false }
-        },
+        edit: { featureGroup: drawnItems, poly: { allowIntersection: false } },
         draw: {
             polygon: {
                 allowIntersection: false,
@@ -2421,11 +2416,8 @@ paymentTileLayer = L.tileLayer(
                     fillOpacity: 0.3
                 }
             },
-            polyline: false,
-            rectangle: false,
-            circle: false,
-            marker: false,
-            circlemarker: false
+            polyline:false, rectangle:false, circle:false,
+            marker:false, circlemarker:false
         }
     });
     paymentMap.addControl(drawControl);
@@ -2441,8 +2433,8 @@ paymentTileLayer = L.tileLayer(
         drawnItems.clearLayers();
         drawnItems.addLayer(layer);
 
-        const geojson = layer.toGeoJSON();
-        const areaInMeters  = turf.area(geojson);
+        const geojson        = layer.toGeoJSON();
+        const areaInMeters   = turf.area(geojson);
         const areaInHectares = areaInMeters / 10000;
 
         calculatedHectaresInput.value = areaInHectares.toFixed(2) + ' ha';
@@ -2466,6 +2458,21 @@ paymentTileLayer = L.tileLayer(
             ? 'Draw your farm to activate'
             : 'Dibuja tu finca para activar';
     });
+
+    // 🔧 Parche directo: evitar que los botones de Leaflet hagan scroll a "#"
+    // y asegurarnos de que el clic llega a Leaflet sin cambiar la URL.
+    setTimeout(() => {
+        const buttons = mapDiv.querySelectorAll(
+            '.leaflet-draw-toolbar a, .leaflet-control-zoom a'
+        );
+        buttons.forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                // Cancelamos la navegación al "#"
+                e.preventDefault();
+                // NO paramos la propagación: Leaflet sigue recibiendo el clic
+            });
+        });
+    }, 0);
 }
 
 
@@ -2736,6 +2743,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
 </body>
 </html>
+
 
 
 
