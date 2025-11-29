@@ -2243,440 +2243,468 @@
     <!-- ========================= -->
     <!-- SCRIPTS                   -->
     <!-- ========================= -->
+<script>
+    // =========================
+    // MAPAS & DASHBOARD
+    // =========================
 
-    <script>
-        // Map variables
-        let dashboardMap, ndviMap, ndwiMap, ndciMap, eviMap;
-        let dashboardTileLayer, ndviTileLayer, ndwiTileLayer, ndciTileLayer, eviTileLayer;
-        let paymentMapInstance, paymentTileLayer;
-        let mapsInitialized = false;
+    // Map variables
+    let dashboardMap, ndviMap, ndwiMap, ndciMap, eviMap;
+    let dashboardTileLayer, ndviTileLayer, ndwiTileLayer, ndciTileLayer, eviTileLayer;
+    let paymentMapInstance, paymentTileLayer;
+    let mapsInitialized = false;
 
-        const darkTileUrl  = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-        const lightTileUrl = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-        const tileAttribution = '&copy; OpenStreetMap &copy; CARTO';
+    const darkTileUrl  = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+    const lightTileUrl = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+    const tileAttribution = '&copy; OpenStreetMap &copy; CARTO';
 
-        function getCurrentTileUrl() {
-            return document.body.classList.contains('light-mode') ? lightTileUrl : darkTileUrl;
-        }
+    function getCurrentTileUrl() {
+        return document.body.classList.contains('light-mode') ? lightTileUrl : darkTileUrl;
+    }
 
-        function showLanding() {
-            document.getElementById('landing-view').classList.add('active');
-            document.getElementById('dashboard-view').classList.remove('active');
-            window.scrollTo(0,0);
-        }
+    function showLanding() {
+        document.getElementById('landing-view').classList.add('active');
+        document.getElementById('dashboard-view').classList.remove('active');
+        window.scrollTo(0,0);
+    }
 
-        function showDashboard() {
-            document.getElementById('landing-view').classList.remove('active');
-            document.getElementById('dashboard-view').classList.add('active');
-            window.scrollTo(0,0);
-            setTimeout(initializeDashboard, 100);
-        }
+    function showDashboard() {
+        document.getElementById('landing-view').classList.remove('active');
+        document.getElementById('dashboard-view').classList.add('active');
+        window.scrollTo(0,0);
+        setTimeout(initializeDashboard, 100);
+    }
 
-        function initializeDashboard() {
-            if (mapsInitialized || !document.getElementById('map')) return;
-            mapsInitialized = true;
+    function initializeDashboard() {
+        if (mapsInitialized || !document.getElementById('map')) return;
+        mapsInitialized = true;
 
-            const fieldCoords = [
-                [36.66142740600855, -6.192790515087148],
-                [36.655643665060126, -6.172362811229726],
-                [36.665282991898934, -6.17425108637621],
-                [36.6684499358268, -6.178542620800038],
-                [36.672167486321754, -6.174422747753163],
-                [36.677536964408084, -6.181975848339101],
-                [36.6813917432145, -6.181975848339101],
-                [36.67863834949196, -6.199656970165273],
-                [36.66142740600855, -6.192790515087148]
-            ];
+        const fieldCoords = [
+            [36.66142740600855, -6.192790515087148],
+            [36.655643665060126, -6.172362811229726],
+            [36.665282991898934, -6.17425108637621],
+            [36.6684499358268, -6.178542620800038],
+            [36.672167486321754, -6.174422747753163],
+            [36.677536964408084, -6.181975848339101],
+            [36.6813917432145, -6.181975848339101],
+            [36.67863834949196, -6.199656970165273],
+            [36.66142740600855, -6.192790515087148]
+        ];
 
-            dashboardMap = L.map('map').setView([36.670, -6.185], 14);
-            dashboardTileLayer = L.tileLayer(getCurrentTileUrl(), {
-                attribution: tileAttribution,
-                subdomains: 'abcd',
-                maxZoom: 20
-            }).addTo(dashboardMap);
+        // Mapa principal dashboard
+        dashboardMap = L.map('map').setView([36.670, -6.185], 14);
+        dashboardTileLayer = L.tileLayer(getCurrentTileUrl(), {
+            attribution: tileAttribution,
+            subdomains: 'abcd',
+            maxZoom: 20
+        }).addTo(dashboardMap);
 
+        L.polygon(fieldCoords, {
+            color: '#00cc66',
+            fillColor: '#00cc66',
+            fillOpacity: 0.2
+        }).addTo(dashboardMap).bindPopup('Olivar Sur - 152.3 ha');
+
+        // Mapas de índices
+        const initIndexMap = (id, color) => {
+            if (!document.getElementById(id)) return;
+            const map = L.map(id).setView([36.670, -6.185], 13);
+            const tile = L.tileLayer(getCurrentTileUrl(), { attribution: tileAttribution, subdomains: 'abcd' }).addTo(map);
             L.polygon(fieldCoords, {
-                color: '#00cc66',
-                fillColor: '#00cc66',
-                fillOpacity: 0.2
-            }).addTo(dashboardMap).bindPopup('Olivar Sur - 152.3 ha');
+                color,
+                fillColor: color,
+                fillOpacity: 0.3
+            }).addTo(map);
 
-            const initIndexMap = (id, color) => {
-                if (!document.getElementById(id)) return;
-                const map = L.map(id).setView([36.670, -6.185], 13);
-                const tile = L.tileLayer(getCurrentTileUrl(), { attribution: tileAttribution, subdomains: 'abcd' }).addTo(map);
-                L.polygon(fieldCoords, {
-                    color,
-                    fillColor: color,
-                    fillOpacity: 0.3
-                }).addTo(map);
+            if (id === 'ndviMap') { ndviMap = map; ndviTileLayer = tile; }
+            else if (id === 'ndwiMap') { ndwiMap = map; ndwiTileLayer = tile; }
+            else if (id === 'ndciMap') { ndciMap = map; ndciTileLayer = tile; }
+            else if (id === 'eviMap') { eviMap = map; eviTileLayer = tile; }
+        };
 
-                if (id === 'ndviMap') { ndviMap = map; ndviTileLayer = tile; }
-                else if (id === 'ndwiMap') { ndwiMap = map; ndwiTileLayer = tile; }
-                else if (id === 'ndciMap') { ndciMap = map; ndciTileLayer = tile; }
-                else if (id === 'eviMap') { eviMap = map; eviTileLayer = tile; }
+        initIndexMap('ndviMap', '#74a901');
+        initIndexMap('ndwiMap', '#00FFFF');
+        initIndexMap('ndciMap', '#00FF00');
+        initIndexMap('eviMap', '#00FF00');
+
+        // Gráfico de series temporales
+        const ctx = document.getElementById('timeSeriesChart').getContext('2d');
+        const isLight = document.body.classList.contains('light-mode');
+        const chartLabelColor = isLight ? '#555555' : '#888888';
+        const chartGridColor  = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+
+        window.muTimeSeries = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov'],
+                datasets: [
+                    {
+                        label: 'NDVI',
+                        data: [0.52,0.54,0.58,0.61,0.64,0.62,0.59,0.57,0.59,0.61,0.62],
+                        borderColor: '#00cc66',
+                        backgroundColor: 'rgba(0,204,102,0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'NDWI',
+                        data: [0.28,0.29,0.27,0.25,0.23,0.20,0.17,0.15,0.16,0.19,0.18],
+                        borderColor: '#0099ff',
+                        backgroundColor: 'rgba(0,153,255,0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: chartLabelColor } }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: chartGridColor },
+                        ticks:{ color: chartLabelColor }
+                    },
+                    x: {
+                        grid: { color: chartGridColor },
+                        ticks:{ color: chartLabelColor }
+                    }
+                }
+            }
+        });
+    }
+
+    // =========================
+    // MAPA DE PAGO
+    // =========================
+
+    function initializePaymentMap() {
+        const mapDiv = document.getElementById('payment-map');
+        if (!mapDiv || typeof L === 'undefined' || typeof L.Control.Draw === 'undefined') {
+            console.warn('No se encuentra #payment-map o Leaflet.Draw no está cargado');
+            return;
+        }
+        if (paymentMapInstance) return;
+
+        // Usamos el tile dinámico (modo claro/oscuro)
+        paymentMapInstance = L.map('payment-map').setView([40.416775, -3.703790], 6);
+        paymentTileLayer = L.tileLayer(getCurrentTileUrl(), {
+            attribution: tileAttribution,
+            subdomains: 'abcd',
+            maxZoom: 20
+        }).addTo(paymentMapInstance);
+
+        const drawnItems = new L.FeatureGroup();
+        paymentMapInstance.addLayer(drawnItems);
+
+        const drawControl = new L.Control.Draw({
+            edit: { featureGroup: drawnItems, poly: { allowIntersection: false } },
+            draw: {
+                polygon: {
+                    allowIntersection: false,
+                    showArea: true,
+                    shapeOptions: {
+                        color: '#00cc66',
+                        fillColor: '#00cc66',
+                        fillOpacity: 0.3
+                    }
+                },
+                polyline:false, rectangle:false, circle:false,
+                marker:false, circlemarker:false
+            }
+        });
+        paymentMapInstance.addControl(drawControl);
+
+        const submitButton = document.getElementById('submit-button');
+        const buttonText   = document.getElementById('button-text');
+        const calculatedHectaresInput = document.getElementById('calculated-hectares');
+        const hiddenHectaresInput     = document.getElementById('hectares');
+
+        paymentMapInstance.on(L.Draw.Event.CREATED, function (event) {
+            const layer = event.layer;
+            drawnItems.clearLayers();
+            drawnItems.addLayer(layer);
+
+            const geojson = layer.toGeoJSON();
+            const areaInMeters  = turf.area(geojson);
+            const areaInHectares = areaInMeters / 10000;
+
+            calculatedHectaresInput.value = areaInHectares.toFixed(2) + ' ha';
+            hiddenHectaresInput.value     = areaInHectares.toFixed(2);
+
+            // Guardamos el polígono para el webhook (ROI)
+            window.drawnPolygonGeoJSON = JSON.stringify(geojson);
+
+            submitButton.disabled = false;
+            buttonText.textContent = document.body.dataset.lang === 'en'
+                ? 'Activate satellite monitoring'
+                : 'Activar monitoreo satelital';
+        });
+
+        paymentMapInstance.on(L.Draw.Event.DELETED, function () {
+            calculatedHectaresInput.value = "0.00 ha";
+            hiddenHectaresInput.value = "0";
+            submitButton.disabled = true;
+            const lang = document.body.dataset.lang || 'es';
+            buttonText.textContent = (lang === 'en')
+                ? 'Draw your farm to activate'
+                : 'Dibuja tu finca para activar';
+        });
+    }
+
+    // =========================
+    // STRIPE + WEBHOOK n8n
+    // =========================
+
+    let stripeInstance, cardElementInstance;
+
+    function initializeStripe() {
+        try {
+            if (cardElementInstance) cardElementInstance.destroy();
+
+            stripeInstance = Stripe('pk_test_51234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // demo
+            const elements = stripeInstance.elements();
+
+            const isLight = document.body.classList.contains('light-mode');
+            const style = {
+                base: {
+                    color: isLight ? '#0a0a0a' : '#ffffff',
+                    fontFamily: '"Inter", sans-serif',
+                    fontSmoothing: 'antialiased',
+                    fontSize: '16px',
+                    '::placeholder': { color: isLight ? '#555555' : '#888888' }
+                },
+                invalid: { color:'#ff6b6b', iconColor:'#ff6b6b' }
             };
 
-            initIndexMap('ndviMap', '#74a901');
-            initIndexMap('ndwiMap', '#00FFFF');
-            initIndexMap('ndciMap', '#00FF00');
-            initIndexMap('eviMap', '#00FF00');
+            cardElementInstance = elements.create('card', { style });
+            if (document.getElementById('card-element')) {
+                cardElementInstance.mount('#card-element');
+            }
 
-            const ctx = document.getElementById('timeSeriesChart').getContext('2d');
-            const isLight = document.body.classList.contains('light-mode');
-            const chartLabelColor = isLight ? '#555555' : '#888888';
-            const chartGridColor  = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
-
-            window.muTimeSeries = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov'],
-                    datasets: [
-                        {
-                            label: 'NDVI',
-                            data: [0.52,0.54,0.58,0.61,0.64,0.62,0.59,0.57,0.59,0.61,0.62],
-                            borderColor: '#00cc66',
-                            backgroundColor: 'rgba(0,204,102,0.1)',
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: 'NDWI',
-                            data: [0.28,0.29,0.27,0.25,0.23,0.20,0.17,0.15,0.16,0.19,0.18],
-                            borderColor: '#0099ff',
-                            backgroundColor: 'rgba(0,153,255,0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { labels: { color: chartLabelColor } }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: chartGridColor },
-                            ticks:{ color: chartLabelColor }
-                        },
-                        x: {
-                            grid: { color: chartGridColor },
-                            ticks:{ color: chartLabelColor }
-                        }
-                    }
-                }
+            cardElementInstance.on('change', function (event) {
+                const displayError = document.getElementById('card-errors');
+                displayError.textContent = event.error ? event.error.message : '';
             });
-        }
 
-        // Payment map
-        function initializePaymentMap() {
-            if (!document.getElementById('payment-map') || typeof L === 'undefined' || typeof L.Control.Draw === 'undefined') return;
-            if (paymentMapInstance) return;
+            const form = document.getElementById('payment-form');
+            if (!form) return;
 
-            paymentMapInstance = L.map('payment-map').setView([40.416775, -3.703790], 6);
-            paymentTileLayer = L.tileLayer(getCurrentTileUrl(), {
-                attribution: tileAttribution,
-                subdomains: 'abcd',
-                maxZoom: 20
-            }).addTo(paymentMapInstance);
+            // Clonamos el form para evitar múltiples listeners en recargas de estilo
+            const newForm = form.cloneNode(true);
+            form.parentNode.replaceChild(newForm, form);
 
-            const drawnItems = new L.FeatureGroup();
-            paymentMapInstance.addLayer(drawnItems);
-
-            const drawControl = new L.Control.Draw({
-                edit: { featureGroup: drawnItems, poly: { allowIntersection: false } },
-                draw: {
-                    polygon: {
-                        allowIntersection: false,
-                        showArea: true,
-                        shapeOptions: {
-                            color: '#00cc66',
-                            fillColor: '#00cc66',
-                            fillOpacity: 0.3
-                        }
-                    },
-                    polyline:false, rectangle:false, circle:false,
-                    marker:false, circlemarker:false
-                }
-            });
-            paymentMapInstance.addControl(drawControl);
-
-            const submitButton = document.getElementById('submit-button');
-            const buttonText   = document.getElementById('button-text');
-            const calculatedHectaresInput = document.getElementById('calculated-hectares');
-            const hiddenHectaresInput     = document.getElementById('hectares');
-
-            paymentMapInstance.on(L.Draw.Event.CREATED, function (event) {
-                const layer = event.layer;
-                drawnItems.clearLayers();
-                drawnItems.addLayer(layer);
-
-                const geojson = layer.toGeoJSON();
-                const areaInMeters  = turf.area(geojson);
-                const areaInHectares = areaInMeters / 10000;
-
-                calculatedHectaresInput.value = areaInHectares.toFixed(2) + ' ha';
-                hiddenHectaresInput.value     = areaInHectares.toFixed(2);
-                window.drawnPolygonGeoJSON = JSON.stringify(geojson);
-
+            newForm.addEventListener('submit', async function (event) {
+                event.preventDefault();
                 
-                submitButton.disabled = false;
-                buttonText.textContent = document.body.dataset.lang === 'en'
-                    ? 'Activate satellite monitoring'
-                    : 'Activar monitoreo satelital';
-            });
-
-            paymentMapInstance.on(L.Draw.Event.DELETED, function () {
-                calculatedHectaresInput.value = "0.00 ha";
-                hiddenHectaresInput.value = "0";
-                submitButton.disabled = true;
-                const lang = document.body.dataset.lang || 'es';
-                buttonText.textContent = (lang === 'en')
-                    ? 'Draw your farm to activate'
-                    : 'Dibuja tu finca para activar';
-            });
-        }
-
-        // Stripe demo (mismo comportamiento que tenías: simulación)
-        let stripeInstance, cardElementInstance;
-        function initializeStripe() {
-            try {
-                if (cardElementInstance) cardElementInstance.destroy();
-
-                stripeInstance = Stripe('pk_test_51234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // demo
-                const elements = stripeInstance.elements();
-
-                const isLight = document.body.classList.contains('light-mode');
-                const style = {
-                    base: {
-                        color: isLight ? '#0a0a0a' : '#ffffff',
-                        fontFamily: '"Inter", sans-serif',
-                        fontSmoothing: 'antialiased',
-                        fontSize: '16px',
-                        '::placeholder': { color: isLight ? '#555555' : '#888888' }
-                    },
-                    invalid: { color:'#ff6b6b', iconColor:'#ff6b6b' }
+                const submitBtn = document.getElementById('submit-button');
+                const buttonText = document.getElementById('button-text');
+                const originalText = buttonText.textContent;
+                
+                // Deshabilitar botón y mostrar loading
+                submitBtn.disabled = true;
+                buttonText.textContent = 'Enviando.';
+                
+                // Recopilar datos del formulario
+                const formData = {
+                    nombre: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    telefono: document.getElementById('phone').value,
+                    empresa: document.getElementById('empresa').value,
+                    hectareas: document.getElementById('hectares').value,
+                    tipo_cultivo: document.getElementById('crop').value,
+                    ubicacion: document.getElementById('ubicacion').value,
+                    plan: document.getElementById('plan').value,
+                    roi_geojson: window.drawnPolygonGeoJSON || null
                 };
-
-                cardElementInstance = elements.create('card', { style });
-                if (document.getElementById('card-element')) {
-                    cardElementInstance.mount('#card-element');
-                }
-
-                cardElementInstance.on('change', function (event) {
-                    const displayError = document.getElementById('card-errors');
-                    displayError.textContent = event.error ? event.error.message : '';
-                });
-
-                const form = document.getElementById('payment-form');
-                if (!form) return;
-
-                const newForm = form.cloneNode(true);
-                form.parentNode.replaceChild(newForm, form);
-
-              
-                newForm.addEventListener('submit', async function (event) {
-                    event.preventDefault();
-                    
-                    const submitBtn = document.getElementById('submit-button');
-                    const buttonText = document.getElementById('button-text');
-                    const originalText = buttonText.textContent;
-                    
-                    // Deshabilitar botón y mostrar loading
-                    submitBtn.disabled = true;
-                    buttonText.textContent = 'Enviando...';
-                    
-                    // Recopilar datos del formulario
-                    const formData = {
-                        nombre: document.getElementById('name').value,
-                        email: document.getElementById('email').value,
-                        telefono: document.getElementById('phone').value,
-                        empresa: document.getElementById('empresa').value,
-                        hectareas: document.getElementById('hectares').value,
-                        tipo_cultivo: document.getElementById('crop').value,
-                        ubicacion: document.getElementById('ubicacion').value,
-                        plan: document.getElementById('plan').value,
-                        roi_geojson: window.drawnPolygonGeoJSON || null
-                    };
-                    
-                    // URL del webhook de n8n
-                    const WEBHOOK_URL = 'http://localhost:5678/webhook/webhook-new-client';
-                    
-                    try {
-                        const response = await fetch(WEBHOOK_URL, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(formData)
-                        });
-                        
-                        if (response.ok) {
-                            alert('¡Solicitud enviada correctamente!\n\nTe contactaremos pronto para activar tu monitoreo satelital.');
-                            newForm.reset();
-                            document.getElementById('calculated-hectares').value = '';
-                            document.getElementById('hectares').value = '0';
-                        } else {
-                            throw new Error('Error en el servidor: ' + response.status);
-                        }
-                        
-                    } catch (error) {
-                        console.error('Error:', error);
-                        alert('Error al enviar la solicitud. Por favor, inténtalo de nuevo o contacta con info@muorbita.com');
-                    } finally {
-                        submitBtn.disabled = false;
-                        buttonText.textContent = originalText;
-                    }
-                });
-
-
                 
-            } catch (e) {
-                console.error('Error Stripe:', e);
-            }
-        }
-
-        // Idiomas
-        function applyLanguage(lang) {
-            document.body.dataset.lang = lang;
-            document.querySelectorAll('.lang-selector a').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.lang === lang);
-            });
-
-            document.querySelectorAll('.i18n').forEach(el => {
-                const text = el.dataset[lang];
-                if (text) {
-                    if (el.innerHTML.includes('<br') || text.includes('<br')) {
-                        el.innerHTML = text;
+                // URL del webhook de n8n (ajusta a tu URL real)
+                const WEBHOOK_URL = 'http://localhost:5678/webhook/webhook-new-client';
+                
+                try {
+                    const response = await fetch(WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    if (response.ok) {
+                        alert('¡Solicitud enviada correctamente!\n\nTe contactaremos pronto para activar tu monitoreo satelital.');
+                        newForm.reset();
+                        document.getElementById('calculated-hectares').value = '';
+                        document.getElementById('hectares').value = '0';
                     } else {
-                        el.textContent = text;
+                        throw new Error('Error en el servidor: ' + response.status);
                     }
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error al enviar la solicitud. Por favor, inténtalo de nuevo o contacta con info@muorbita.com');
+                } finally {
+                    submitBtn.disabled = false;
+                    buttonText.textContent = originalText;
                 }
             });
 
-            const themeToggle = document.getElementById('theme-toggle');
-            if (themeToggle) {
-                themeToggle.title = (lang === 'en') ? 'Toggle theme' : 'Cambiar tema';
-            }
+        } catch (e) {
+            console.error('Error Stripe:', e);
         }
+    }
 
-        function initLanguage() {
-            const saved = localStorage.getItem('lang') || 'es';
-            applyLanguage(saved);
+    // =========================
+    // IDIOMA & TEMA
+    // =========================
 
-            document.querySelectorAll('.lang-selector a').forEach(btn => {
-                btn.addEventListener('click', e => {
-                    e.preventDefault();
-                    const lang = btn.dataset.lang;
-                    localStorage.setItem('lang', lang);
-                    applyLanguage(lang);
-                });
-            });
-        }
-
-        // Tema
-        function initTheme() {
-            const body = document.body;
-            const themeToggle = document.getElementById('theme-toggle');
-            const savedTheme = localStorage.getItem('theme') || 'light';
-
-            if (savedTheme === 'light') {
-                body.classList.add('light-mode');
-                if (themeToggle) themeToggle.textContent = '☾';
-            } else {
-                body.classList.remove('light-mode');
-                if (themeToggle) themeToggle.textContent = '☀';
-            }
-
-            if (themeToggle) {
-                themeToggle.addEventListener('click', () => {
-                    body.classList.toggle('light-mode');
-                    const isLight = body.classList.contains('light-mode');
-                    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-                    themeToggle.textContent = isLight ? '☾' : '☀';
-
-                    const newTileUrl = getCurrentTileUrl();
-                    if (dashboardTileLayer) dashboardTileLayer.setUrl(newTileUrl);
-                    if (ndviTileLayer) ndviTileLayer.setUrl(newTileUrl);
-                    if (ndwiTileLayer) ndwiTileLayer.setUrl(newTileUrl);
-                    if (ndciTileLayer) ndciTileLayer.setUrl(newTileUrl);
-                    if (eviTileLayer) eviTileLayer.setUrl(newTileUrl);
-                    if (paymentTileLayer) paymentTileLayer.setUrl(newTileUrl);
-
-                    if (window.muTimeSeries) {
-                        const chart = window.muTimeSeries;
-                        const labelColor = isLight ? '#555555' : '#888888';
-                        const gridColor  = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
-                        chart.options.plugins.legend.labels.color = labelColor;
-                        chart.options.scales.y.grid.color = gridColor;
-                        chart.options.scales.y.ticks.color = labelColor;
-                        chart.options.scales.x.grid.color = gridColor;
-                        chart.options.scales.x.ticks.color = labelColor;
-                        chart.update();
-                    }
-
-                    initializeStripe(); // para que cambie el estilo de la tarjeta
-                });
-            }
-        }
-
-        // Animaciones + navegación + init
-        document.addEventListener('DOMContentLoaded', function () {
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            const navLinks = document.getElementById('navLinks');
-
-            if (mobileMenuBtn) {
-                mobileMenuBtn.addEventListener('click', () => {
-                    navLinks.classList.toggle('active');
-                });
-            }
-
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) entry.target.classList.add('visible');
-                });
-            }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' });
-
-            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    const href = this.getAttribute('href');
-                    if (href === '#') {
-                        e.preventDefault();
-                        return;
-                    }
-                    if (document.getElementById('dashboard-view').classList.contains('active')) {
-                        const target = document.querySelector(href);
-                        if (target) {
-                            e.preventDefault();
-                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                        return;
-                    }
-                    if (href.startsWith('#') && href.length > 1) {
-                        e.preventDefault();
-                        showLanding();
-                        const target = document.getElementById(href.substring(1));
-                        if (target) {
-                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                            navLinks.classList.remove('active');
-                        }
-                    }
-                });
-            });
-
-            initTheme();
-            initLanguage();
-            initializePaymentMap();
-            initializeStripe();
+    function applyLanguage(lang) {
+        document.body.dataset.lang = lang;
+        document.querySelectorAll('.lang-selector a').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === lang);
         });
-    </script>
+
+        document.querySelectorAll('.i18n').forEach(el => {
+            const text = el.dataset[lang];
+            if (text) {
+                if (el.innerHTML.includes('<br') || text.includes('<br')) {
+                    el.innerHTML = text;
+                } else {
+                    el.textContent = text;
+                }
+            }
+        });
+
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.title = (lang === 'en') ? 'Toggle theme' : 'Cambiar tema';
+        }
+    }
+
+    function initLanguage() {
+        const saved = localStorage.getItem('lang') || 'es';
+        applyLanguage(saved);
+
+        document.querySelectorAll('.lang-selector a').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.preventDefault();
+                const lang = btn.dataset.lang;
+                localStorage.setItem('lang', lang);
+                applyLanguage(lang);
+            });
+        });
+    }
+
+    function initTheme() {
+        const body = document.body;
+        const themeToggle = document.getElementById('theme-toggle');
+        const savedTheme = localStorage.getItem('theme') || 'light';
+
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            if (themeToggle) themeToggle.textContent = '☾';
+        } else {
+            body.classList.remove('light-mode');
+            if (themeToggle) themeToggle.textContent = '☀';
+        }
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('light-mode');
+                const isLight = body.classList.contains('light-mode');
+                localStorage.setItem('theme', isLight ? 'light' : 'dark');
+                themeToggle.textContent = isLight ? '☾' : '☀';
+
+                const newTileUrl = getCurrentTileUrl();
+                if (dashboardTileLayer) dashboardTileLayer.setUrl(newTileUrl);
+                if (ndviTileLayer) ndviTileLayer.setUrl(newTileUrl);
+                if (ndwiTileLayer) ndwiTileLayer.setUrl(newTileUrl);
+                if (ndciTileLayer) ndciTileLayer.setUrl(newTileUrl);
+                if (eviTileLayer) eviTileLayer.setUrl(newTileUrl);
+                if (paymentTileLayer) paymentTileLayer.setUrl(newTileUrl);
+
+                if (window.muTimeSeries) {
+                    const chart = window.muTimeSeries;
+                    const labelColor = isLight ? '#555555' : '#888888';
+                    const gridColor  = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+                    chart.options.plugins.legend.labels.color = labelColor;
+                    chart.options.scales.y.grid.color = gridColor;
+                    chart.options.scales.y.ticks.color = labelColor;
+                    chart.options.scales.x.grid.color = gridColor;
+                    chart.options.scales.x.ticks.color = labelColor;
+                    chart.update();
+                }
+
+                // Re-crear estilos de Stripe cuando cambia el tema
+                initializeStripe();
+            });
+        }
+    }
+
+    // =========================
+    // LANDING: MENÚ, SCROLL, INIT
+    // =========================
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+        }
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href === '#') {
+                    e.preventDefault();
+                    return;
+                }
+                if (document.getElementById('dashboard-view').classList.contains('active')) {
+                    const target = document.querySelector(href);
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                    return;
+                }
+                if (href.startsWith('#') && href.length > 1) {
+                    e.preventDefault();
+                    showLanding();
+                    const target = document.getElementById(href.substring(1));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        navLinks.classList.remove('active');
+                    }
+                }
+            });
+        });
+
+        // Orden: primero mapa + stripe, luego tema/idioma
+        initializePaymentMap();
+        initializeStripe();
+        initTheme();
+        initLanguage();
+    });
+</script>
+
+
+    
 </body>
 </html>
+
 
 
 
