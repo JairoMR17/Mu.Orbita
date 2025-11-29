@@ -2420,7 +2420,9 @@
 
                 calculatedHectaresInput.value = areaInHectares.toFixed(2) + ' ha';
                 hiddenHectaresInput.value     = areaInHectares.toFixed(2);
+                window.drawnPolygonGeoJSON = JSON.stringify(geojson);
 
+                
                 submitButton.disabled = false;
                 buttonText.textContent = document.body.dataset.lang === 'en'
                     ? 'Activate satellite monitoring'
@@ -2475,28 +2477,63 @@
                 const newForm = form.cloneNode(true);
                 form.parentNode.replaceChild(newForm, form);
 
-                newForm.addEventListener('submit', function (event) {
+              
+                newForm.addEventListener('submit', async function (event) {
                     event.preventDefault();
-
-                    const hectares = parseFloat(document.getElementById('hectares').value || '0');
-                    const plan     = document.getElementById('plan').value;
-                    let pricePerHa = 0;
-
-                    if (plan === 'essential')   pricePerHa = 6;
-                    else if (plan === 'professional') pricePerHa = 12;
-                    else if (plan === 'enterprise')   pricePerHa = 20;
-
-                    const totalPrice    = hectares * pricePerHa;
-                    const minimumPrice  = 250;
-                    const finalPrice    = Math.max(totalPrice, minimumPrice);
-
-                    alert(
-                        'Pago simulado (demo)\n\n' +
-                        'Plan: ' + plan + '\n' +
-                        'Hectáreas: ' + hectares.toFixed(2) + ' ha\n' +
-                        'Precio total: €' + finalPrice.toFixed(2)
-                    );
+                    
+                    const submitBtn = document.getElementById('submit-button');
+                    const buttonText = document.getElementById('button-text');
+                    const originalText = buttonText.textContent;
+                    
+                    // Deshabilitar botón y mostrar loading
+                    submitBtn.disabled = true;
+                    buttonText.textContent = 'Enviando...';
+                    
+                    // Recopilar datos del formulario
+                    const formData = {
+                        nombre: document.getElementById('name').value,
+                        email: document.getElementById('email').value,
+                        telefono: document.getElementById('phone').value,
+                        empresa: document.getElementById('empresa').value,
+                        hectareas: document.getElementById('hectares').value,
+                        tipo_cultivo: document.getElementById('crop').value,
+                        ubicacion: document.getElementById('ubicacion').value,
+                        plan: document.getElementById('plan').value,
+                        roi_geojson: window.drawnPolygonGeoJSON || null
+                    };
+                    
+                    // URL del webhook de n8n
+                    const WEBHOOK_URL = 'http://localhost:5678/webhook/webhook-new-client';
+                    
+                    try {
+                        const response = await fetch(WEBHOOK_URL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(formData)
+                        });
+                        
+                        if (response.ok) {
+                            alert('¡Solicitud enviada correctamente!\n\nTe contactaremos pronto para activar tu monitoreo satelital.');
+                            newForm.reset();
+                            document.getElementById('calculated-hectares').value = '';
+                            document.getElementById('hectares').value = '0';
+                        } else {
+                            throw new Error('Error en el servidor: ' + response.status);
+                        }
+                        
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Error al enviar la solicitud. Por favor, inténtalo de nuevo o contacta con info@muorbita.com');
+                    } finally {
+                        submitBtn.disabled = false;
+                        buttonText.textContent = originalText;
+                    }
                 });
+
+
+                
             } catch (e) {
                 console.error('Error Stripe:', e);
             }
@@ -2640,5 +2677,6 @@
     </script>
 </body>
 </html>
+
 
 
