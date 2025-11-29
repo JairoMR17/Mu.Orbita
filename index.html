@@ -2381,79 +2381,90 @@
     // MAPA DE PAGO
     // =========================
 
-    function initializePaymentMap() {
-        const mapDiv = document.getElementById('payment-map');
-        if (!mapDiv || typeof L === 'undefined' || typeof L.Control.Draw === 'undefined') {
-            console.warn('No se encuentra #payment-map o Leaflet.Draw no está cargado');
-            return;
-        }
-        if (paymentMapInstance) return;
-
-        // Usamos el tile dinámico (modo claro/oscuro)
-        paymentMapInstance = L.map('payment-map').setView([40.416775, -3.703790], 6);
-        paymentTileLayer = L.tileLayer(getCurrentTileUrl(), {
-            attribution: tileAttribution,
-            subdomains: 'abcd',
-            maxZoom: 20
-        }).addTo(paymentMapInstance);
-
-        const drawnItems = new L.FeatureGroup();
-        paymentMapInstance.addLayer(drawnItems);
-
-        const drawControl = new L.Control.Draw({
-            edit: { featureGroup: drawnItems, poly: { allowIntersection: false } },
-            draw: {
-                polygon: {
-                    allowIntersection: false,
-                    showArea: true,
-                    shapeOptions: {
-                        color: '#00cc66',
-                        fillColor: '#00cc66',
-                        fillOpacity: 0.3
-                    }
-                },
-                polyline:false, rectangle:false, circle:false,
-                marker:false, circlemarker:false
-            }
-        });
-        paymentMapInstance.addControl(drawControl);
-
-        const submitButton = document.getElementById('submit-button');
-        const buttonText   = document.getElementById('button-text');
-        const calculatedHectaresInput = document.getElementById('calculated-hectares');
-        const hiddenHectaresInput     = document.getElementById('hectares');
-
-        paymentMapInstance.on(L.Draw.Event.CREATED, function (event) {
-            const layer = event.layer;
-            drawnItems.clearLayers();
-            drawnItems.addLayer(layer);
-
-            const geojson = layer.toGeoJSON();
-            const areaInMeters  = turf.area(geojson);
-            const areaInHectares = areaInMeters / 10000;
-
-            calculatedHectaresInput.value = areaInHectares.toFixed(2) + ' ha';
-            hiddenHectaresInput.value     = areaInHectares.toFixed(2);
-
-            // Guardamos el polígono para el webhook (ROI)
-            window.drawnPolygonGeoJSON = JSON.stringify(geojson);
-
-            submitButton.disabled = false;
-            buttonText.textContent = document.body.dataset.lang === 'en'
-                ? 'Activate satellite monitoring'
-                : 'Activar monitoreo satelital';
-        });
-
-        paymentMapInstance.on(L.Draw.Event.DELETED, function () {
-            calculatedHectaresInput.value = "0.00 ha";
-            hiddenHectaresInput.value = "0";
-            submitButton.disabled = true;
-            const lang = document.body.dataset.lang || 'es';
-            buttonText.textContent = (lang === 'en')
-                ? 'Draw your farm to activate'
-                : 'Dibuja tu finca para activar';
-        });
+function initializePaymentMap() {
+    const mapDiv = document.getElementById('payment-map');
+    if (!mapDiv || typeof L === 'undefined' || typeof L.Control.Draw === 'undefined') {
+        console.warn('No se encuentra #payment-map o Leaflet.Draw no está cargado');
+        return;
     }
+
+    // Mapa simple como en la versión 9
+    const paymentMap = L.map('payment-map').setView([40.416775, -3.703790], 6);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+        subdomains: 'abcd',
+        maxZoom: 20
+    }).addTo(paymentMap);
+
+    const drawnItems = new L.FeatureGroup();
+    paymentMap.addLayer(drawnItems);
+
+    const drawControl = new L.Control.Draw({
+        edit: {
+            featureGroup: drawnItems,
+            poly: { allowIntersection: false }
+        },
+        draw: {
+            polygon: {
+                allowIntersection: false,
+                showArea: true,
+                shapeOptions: {
+                    color: '#00cc66',
+                    fillColor: '#00cc66',
+                    fillOpacity: 0.3
+                }
+            },
+            polyline: false,
+            rectangle: false,
+            circle: false,
+            marker: false,
+            circlemarker: false
+        }
+    });
+    paymentMap.addControl(drawControl);
+
+    const submitButton = document.getElementById('submit-button');
+    const buttonText   = document.getElementById('button-text');
+    const calculatedHectaresInput = document.getElementById('calculated-hectares');
+    const hiddenHectaresInput     = document.getElementById('hectares');
+
+    paymentMap.on(L.Draw.Event.CREATED, function (event) {
+        const layer = event.layer;
+
+        // Limpiar dibujos anteriores
+        drawnItems.clearLayers();
+        drawnItems.addLayer(layer);
+
+        // Calcular área con Turf
+        const geojson = layer.toGeoJSON();
+        const areaInMeters  = turf.area(geojson);
+        const areaInHectares = areaInMeters / 10000;
+
+        calculatedHectaresInput.value = areaInHectares.toFixed(2) + ' ha';
+        hiddenHectaresInput.value     = areaInHectares.toFixed(2);
+
+        // Guardamos el polígono para el backend (n8n)
+        window.drawnPolygonGeoJSON = JSON.stringify(geojson);
+
+        submitButton.disabled = false;
+        const lang = document.body.dataset.lang || 'es';
+        buttonText.textContent = (lang === 'en')
+            ? 'Activate satellite monitoring'
+            : 'Activar monitoreo satelital';
+    });
+
+    paymentMap.on(L.Draw.Event.DELETED, function () {
+        calculatedHectaresInput.value = '0.00 ha';
+        hiddenHectaresInput.value     = '0';
+        submitButton.disabled         = true;
+        const lang = document.body.dataset.lang || 'es';
+        buttonText.textContent = (lang === 'en')
+            ? 'Draw your farm to activate'
+            : 'Dibuja tu finca para activar';
+    });
+}
+
 
     // =========================
     // STRIPE + WEBHOOK n8n
@@ -2704,6 +2715,7 @@
     
 </body>
 </html>
+
 
 
 
