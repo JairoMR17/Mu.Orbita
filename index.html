@@ -2394,14 +2394,14 @@ function initializePaymentMap() {
     const paymentMap = L.map('payment-map').setView([40.416775, -3.703790], 6);
 
     // Guardamos la capa por si en el futuro quieres cambiar tema
-    paymentTileLayer = L.tileLayer(
-        'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-        {
-            attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-            subdomains: 'abcd',
-            maxZoom: 20
-        }
-    ).addTo(paymentMap);
+paymentTileLayer = L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19
+    }
+).addTo(paymentMap);
+
 
     const drawnItems = new L.FeatureGroup();
     paymentMap.addLayer(drawnItems);
@@ -2718,6 +2718,7 @@ function initializePaymentMap() {
     
 </body>
 </html>
+
 
 
 
