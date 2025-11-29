@@ -2388,14 +2388,20 @@ function initializePaymentMap() {
         return;
     }
 
-    // Mapa simple como en la versión 9
+    console.log('Inicializando mapa de pago en landing…');
+
+    // Igual que en test-mapa.html
     const paymentMap = L.map('payment-map').setView([40.416775, -3.703790], 6);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-        subdomains: 'abcd',
-        maxZoom: 20
-    }).addTo(paymentMap);
+    // Guardamos la capa por si en el futuro quieres cambiar tema
+    paymentTileLayer = L.tileLayer(
+        'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        {
+            attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+            subdomains: 'abcd',
+            maxZoom: 20
+        }
+    ).addTo(paymentMap);
 
     const drawnItems = new L.FeatureGroup();
     paymentMap.addLayer(drawnItems);
@@ -2432,11 +2438,9 @@ function initializePaymentMap() {
     paymentMap.on(L.Draw.Event.CREATED, function (event) {
         const layer = event.layer;
 
-        // Limpiar dibujos anteriores
         drawnItems.clearLayers();
         drawnItems.addLayer(layer);
 
-        // Calcular área con Turf
         const geojson = layer.toGeoJSON();
         const areaInMeters  = turf.area(geojson);
         const areaInHectares = areaInMeters / 10000;
@@ -2444,7 +2448,6 @@ function initializePaymentMap() {
         calculatedHectaresInput.value = areaInHectares.toFixed(2) + ' ha';
         hiddenHectaresInput.value     = areaInHectares.toFixed(2);
 
-        // Guardamos el polígono para el backend (n8n)
         window.drawnPolygonGeoJSON = JSON.stringify(geojson);
 
         submitButton.disabled = false;
@@ -2715,6 +2718,7 @@ function initializePaymentMap() {
     
 </body>
 </html>
+
 
 
 
