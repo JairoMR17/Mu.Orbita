@@ -2251,7 +2251,7 @@
     // Map variables
     let dashboardMap, ndviMap, ndwiMap, ndciMap, eviMap;
     let dashboardTileLayer, ndviTileLayer, ndwiTileLayer, ndciTileLayer, eviTileLayer;
-    let paymentMapInstance, paymentTileLayer;
+    let paymentTileLayer;
     let mapsInitialized = false;
 
     const darkTileUrl  = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
@@ -2307,9 +2307,15 @@
 
         // Mapas de índices
         const initIndexMap = (id, color) => {
-            if (!document.getElementById(id)) return;
+            const el = document.getElementById(id);
+            if (!el) return;
+
             const map = L.map(id).setView([36.670, -6.185], 13);
-            const tile = L.tileLayer(getCurrentTileUrl(), { attribution: tileAttribution, subdomains: 'abcd' }).addTo(map);
+            const tile = L.tileLayer(getCurrentTileUrl(), {
+                attribution: tileAttribution,
+                subdomains: 'abcd'
+            }).addTo(map);
+
             L.polygon(fieldCoords, {
                 color,
                 fillColor: color,
@@ -2348,7 +2354,7 @@
                     },
                     {
                         label: 'NDWI',
-                        data: [0.28,0.29,0.27,0.25,0.23,0.20,0.17,0.15,0.16,0.19,0.18],
+                        data: [0.28,0.29,0.27,0.25,0.23,0.20,0.17,0.15,0.15,0.19,0.18],
                         borderColor: '#0099ff',
                         backgroundColor: 'rgba(0,153,255,0.1)',
                         tension: 0.4,
@@ -2381,100 +2387,103 @@
     // MAPA DE PAGO
     // =========================
 
-function initializePaymentMap() {
-    const mapDiv = document.getElementById('payment-map');
-    if (!mapDiv || typeof L === 'undefined' || typeof L.Control.Draw === 'undefined') {
-        console.warn('No se encuentra #payment-map o Leaflet.Draw no está cargado');
-        return;
-    }
+    function initializePaymentMap() {
+        const mapDiv = document.getElementById('payment-map');
 
-    console.log('Inicializando mapa de pago en landing…');
+        if (!mapDiv) {
+            console.warn('No se encuentra #payment-map');
+            return;
+        }
+        if (typeof L === 'undefined') {
+            console.warn('Leaflet no está cargado');
+            return;
+        }
+        if (typeof L.Control === 'undefined' || typeof L.Control.Draw === 'undefined') {
+            console.warn('Leaflet.Draw no está cargado');
+            return;
+        }
 
-    const paymentMap = L.map('payment-map').setView([40.416775, -3.703790], 6);
+        console.log('Inicializando mapa de pago…');
 
-    // Fondo OSM (si no carga, se verá liso, pero el mapa funciona igual)
-    paymentTileLayer = L.tileLayer(
-        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        {
+        const paymentMap = L.map('payment-map').setView([40.416775, -3.703790], 6);
+
+        paymentTileLayer = L.tileLayer(getCurrentTileUrl(), {
             attribution: '&copy; OpenStreetMap contributors',
             maxZoom: 19
-        }
-    ).addTo(paymentMap);
+        }).addTo(paymentMap);
 
-    const drawnItems = new L.FeatureGroup();
-    paymentMap.addLayer(drawnItems);
+        const drawnItems = new L.FeatureGroup();
+        paymentMap.addLayer(drawnItems);
 
-    const drawControl = new L.Control.Draw({
-        edit: { featureGroup: drawnItems, poly: { allowIntersection: false } },
-        draw: {
-            polygon: {
-                allowIntersection: false,
-                showArea: true,
-                shapeOptions: {
-                    color: '#00cc66',
-                    fillColor: '#00cc66',
-                    fillOpacity: 0.3
-                }
+        const drawControl = new L.Control.Draw({
+            edit: {
+                featureGroup: drawnItems,
+                poly: { allowIntersection: false }
             },
-            polyline:false, rectangle:false, circle:false,
-            marker:false, circlemarker:false
-        }
-    });
-    paymentMap.addControl(drawControl);
+            draw: {
+                polygon: {
+                    allowIntersection: false,
+                    showArea: true,
+                    shapeOptions: {
+                        color: '#00cc66',
+                        fillColor: '#00cc66',
+                        fillOpacity: 0.3
+                    }
+                },
+                polyline:false,
+                rectangle:false,
+                circle:false,
+                marker:false,
+                circlemarker:false
+            }
+        });
+        paymentMap.addControl(drawControl);
 
-    const submitButton = document.getElementById('submit-button');
-    const buttonText   = document.getElementById('button-text');
-    const calculatedHectaresInput = document.getElementById('calculated-hectares');
-    const hiddenHectaresInput     = document.getElementById('hectares');
+        const submitButton = document.getElementById('submit-button');
+        const buttonText   = document.getElementById('button-text');
+        const calculatedHectaresInput = document.getElementById('calculated-hectares');
+        const hiddenHectaresInput     = document.getElementById('hectares');
 
-    paymentMap.on(L.Draw.Event.CREATED, function (event) {
-        const layer = event.layer;
+        paymentMap.on(L.Draw.Event.CREATED, function (event) {
+            const layer = event.layer;
 
-        drawnItems.clearLayers();
-        drawnItems.addLayer(layer);
+            drawnItems.clearLayers();
+            drawnItems.addLayer(layer);
 
-        const geojson        = layer.toGeoJSON();
-        const areaInMeters   = turf.area(geojson);
-        const areaInHectares = areaInMeters / 10000;
+            const geojson = layer.toGeoJSON();
 
-        calculatedHectaresInput.value = areaInHectares.toFixed(2) + ' ha';
-        hiddenHectaresInput.value     = areaInHectares.toFixed(2);
+            // Cálculo de área, pero SIN romper si turf no está
+            let areaInMeters = 0;
+            if (window.turf && typeof turf.area === 'function') {
+                areaInMeters = turf.area(geojson);
+            } else {
+                console.warn('turf.area no disponible, área aproximada = 0');
+            }
 
-        window.drawnPolygonGeoJSON = JSON.stringify(geojson);
+            const areaInHectares = areaInMeters / 10000;
 
-        submitButton.disabled = false;
-        const lang = document.body.dataset.lang || 'es';
-        buttonText.textContent = (lang === 'en')
-            ? 'Activate satellite monitoring'
-            : 'Activar monitoreo satelital';
-    });
+            calculatedHectaresInput.value = areaInHectares ? areaInHectares.toFixed(2) + ' ha' : '0.00 ha';
+            hiddenHectaresInput.value     = areaInHectares ? areaInHectares.toFixed(2) : '0';
 
-    paymentMap.on(L.Draw.Event.DELETED, function () {
-        calculatedHectaresInput.value = '0.00 ha';
-        hiddenHectaresInput.value     = '0';
-        submitButton.disabled         = true;
-        const lang = document.body.dataset.lang || 'es';
-        buttonText.textContent = (lang === 'en')
-            ? 'Draw your farm to activate'
-            : 'Dibuja tu finca para activar';
-    });
+            window.drawnPolygonGeoJSON = JSON.stringify(geojson);
 
-    // 🔧 PARCHE DEFINITIVO:
-    // Interceptar TODOS los <a href="#"> dentro de #payment-map
-    // en FASE DE CAPTURA, para que NO cambien el hash ni hagan scroll,
-    // pero sin cortar la propagación -> Leaflet sigue funcionando.
-    mapDiv.addEventListener('click', function (e) {
-        const link = e.target.closest('a');
-        if (!link) return;
+            submitButton.disabled = false;
+            const lang = document.body.dataset.lang || 'es';
+            buttonText.textContent = (lang === 'en')
+                ? 'Activate satellite monitoring'
+                : 'Activar monitoreo satelital';
+        });
 
-        const href = link.getAttribute('href');
-        if (href === '#') {
-            e.preventDefault(); // no cambia la URL ni sube al inicio
-            // NO usamos stopPropagation: Leaflet sigue recibiendo el click
-        }
-    }, true); // <- MUY IMPORTANTE: true = captura
-}
-
+        paymentMap.on(L.Draw.Event.DELETED, function () {
+            calculatedHectaresInput.value = '0.00 ha';
+            hiddenHectaresInput.value     = '0';
+            submitButton.disabled         = true;
+            const lang = document.body.dataset.lang || 'es';
+            buttonText.textContent = (lang === 'en')
+                ? 'Draw your farm to activate'
+                : 'Dibuja tu finca para activar';
+        });
+    }
 
     // =========================
     // STRIPE + WEBHOOK n8n
@@ -2502,55 +2511,51 @@ function initializePaymentMap() {
             };
 
             cardElementInstance = elements.create('card', { style });
-            if (document.getElementById('card-element')) {
+            const cardElementDiv = document.getElementById('card-element');
+            if (cardElementDiv) {
                 cardElementInstance.mount('#card-element');
             }
 
             cardElementInstance.on('change', function (event) {
                 const displayError = document.getElementById('card-errors');
+                if (!displayError) return;
                 displayError.textContent = event.error ? event.error.message : '';
             });
 
             const form = document.getElementById('payment-form');
             if (!form) return;
 
-            // Clonamos el form para evitar múltiples listeners en recargas de estilo
             const newForm = form.cloneNode(true);
             form.parentNode.replaceChild(newForm, form);
 
             newForm.addEventListener('submit', async function (event) {
                 event.preventDefault();
                 
-                const submitBtn = document.getElementById('submit-button');
+                const submitBtn  = document.getElementById('submit-button');
                 const buttonText = document.getElementById('button-text');
                 const originalText = buttonText.textContent;
                 
-                // Deshabilitar botón y mostrar loading
                 submitBtn.disabled = true;
                 buttonText.textContent = 'Enviando.';
-                
-                // Recopilar datos del formulario
+
                 const formData = {
-                    nombre: document.getElementById('name').value,
-                    email: document.getElementById('email').value,
-                    telefono: document.getElementById('phone').value,
-                    empresa: document.getElementById('empresa').value,
-                    hectareas: document.getElementById('hectares').value,
+                    nombre:     document.getElementById('name').value,
+                    email:      document.getElementById('email').value,
+                    telefono:   document.getElementById('phone').value,
+                    empresa:    document.getElementById('empresa').value,
+                    hectareas:  document.getElementById('hectares').value,
                     tipo_cultivo: document.getElementById('crop').value,
-                    ubicacion: document.getElementById('ubicacion').value,
-                    plan: document.getElementById('plan').value,
+                    ubicacion:  document.getElementById('ubicacion').value,
+                    plan:       document.getElementById('plan').value,
                     roi_geojson: window.drawnPolygonGeoJSON || null
                 };
                 
-                // URL del webhook de n8n (ajusta a tu URL real)
                 const WEBHOOK_URL = 'http://localhost:5678/webhook/webhook-new-client';
                 
                 try {
                     const response = await fetch(WEBHOOK_URL, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(formData)
                     });
                     
@@ -2562,7 +2567,6 @@ function initializePaymentMap() {
                     } else {
                         throw new Error('Error en el servidor: ' + response.status);
                     }
-                    
                 } catch (error) {
                     console.error('Error:', error);
                     alert('Error al enviar la solicitud. Por favor, inténtalo de nuevo o contacta con info@muorbita.com');
@@ -2643,7 +2647,7 @@ function initializePaymentMap() {
                 if (ndviTileLayer) ndviTileLayer.setUrl(newTileUrl);
                 if (ndwiTileLayer) ndwiTileLayer.setUrl(newTileUrl);
                 if (ndciTileLayer) ndciTileLayer.setUrl(newTileUrl);
-                if (eviTileLayer) eviTileLayer.setUrl(newTileUrl);
+                if (eviTileLayer)  eviTileLayer.setUrl(newTileUrl);
                 if (paymentTileLayer) paymentTileLayer.setUrl(newTileUrl);
 
                 if (window.muTimeSeries) {
@@ -2658,7 +2662,6 @@ function initializePaymentMap() {
                     chart.update();
                 }
 
-                // Re-crear estilos de Stripe cuando cambia el tema
                 initializeStripe();
             });
         }
@@ -2668,81 +2671,74 @@ function initializePaymentMap() {
     // LANDING: MENÚ, SCROLL, INIT
     // =========================
 
-document.addEventListener('DOMContentLoaded', function () {
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const navLinks      = document.getElementById('navLinks');
+    document.addEventListener('DOMContentLoaded', function () {
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks      = document.getElementById('navLinks');
 
-    // Menú móvil
-    if (mobileMenuBtn) {
-        mobileMenuBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-    }
-
-    // Animaciones de scroll
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) entry.target.classList.add('visible');
-        });
-    }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' });
-
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-    // ⚠️ SOLO enlaces de navegación propios, NO los de Leaflet
-    document
-        .querySelectorAll(
-            'nav a[href^="#"], footer a[href^="#"], .pricing-cta[href^="#"]'
-        )
-        .forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                const href = this.getAttribute('href');
-
-                if (!href || href === '#') {
-                    e.preventDefault();
-                    return;
-                }
-
-                const dashboardActive = document
-                    .getElementById('dashboard-view')
-                    .classList.contains('active');
-
-                if (dashboardActive) {
-                    const target = document.querySelector(href);
-                    if (target) {
-                        e.preventDefault();
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                    return;
-                }
-
-                if (href.startsWith('#') && href.length > 1) {
-                    e.preventDefault();
-                    showLanding();
-                    const target = document.getElementById(href.substring(1));
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        if (navLinks) navLinks.classList.remove('active');
-                    }
-                }
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
             });
-        });
+        }
 
-    // Inicializaciones
-    initializePaymentMap();
-    initializeStripe();
-    initTheme();
-    initLanguage();
-});
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' });
 
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
+        document
+            .querySelectorAll('nav a[href^="#"], footer a[href^="#"], .pricing-cta[href^="#"]')
+            .forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
 
-    
+                    if (!href || href === '#') {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    const dashboardActive = document
+                        .getElementById('dashboard-view')
+                        .classList.contains('active');
+
+                    if (dashboardActive) {
+                        const target = document.querySelector(href);
+                        if (target) {
+                            e.preventDefault();
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                        return;
+                    }
+
+                    if (href.startsWith('#') && href.length > 1) {
+                        e.preventDefault();
+                        showLanding();
+                        const target = document.getElementById(href.substring(1));
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            if (navLinks) navLinks.classList.remove('active');
+                        }
+                    }
+                });
+            });
+
+        // Inicializaciones
+        initializePaymentMap();
+        initializeStripe();
+        initTheme();
+        initLanguage();
+    });
 </script>
+
 
 
     
 </body>
 </html>
+
 
 
 
