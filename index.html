@@ -2459,20 +2459,20 @@ function initializePaymentMap() {
             : 'Dibuja tu finca para activar';
     });
 
-    // 🔧 Parche directo: evitar que los botones de Leaflet hagan scroll a "#"
-    // y asegurarnos de que el clic llega a Leaflet sin cambiar la URL.
-    setTimeout(() => {
-        const buttons = mapDiv.querySelectorAll(
-            '.leaflet-draw-toolbar a, .leaflet-control-zoom a'
-        );
-        buttons.forEach(btn => {
-            btn.addEventListener('click', function (e) {
-                // Cancelamos la navegación al "#"
-                e.preventDefault();
-                // NO paramos la propagación: Leaflet sigue recibiendo el clic
-            });
-        });
-    }, 0);
+    // 🔧 PARCHE DEFINITIVO:
+    // Interceptar TODOS los <a href="#"> dentro de #payment-map
+    // en FASE DE CAPTURA, para que NO cambien el hash ni hagan scroll,
+    // pero sin cortar la propagación -> Leaflet sigue funcionando.
+    mapDiv.addEventListener('click', function (e) {
+        const link = e.target.closest('a');
+        if (!link) return;
+
+        const href = link.getAttribute('href');
+        if (href === '#') {
+            e.preventDefault(); // no cambia la URL ni sube al inicio
+            // NO usamos stopPropagation: Leaflet sigue recibiendo el click
+        }
+    }, true); // <- MUY IMPORTANTE: true = captura
 }
 
 
@@ -2743,6 +2743,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
 </body>
 </html>
+
 
 
 
