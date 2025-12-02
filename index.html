@@ -1313,8 +1313,9 @@
         const paymentMap = L.map('payment-map').setView([40.416775, -3.703790], 6);
 
         paymentTileLayer = L.tileLayer(getCurrentTileUrl(), {
-            attribution: '&copy; OpenStreetMap contributors',
-            maxZoom: 19
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20
         }).addTo(paymentMap);
 
         const drawnItems = new L.FeatureGroup();
@@ -1560,29 +1561,9 @@
 
         initTheme();
         
-        // Inicializar mapa de pago cuando la sección sea visible
-        const pagoSection = document.getElementById('pago');
-        if (pagoSection) {
-            const mapObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        initializePaymentMap();
-                        initializeStripe();
-                        mapObserver.disconnect();
-                    }
-                });
-            }, { threshold: 0.1 });
-            mapObserver.observe(pagoSection);
-        }
-        
-        // Fallback: inicializar después de 2 segundos
-        setTimeout(() => {
-            const mapDiv = document.getElementById('payment-map');
-            if (mapDiv && !mapDiv._leaflet_id) {
-                initializePaymentMap();
-                initializeStripe();
-            }
-        }, 2000);
+        // Inicializar mapa de pago y Stripe
+        initializePaymentMap();
+        initializeStripe();
     });
 </script>
 </body>
