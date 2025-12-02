@@ -584,6 +584,31 @@
             border-radius: 6px; 
             background: #e0e0e0;
             margin-bottom: 1rem;
+            z-index: 1;
+            position: relative;
+        }
+
+        /* Asegurar que los controles de Leaflet funcionen */
+        .leaflet-control-container {
+            z-index: 1000 !important;
+        }
+        
+        .leaflet-draw {
+            z-index: 1000 !important;
+        }
+        
+        .leaflet-draw-toolbar a {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+        }
+        
+        .leaflet-control-zoom a {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+        }
+        
+        #payment-map * {
+            pointer-events: auto;
         }
 
         /* Forzar visibilidad de tiles de Leaflet */
@@ -1471,6 +1496,14 @@
                 }
             });
             paymentMap.addControl(drawControl);
+            
+            console.log('>>> Control de dibujo añadido');
+            console.log('>>> Verificando interactividad del mapa...');
+            
+            // Verificar que el mapa responde a eventos
+            paymentMap.on('click', function(e) {
+                console.log('>>> Click en mapa:', e.latlng);
+            });
 
             const submitButton = document.getElementById('submit-button');
             const buttonText = document.getElementById('button-text');
