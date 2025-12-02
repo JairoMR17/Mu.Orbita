@@ -5,22 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Mu.Orbita - Inteligencia satelital empresarial para agricultura de precisión. Transforma datos espaciales en decisiones accionables.">
     <title>Mu.Orbita | Precisión desde Órbita – Sostenibilidad desde Datos</title>
-    
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
+
+    <!-- Leaflet & Draw -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
-    
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
     <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
-    
+
+    <!-- Stripe (demo) -->
     <script src="https://js.stripe.com/v3/"></script>
-    
+
     <style>
         * {
             margin: 0;
@@ -28,24 +29,33 @@
             box-sizing: border-box;
         }
 
+        /* ================================ */
+        /* TEMA CLARO                      */
+        /* ================================ */
+
         :root {
-            /* Modo claro - colores tierra/crema */
-            --black: #F9F7F2;
-            --near-black: #F0EBE0;
+            /* Paleta clara basada en el logo */
+            --black: #F9F7F2;      /* fondo principal crema */
+            --near-black: #F0EBE0; /* secciones */
             --dark-gray: #E6DDD0;
             --mid-gray: #DBCDBA;
             --light-gray: #7A6555;
-            --white: #3E2B1D;
+            --white: #3E2B1D;      /* texto principal café */
             --off-white: #5C4033;
-            --green: #9E7E46;
+
+            --green: #9E7E46;      /* bronce del logo */
             --yellow: #CC9933;
             --red: #cc4444;
             --blue: #0077cc;
-            --accent-green: #228B22;
-            --elegant-green: #228B22;
-            --subtle-green: #2D5016;
+
             --nav-bg: rgba(249, 247, 242, 0.95);
-            --border-color: rgba(62, 43, 29, 0.15);
+
+            --border-color-faded: rgba(62, 43, 29, 0.08);
+            --border-color-medium: rgba(62, 43, 29, 0.15);
+            --border-color-strong: rgba(62, 43, 29, 0.25);
+            --shadow-color-faded: rgba(62, 43, 29, 0.05);
+            --shadow-color-medium: rgba(62, 43, 29, 0.1);
+            --shadow-color-strong: rgba(62, 43, 29, 0.18);
         }
 
         html {
@@ -59,21 +69,18 @@
             overflow-x: hidden;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* View Container (para cambiar entre Landing y Dashboard) */
-        .view {
-            display: none;
-        }
+        /* Vistas */
+        .view { display: none; }
+        .view.active { display: block; }
 
-        .view.active {
-            display: block;
-        }
 
-        /* Subtle Planet Background */
-        .planet-bg { display: none; }
+        /* ================================ */
+        /* NAVBAR                           */
+        /* ================================ */
 
-        /* Navigation */
         nav {
             position: fixed;
             top: 0;
@@ -81,7 +88,7 @@
             z-index: 1000;
             background: var(--nav-bg);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border-color-faded);
             transition: all 0.3s ease;
         }
 
@@ -95,6 +102,9 @@
         }
 
         .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--white);
@@ -103,9 +113,17 @@
             cursor: pointer;
         }
 
+        .nav-logo-img {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 6px 16px var(--shadow-color-medium);
+        }
+
         .nav-links {
             display: flex;
-            gap: 3rem;
+            gap: 2rem;
             list-style: none;
             align-items: center;
         }
@@ -132,16 +150,14 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-
+        .nav-cta {
+            background: var(--green);
+            color: #ffffff !important;
+        }
         .nav-cta:hover {
-            background: var(--off-white);
+            background: #7D6336;
             transform: translateY(-1px);
         }
-
-        /* NUEVO: Selector de Idioma */
-        
-        
-        
 
         .mobile-menu-btn {
             display: none;
@@ -152,7 +168,10 @@
             cursor: pointer;
         }
 
-        /* Hero Section (Estilos de WebMuOrbita_i7.html) */
+        /* ================================ */
+        /* HERO                             */
+        /* ================================ */
+
         .hero {
             height: 100vh;
             display: flex;
@@ -166,12 +185,24 @@
         .hero-content {
             text-align: center;
             z-index: 10;
-            padding: 2rem;
+            padding: 1rem;
         }
 
         .hero-logo-container {
-            margin-bottom: 3rem;
+            margin-bottom: 0.5rem;
             animation: fadeIn 1.5s ease-out;
+        }
+
+        .hero-logo-img {
+            width: 220px;
+            height: auto;
+          /*  display: block; */
+            margin: 0 auto;
+            border-radius: 0%;
+            object-fit: contain;
+            background: none; /* background: #f9f7f2; */
+            padding: 0px;
+            box-shadow: 0 18px 55px rgba(62, 43, 29, 0.35);
         }
 
         @keyframes fadeIn {
@@ -179,15 +210,8 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        .hero-logo-svg {
-            width: 220px;
-            height: 220px;
-            margin: 0 auto;
-            filter: drop-shadow(0 0 60px rgba(255, 255, 255, 0.15));
-        }
-
         .hero h1 {
-            font-size: 4.5rem;
+            font-size: 4.2rem;
             font-weight: 300;
             margin-bottom: 1rem;
             color: var(--white);
@@ -199,6 +223,7 @@
             font-family: Georgia, serif;
             font-style: italic;
             font-weight: 400;
+            color: var(--green);
         }
 
         .hero-tagline {
@@ -208,49 +233,21 @@
             letter-spacing: 1px;
             animation: fadeIn 1.5s ease-out 0.6s both;
         }
-        
-        /* Indicador de Scroll (de WebMuOrbita_i7.html) */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: bounce 2s infinite;
-            cursor: pointer;
-        }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-            40% { transform: translateX(-50%) translateY(-15px); }
-            60% { transform: translateX(-50%) translateY(-8px); }
-        }
+        /* ================================ */
+        /* SECCIONES LANDING                */
+        /* ================================ */
 
-        .scroll-indicator-line {
-            width: 1px;
-            height: 60px;
-            background: linear-gradient(to bottom, transparent, var(--white), transparent);
-            margin: 0 auto 10px;
-        }
-
-        .scroll-indicator-text {
-            color: var(--light-gray);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 500;
-        }
-
-        /* Section Styles (de index.html) */
         .section-dark {
             background: var(--near-black);
             padding: 8rem 3rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border-color-faded);
         }
 
         .section-darker {
             background: var(--black);
             padding: 8rem 3rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border-color-faded);
         }
 
         .container {
@@ -267,7 +264,7 @@
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 3px;
-            color: var(--light-gray);
+            color: var(--green);
             margin-bottom: 1rem;
             font-weight: 600;
         }
@@ -289,7 +286,8 @@
             line-height: 1.8;
         }
 
-        /* Technology Section (de index.html) */
+        /* Tecnología */
+
         .tech-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -301,14 +299,13 @@
         .tech-image {
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 60px var(--shadow-color-medium);
         }
 
         .tech-image img {
             width: 100%;
             height: auto;
             display: block;
-            filter: brightness(0.9) contrast(1.1);
         }
 
         .tech-content {
@@ -318,7 +315,7 @@
         .tech-feature {
             margin-bottom: 2.5rem;
             padding-left: 2rem;
-            border-left: 2px solid rgba(255, 255, 255, 0.1);
+            border-left: 2px solid var(--green);
         }
 
         .tech-feature h3 {
@@ -333,13 +330,14 @@
             line-height: 1.7;
         }
 
-        
+        /* Dashboard preview */
+
         .dashboard-preview {
             margin-top: 4rem;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 30px 80px var(--shadow-color-strong);
+            border: 1px solid var(--border-color-faded);
         }
 
         .dashboard-preview img {
@@ -348,7 +346,8 @@
             display: block;
         }
 
-        /* Stats Grid (de index.html) */
+        /* Stats */
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -370,7 +369,8 @@
             letter-spacing: 1px;
         }
 
-        /* Pricing Section (de index.html) */
+        /* Pricing */
+
         .pricing-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -382,20 +382,20 @@
             background: var(--dark-gray);
             padding: 3rem 2.5rem;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color-faded);
             transition: all 0.3s ease;
             position: relative;
         }
 
         .pricing-card:hover {
             transform: translateY(-8px);
-            border-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border-color: var(--green);
+            box-shadow: 0 20px 60px var(--shadow-color-faded);
         }
 
         .pricing-card.featured {
-            background: var(--mid-gray);
-            border-color: var(--white);
+            background: #E8DACB;
+            border-color: var(--green);
             transform: scale(1.05);
         }
 
@@ -407,8 +407,8 @@
             position: absolute;
             top: 1.5rem;
             right: 1.5rem;
-            background: var(--white);
-            color: var(--black);
+            background: var(--green);
+            color: #ffffff;
             padding: 0.4rem 1rem;
             border-radius: 20px;
             font-size: 0.75rem;
@@ -459,7 +459,7 @@
         .pricing-features li {
             padding: 0.7rem 0;
             color: var(--light-gray);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border-color-faded);
             font-size: 0.9rem;
         }
 
@@ -478,44 +478,47 @@
         }
 
         .btn-primary {
-            background: var(--white);
-            color: var(--black);
+            background: var(--green);
+            color: #ffffff;
         }
-
         .btn-primary:hover {
-            background: var(--off-white);
+            background: #7D6336;
+            color: #fff;
             transform: translateY(-2px);
         }
 
         .btn-secondary {
             background: transparent;
             color: var(--white);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border-color-strong);
         }
-
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.4);
+            background: var(--border-color-faded);
+            border-color: var(--green);
+            color: var(--green);
         }
 
-        /* Payment Section (de index.html) */
+        /* Payment */
+
         .payment-container {
             max-width: 600px;
             margin: 0 auto;
             background: var(--dark-gray);
             padding: 3rem;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color-medium);
         }
 
         .payment-logo {
             text-align: center;
             margin-bottom: 2rem;
         }
-
         .payment-logo img {
-            height: 30px;
-            opacity: 0.8;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 10px 25px var(--shadow-color-medium);
         }
 
         .form-group {
@@ -534,7 +537,7 @@
             width: 100%;
             padding: 1rem;
             background: var(--mid-gray);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color-medium);
             border-radius: 6px;
             color: var(--white);
             font-size: 1rem;
@@ -544,11 +547,10 @@
 
         .form-input:focus, .form-select:focus {
             outline: none;
-            border-color: var(--white);
+            border-color: var(--green);
             background: var(--near-black);
         }
-        
-        /* NUEVO: Estilo para el input de hectáreas deshabilitado */
+
         .form-input:read-only {
             background: var(--near-black);
             font-weight: bold;
@@ -556,10 +558,9 @@
             cursor: not-allowed;
         }
 
-        /* Mapa de pago */
         #payment-map {
-            height: 400px; 
-            border-radius: 6px; 
+            height: 400px;
+            border-radius: 6px;
             background: var(--mid-gray);
             margin-bottom: 1rem;
         }
@@ -567,7 +568,7 @@
         #card-element {
             padding: 1rem;
             background: var(--mid-gray);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color-medium);
             border-radius: 6px;
         }
 
@@ -580,8 +581,8 @@
         .submit-button {
             width: 100%;
             padding: 1.2rem;
-            background: var(--white);
-            color: var(--black);
+            background: var(--green);
+            color: #ffffff;
             border: none;
             border-radius: 6px;
             font-size: 1rem;
@@ -590,22 +591,21 @@
             transition: all 0.3s ease;
             margin-top: 1.5rem;
         }
-
         .submit-button:hover {
-            background: var(--off-white);
+            background: #7D6336;
             transform: translateY(-2px);
         }
-
         .submit-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
 
-        /* Footer (de index.html) */
+        /* Footer */
+
         footer {
             background: var(--near-black);
             padding: 4rem 3rem 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border-color-faded);
         }
 
         .footer-content {
@@ -634,13 +634,8 @@
             font-size: 1rem;
         }
 
-        .footer-column ul {
-            list-style: none;
-        }
-
-        .footer-column ul li {
-            margin-bottom: 0.8rem;
-        }
+        .footer-column ul { list-style: none; }
+        .footer-column ul li { margin-bottom: 0.8rem; }
 
         .footer-column ul li a {
             color: var(--light-gray);
@@ -650,257 +645,52 @@
         }
 
         .footer-column ul li a:hover {
-            color: var(--white);
+            color: var(--green);
         }
 
         .footer-bottom {
             max-width: 1400px;
             margin: 0 auto;
             padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border-color-faded);
             text-align: center;
             color: var(--light-gray);
             font-size: 0.85rem;
         }
 
-        /* Animations (de index.html) */
+        /* Animaciones */
+
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
-
         .fade-in.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
         /* ================================ */
-        /* DASHBOARD STYLES (de Dashboard_i2.html) */
+        /* RESPONSIVE                      */
         /* ================================ */
-        
-        
 
-        
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        
-
-        .sync-indicator {
-            width: 8px;
-            height: 8px;
-            background: var(--green);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            background: var(--mid-gray);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        
-
-        
-
-        
-
-        
-
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .status-badge.good {
-            background: rgba(0, 204, 102, 0.15);
-            color: var(--green);
-        }
-
-        .status-badge.warning {
-            background: rgba(255, 204, 0, 0.15);
-            color: var(--yellow);
-        }
-
-        
-
-        
-
-        
-
-        
-        
-        
-
-        .map-container {
-            min-height: 500px;
-            grid-column: span 2;
-        }
-
-        #map {
-            width: 100%;
-            height: 450px;
-            border-radius: 8px;
-            background-color: var(--dark-gray); /* Fondo mientras carga */
-        }
-
-        
-
-        
-
-        .chart-container {
-            grid-column: span 2;
-            min-height: 400px;
-        }
-
-        #timeSeriesChart {
-            max-height: 350px;
-        }
-
-        .legend {
-            display: flex;
-            gap: 2rem;
-            flex-wrap: wrap;
-            margin-top: 1rem;
-            padding: 1rem;
-            background: var(--dark-gray);
-            border-radius: 8px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-        }
-
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-        }
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        .priority-high {
-            background: rgba(255, 68, 68, 0.15);
-            color: var(--red);
-        }
-
-        .priority-medium {
-            background: rgba(255, 204, 0, 0.15);
-            color: var(--yellow);
-        }
-
-        /* Responsive */
         @media (max-width: 1200px) {
-            
-            
-            
+            .nav-links { gap: 1.5rem; }
+
         }
-        
+
         @media (max-width: 1024px) {
-            .tech-grid {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-            }
+            .tech-grid { grid-template-columns: 1fr; gap: 3rem; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2,1fr); }
+            .footer-content { grid-template-columns: 1fr 1fr; }
 
-            .pricing-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            
         }
 
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero-logo-svg {
-                width: 150px;
-                height: 150px;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
+            .hero h1 { font-size: 2.5rem; }
+            .hero-logo-img { width: 150px; height: 150px; }
+            .section-title { font-size: 2rem; }
 
             .nav-links {
                 display: none;
@@ -908,85 +698,94 @@
                 top: 100%;
                 left: 0;
                 width: 100%;
-                background: var(--black);
+                background: var(--nav-bg);
                 flex-direction: column;
                 padding: 2rem;
                 gap: 1.5rem;
+                border-bottom: 1px solid var(--border-color-faded);
             }
-            .nav-links.active {
-                display: flex;
-            }
+            .nav-links.active { display: flex; }
 
-            /* Mover el selector de idioma al menú móvil */
-            
-
-            .mobile-menu-btn {
-                display: block;
+            .lang-selector {
+                margin-left: 0;
+                justify-content: center;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-            }
-
-            /* Responsive Dashboard */
-            
-            
-            
-            
-            
-            
-            
-            
+            .mobile-menu-btn { display: block; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr; }
             
         }
     </style>
 </head>
+
 <body>
-    <div class="planet-bg"></div>
 
     <nav>
         <div class="nav-container">
-            <a class="nav-logo" onclick="showLanding()">Mu.Orbita</a>
-            <ul class="nav-links" id="navLinks">
-                <li><a onclick="showLanding()" href="#tecnologia">Tecnología</a></li>
-                <li><a onclick="showLanding()" href="#dashboard">Plataforma</a></li>
-                <li><a onclick="showLanding()" href="#metricas">Métricas</a></li>
-                <li><a onclick="showLanding()" href="#precios">Precios</a></li>
-                <li><a onclick="showLanding()" href="#pago">Comenzar</a></li>
-                
-                <li><a href="#pago" class="nav-cta">🔐 Área Cliente</a></li>
-            </ul>
+            <a class="nav-logo" onclick="showLanding()">
+                <img src="/Logo_v2.png" alt="Mu.Orbita" class="nav-logo-img">
+                <span>Mu.Orbita</span>
+            </a>
+
             <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+
+            <ul class="nav-links" id="navLinks">
+                <li>
+                    <a onclick="showLanding()" href="#tecnologia">
+                        <span>Tecnología</span>
+                    </a>
+                </li>
+                <li>
+                    <a onclick="showLanding()" href="#metricas">
+                        <span>Impacto</span>
+                    </a>
+                </li>
+                <li>
+                    <a onclick="showLanding()" href="#precios">
+                        <span>Planes</span>
+                    </a>
+                </li>
+                <li>
+                    <a onclick="showLanding()" href="#pago">
+                        <span>Comenzar</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#pago" class="nav-cta">🔐 Área Cliente</a>
+                </li>
+            </ul>
         </div>
     </nav>
 
+    <!-- ========================= -->
+    <!-- LANDING / HOME            -->
+    <!-- ========================= -->
+
     <div id="landing-view" class="view active">
-        
         <section class="hero" id="hero">
             <div class="hero-content">
                 <div class="hero-logo-container">
-                    <svg class="hero-logo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <text x="100" y="130" font-size="140" font-family="Georgia, serif" fill="white" text-anchor="middle" font-style="italic" font-weight="400">μ</text>
-                        <ellipse cx="100" cy="100" rx="90" ry="45" fill="none" stroke="white" stroke-width="1.5" opacity="0.3" transform="rotate(-25 100 100)"/>
-                        <circle cx="175" cy="75" r="3" fill="white" opacity="0.6"/>
-                    </svg>
+                    <img src="/Logo_v2.png" alt="Mu.Orbita" class="hero-logo-img">
                 </div>
-                <h1><span class="mu">μ</span>.Orbita</h1>
-                <p class="hero-tagline">Precisión desde Órbita – Sostenibilidad desde Datos</p>
+
+                <h1><span class="mu">Mu</span>.Orbita</h1>
+                <p class="hero-tagline">
+                    Inteligencia satelital para la nueva agricultura
+                </p>
             </div>
-            
-            
         </section>
 
         <section id="tecnologia" class="section-dark">
             <div class="container">
                 <div class="section-header fade-in">
-                    <div class="section-label">Tecnología</div>
-                    <h2 class="section-title">Monitoreo Espacial<br>de Alta Precisión</h2>
+                    <div class="section-label">
+                        Tecnología
+                    </div>
+                    <h2 class="section-title">
+                        Monitoreo Espacial<br>de Alta Precisión
+                    </h2>
                     <p class="section-description">
                         Transformamos datos satelitales de múltiples fuentes en insights accionables para optimizar cada hectárea de tu explotación.
                     </p>
@@ -998,16 +797,28 @@
                     </div>
                     <div class="tech-content">
                         <div class="tech-feature fade-in">
-                            <h3>Multi-Satélite</h3>
-                            <p>Procesamiento automático de Sentinel-2 (10m), Landsat 8/9 (30m) y MODIS para cobertura temporal completa. Actualizaciones cada 2-5 días con máscara automática de nubes.</p>
+                            <h3>
+                                Multi-Satélite
+                            </h3>
+                            <p>
+                                Procesamiento automático de Sentinel-2, Landsat 8/9 y MODIS para cobertura casi continua. Actualizaciones cada 2-5 días con máscara de nubes.
+                            </p>
                         </div>
                         <div class="tech-feature fade-in">
-                            <h3>Índices Especializados</h3>
-                            <p>NDVI, NDWI, EVI, NDCI calibrados para olivar, viña y almendro. Detección temprana de estrés hídrico, térmico y nutricional con algoritmos validados.</p>
+                            <h3>
+                                Índices Especializados
+                            </h3>
+                            <p>
+                                NDVI, NDWI, EVI, NDCI calibrados para olivar, viña y almendro. Detección temprana de estrés hídrico, térmico y nutricional.
+                            </p>
                         </div>
                         <div class="tech-feature fade-in">
-                            <h3>Inteligencia Climática</h3>
-                            <p>Integración con ERA5-Land y MODIS LST para temperatura superficial, GDD acumulados y predicción de ventanas de riesgo (heladas, olas de calor).</p>
+                            <h3>
+                                Inteligencia Climática
+                            </h3>
+                            <p>
+                                Integración con ERA5-Land y MODIS LST para temperatura superficial, GDD y ventanas de riesgo (heladas, olas de calor).
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -1018,9 +829,11 @@
             <div class="container">
                 <div class="section-header fade-in">
                     <div class="section-label">Plataforma</div>
-                    <h2 class="section-title">Dashboard de Control<br>Integral</h2>
+                    <h2 class="section-title">
+                        Dashboard de Control<br>Integral
+                    </h2>
                     <p class="section-description">
-                        Visualiza, analiza y actúa desde una interfaz profesional diseñada para decisiones rápidas y fundamentadas en datos.
+                        Visualiza, analiza y actúa desde una interfaz diseñada para decisiones rápidas y fundamentadas en datos.
                     </p>
                 </div>
 
@@ -1031,19 +844,29 @@
                 <div class="stats-grid" style="margin-top: 5rem;">
                     <div class="fade-in">
                         <div class="stat-number">18</div>
-                        <div class="stat-label">Productos de Datos</div>
+                        <div class="stat-label">
+                            Productos de Datos
+                        </div>
                     </div>
                     <div class="fade-in">
-                        <div class="stat-number">5 días</div>
-                        <div class="stat-label">Frecuencia Actualización</div>
+                        <div class="stat-number">
+                            5 días
+                        </div>
+                        <div class="stat-label">
+                            Frecuencia Actualización
+                        </div>
                     </div>
                     <div class="fade-in">
                         <div class="stat-number">10m</div>
-                        <div class="stat-label">Resolución Espacial</div>
+                        <div class="stat-label">
+                            Resolución Espacial
+                        </div>
                     </div>
                     <div class="fade-in">
                         <div class="stat-number">95%+</div>
-                        <div class="stat-label">Precisión Predictiva</div>
+                        <div class="stat-label">
+                            Precisión Predictiva
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1052,26 +875,42 @@
         <section id="metricas" class="section-dark">
             <div class="container">
                 <div class="section-header fade-in">
-                    <div class="section-label">Impacto Cuantificable</div>
-                    <h2 class="section-title">Resultados Medibles<br>en Tu Explotación</h2>
+                    <div class="section-label">
+                        Impacto Cuantificable
+                    </div>
+                    <h2 class="section-title">
+                        Resultados Medibles<br>en Tu Explotación
+                    </h2>
                     <p class="section-description">
-                        Nuestros clientes reportan mejoras significativas en eficiencia operacional y sostenibilidad desde el primer trimestre.
+                        Nuestros clientes reportan mejoras significativas en eficiencia y sostenibilidad desde el primer trimestre.
                     </p>
                 </div>
 
                 <div class="tech-grid" style="margin-top: 4rem;">
                     <div class="tech-content">
                         <div class="tech-feature fade-in">
-                            <h3>Ahorro de Agua: 22%</h3>
-                            <p>Optimización de riego mediante mapas de déficit hídrico (NDWI) y zonificación variable. Reducción de costes energéticos de bombeo en 18%.</p>
+                            <h3>
+                                Ahorro de Agua: 22%
+                            </h3>
+                            <p>
+                                Optimización de riego mediante mapas de déficit hídrico y zonificación variable. Reducción de costes energéticos en bombeo del 18%.
+                            </p>
                         </div>
                         <div class="tech-feature fade-in">
-                            <h3>Detección Temprana de Estrés</h3>
-                            <p>Alertas automáticas cuando NDVI cae >15% en 7 días o aparecen zonas con vigor anómalo (<0.35). Intervención preventiva antes de pérdidas de cosecha.</p>
+                            <h3>
+                                Detección Temprana de Estrés
+                            </h3>
+                            <p>
+                                Alertas cuando NDVI cae >15% en 7 días o aparecen zonas con vigor anómalo. Intervención preventiva antes de perder rendimiento.
+                            </p>
                         </div>
                         <div class="tech-feature fade-in">
-                            <h3>Cumplimiento PAC Simplificado</h3>
-                            <p>Generación automática de reportes de sostenibilidad con series temporales de NDVI, superficie verde efectiva y mapas de cobertura para auditorías.</p>
+                            <h3>
+                                Cumplimiento PAC Simplificado
+                            </h3>
+                            <p>
+                                Reportes automáticos de sostenibilidad con series temporales de NDVI, superficie verde efectiva y mapas de cobertura.
+                            </p>
                         </div>
                     </div>
                     <div class="tech-image fade-in">
@@ -1084,8 +923,12 @@
         <section id="precios" class="section-darker">
             <div class="container">
                 <div class="section-header fade-in">
-                    <div class="section-label">Planes de Precios</div>
-                    <h2 class="section-title">Elige Tu Nivel<br>de Inteligencia</h2>
+                    <div class="section-label">
+                        Planes de Precios
+                    </div>
+                    <h2 class="section-title">
+                        Elige Tu Nivel<br>de Inteligencia
+                    </h2>
                     <p class="section-description">
                         Transparencia total. Sin costes ocultos. Cancela cuando quieras.
                     </p>
@@ -1096,7 +939,9 @@
                         <div class="pricing-tier">Nivel I</div>
                         <div class="pricing-name">Essential</div>
                         <div class="pricing-price">€6<span>/ha/año</span></div>
-                        <div class="pricing-description">Monitoreo satelital básico para eficiencia operacional.</div>
+                        <div class="pricing-description">
+                            Monitoreo satelital básico para eficiencia operacional.
+                        </div>
                         <ul class="pricing-features">
                             <li>Índices NDVI, NDWI, EVI</li>
                             <li>Reportes mensuales</li>
@@ -1105,7 +950,9 @@
                             <li>Un tipo de cultivo</li>
                             <li>Dashboard cloud</li>
                         </ul>
-                        <a href="#pago" class="btn-secondary pricing-cta">Comenzar</a>
+                        <a href="#pago" class="btn-secondary pricing-cta">
+                           Comenzar
+                        </a>
                     </div>
 
                     <div class="pricing-card featured fade-in">
@@ -1113,7 +960,9 @@
                         <div class="pricing-tier">Nivel II</div>
                         <div class="pricing-name">Professional</div>
                         <div class="pricing-price">€12<span>/ha/año</span></div>
-                        <div class="pricing-description">Analítica avanzada con inteligencia predictiva.</div>
+                        <div class="pricing-description">
+                            Analítica avanzada con inteligencia predictiva.
+                        </div>
                         <ul class="pricing-features">
                             <li>Todo en Essential</li>
                             <li>Reportes bisemanales automatizados</li>
@@ -1124,14 +973,18 @@
                             <li>Soporte multi-cultivo</li>
                             <li>Acceso API (solo lectura)</li>
                         </ul>
-                        <a href="#pago" class="btn-primary pricing-cta">Comenzar</a>
+                        <a href="#pago" class="btn-primary pricing-cta">
+                           Comenzar
+                        </a>
                     </div>
 
                     <div class="pricing-card fade-in">
                         <div class="pricing-tier">Nivel III</div>
                         <div class="pricing-name">Enterprise</div>
                         <div class="pricing-price">€20<span>/ha/año</span></div>
-                        <div class="pricing-description">Plataforma completa de inteligencia con insights IA.</div>
+                        <div class="pricing-description">
+                            Plataforma completa de inteligencia con insights IA.
+                        </div>
                         <ul class="pricing-features">
                             <li>Todo en Professional</li>
                             <li>Recomendaciones impulsadas por IA</li>
@@ -1144,12 +997,17 @@
                             <li>Opción marca blanca</li>
                             <li>Soporte telefónico prioritario</li>
                         </ul>
-                        <a href="#pago" class="btn-secondary pricing-cta">Contactar Ventas</a>
+                        <a href="#pago" class="btn-secondary pricing-cta">
+                           Contactar Ventas
+                        </a>
                     </div>
                 </div>
 
                 <div style="text-align: center; margin-top: 4rem;" class="fade-in">
-                    <p style="color: var(--light-gray); font-size: 0.9rem;">Compromiso mínimo: €250/año por cliente • Todos los precios excluyen IVA • Precios empresariales personalizados disponibles para 1000+ hectáreas</p>
+                    <p
+                       style="color: var(--light-gray); font-size: 0.9rem;">
+                        Compromiso mínimo: €250/año por cliente · Precios sin IVA · Condiciones especiales para &gt;1000 ha.
+                    </p>
                 </div>
             </div>
         </section>
@@ -1157,50 +1015,83 @@
         <section id="pago" class="section-dark">
             <div class="container">
                 <div class="section-header fade-in">
-                    <div class="section-label">Activación Inmediata</div>
-                    <h2 class="section-title">Comenzar Ahora</h2>
+                    <div class="section-label">
+                        Activación Inmediata
+                    </div>
+                    <h2 class="section-title">
+                        Comenzar Ahora
+                    </h2>
                     <p class="section-description">
                         Pago seguro procesado por Stripe. Activa tu monitoreo satelital en menos de 2 minutos.
                     </p>
                 </div>
 
                 <div class="payment-container fade-in">
-                    <div class="payment-logo">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Powered by Stripe">
-                    </div>
-
                     <form id="payment-form">
                         <div class="form-group">
-                            <label class="form-label">Nombre Completo</label>
-                            <input type="text" class="form-input" id="name" placeholder="Juan García López" required>
+                            <label class="form-label">
+                                Nombre Completo
+                            </label>
+                            <input type="text" class="form-input" id="name"
+                                   placeholder="Juan García López" required>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-input" id="email" placeholder="juan@explotacion.com" required>
+                            <label class="form-label">
+                                Email
+                            </label>
+                            <input type="email" class="form-input" id="email"
+                                   placeholder="juan@explotacion.com" required>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Teléfono</label>
-                            <input type="tel" class="form-input" id="phone" placeholder="+34 600 000 000" required>
+                            <label class="form-label">
+                                Teléfono
+                            </label>
+                            <input type="tel" class="form-input" id="phone"
+                                   placeholder="+34 600 000 000" required>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Dibuja tu Finca</label>
-                            <p style="font-size: 0.85rem; color: var(--light-gray); margin-bottom: 1rem;">
-                                Usa la herramienta de polígono (■) en el mapa para dibujar el contorno de tu explotación.
+                            <label class="form-label">
+                                Empresa / Explotación
+                            </label>
+                            <input type="text" class="form-input" id="empresa"
+                                   placeholder="Cooperativa Olivarera del Sur" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Ubicación
+                            </label>
+                            <input type="text" class="form-input" id="ubicacion"
+                                   placeholder="Jaén, Andalucía" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Dibuja tu Finca
+                            </label>
+                            <p
+                               style="font-size: 0.85rem; color: var(--light-gray); margin-bottom: 1rem;">
+                                Usa la herramienta de polígono en el mapa para dibujar el contorno de tu explotación.
                             </p>
                             <div id="payment-map"></div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Área Calculada</label>
-                            <input type="text" class="form-input" id="calculated-hectares" placeholder="0.00 ha" readonly>
+                            <label class="form-label">
+                                Área Calculada
+                            </label>
+                            <input type="text" class="form-input" id="calculated-hectares"
+                                   placeholder="0.00 ha" readonly>
                             <input type="hidden" id="hectares" name="hectares" value="0">
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Tipo de Cultivo</label>
+                            <label class="form-label">
+                                Tipo de Cultivo
+                            </label>
                             <select class="form-select" id="crop" required>
                                 <option value="">Selecciona...</option>
                                 <option value="olive">Olivo</option>
@@ -1211,27 +1102,34 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Plan Seleccionado</label>
+                            <label class="form-label">
+                                Plan Seleccionado
+                            </label>
                             <select class="form-select" id="plan" required>
                                 <option value="">Selecciona un plan...</option>
                                 <option value="essential">Essential - €6/ha/año</option>
-                                <option value="professional">Professional - €12/ha/año (Recomendado)</option>
+                                <option value="professional">Professional - €12/ha/año</option>
                                 <option value="enterprise">Enterprise - €20/ha/año</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Información de Pago</label>
+                            <label class="form-label">
+                                Información de Pago
+                            </label>
                             <div id="card-element"></div>
                             <div id="card-errors" role="alert"></div>
                         </div>
 
                         <button type="submit" class="submit-button" id="submit-button" disabled>
-                            <span id="button-text">Dibuja tu finca para activar</span>
+                            <span id="button-text">
+                                Dibuja tu finca para activar
+                            </span>
                         </button>
 
-                        <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--light-gray);">
-                            🔒 Pago seguro con encriptación SSL • Facturación automática • Cancela cuando quieras
+                        <p
+                           style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--light-gray);">
+                            🔒 Pago seguro con encriptación SSL · Facturación automática · Cancela cuando quieras
                         </p>
                     </form>
                 </div>
@@ -1242,7 +1140,9 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <h3>Mu.Orbita</h3>
-                    <p>Inteligencia satelital empresarial para agricultura de precisión.</p>
+                    <p>
+                        Inteligencia satelital empresarial para agricultura de precisión.
+                    </p>
                     <p style="font-size: 0.85rem; margin-top: 1.5rem;">© 2025 Mu.Orbita. Todos los derechos reservados.</p>
                 </div>
 
@@ -1269,274 +1169,279 @@
                 <div class="footer-column">
                     <h4>Contacto</h4>
                     <ul>
-                        <li><a href="/cdn-cgi/l/email-protection#d3babdb5bc93bea6bca1b1baa7b2fdb0bcbe"><span class="__cf_email__" data-cfemail="b3daddd5dcf3dec6dcc1d1dac7d29dd0dcde">[email&#160;protected]</span></a></li>
-                        <li><a href="/cdn-cgi/l/email-protection#89ffece7fde8fac9e4fce6fbebe0fde8a7eae6e4"><span class="__cf_email__" data-cfemail="27514249534654674a524855454e53460944484a">[email&#160;protected]</span></a></li>
-                        <li><a href="/cdn-cgi/l/email-protection#1e6d716e716c6a7b5e736b716c7c776a7f307d7173"><span class="__cf_email__" data-cfemail="cebda1bea1bcbaab8ea3bba1bcaca7baafe0ada1a3">[email&#160;protected]</span></a></li>
+                        <li><a href="/cdn-cgi/l/email-protection#8ee7e0e8e1cee3fbe1fcece7faefa0ede1e3"><span class="__cf_email__" data-cfemail="80e9eee6efc0edf5eff2e2e9f4e1aee3efed">[email&#160;protected]</span></a></li>
+                        <li><a href="/cdn-cgi/l/email-protection#5e283b302a3f2d1e332b312c3c372a3f703d3133"><span class="__cf_email__" data-cfemail="d1a7b4bfa5b0a291bca4bea3b3b8a5b0ffb2bebc">[email&#160;protected]</span></a></li>
+                        <li><a href="/cdn-cgi/l/email-protection#aad9c5dac5d8decfeac7dfc5d8c8c3decb84c9c5c7"><span class="__cf_email__" data-cfemail="fb88948b94898f9ebb968e948999928f9ad5989496">[email&#160;protected]</span></a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="footer-bottom">
-                <p>Datos: Copernicus (ESA) • Landsat (NASA/USGS) • MODIS (NASA) • ERA5 (ECMWF)</p>
+                <p>
+                    Datos: Copernicus (ESA) · Landsat (NASA/USGS) · MODIS (NASA) · ERA5 (ECMWF)
+                </p>
             </div>
         </footer>
-
     </div>
 
-    
+    <!-- ========================= -->
+    <!-- SCRIPTS                   -->
+    <!-- ========================= -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // Map variables
+    let paymentTileLayer;
+    const tileUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+    const tileAttribution = '&copy; OpenStreetMap &copy; CARTO';
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-        
-        
-        
+    function showLanding() {
+        window.scrollTo(0, 0);
+    }
 
-        function showLanding() {
-            document.getElementById('landing-view').classList.add('active');
-            window.scrollTo(0, 0);
+    // =========================
+    // MAPA DE PAGO
+    // =========================
+
+    function initializePaymentMap() {
+        const mapDiv = document.getElementById('payment-map');
+
+        if (!mapDiv) {
+            console.warn('No se encuentra #payment-map');
+            return;
+        }
+        if (typeof L === 'undefined') {
+            console.warn('Leaflet no está cargado');
+            return;
+        }
+        if (typeof L.Control === 'undefined' || typeof L.Control.Draw === 'undefined') {
+            console.warn('Leaflet.Draw no está cargado');
+            return;
         }
 
-        
+        console.log('Inicializando mapa de pago…');
 
-        // ===================================
-        // LÓGICA DE LANDING PAGE
-        // ===================================
-        
-        document.addEventListener('DOMContentLoaded', function() {
-        
-            // --- Menú móvil ---
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            const navLinks = document.getElementById('navLinks');
+        // Evitar reinicialización
+        if (mapDiv._leaflet_id) {
+            console.log('Mapa ya inicializado');
+            return;
+        }
 
-            if (mobileMenuBtn) {
-                mobileMenuBtn.addEventListener('click', () => {
-                    navLinks.classList.toggle('active');
-                });
+        const paymentMap = L.map('payment-map').setView([40.416775, -3.703790], 6);
+
+        // Usar tiles de OpenStreetMap estándar (siempre funcionan)
+        paymentTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }).addTo(paymentMap);
+
+        const drawnItems = new L.FeatureGroup();
+        paymentMap.addLayer(drawnItems);
+
+        const drawControl = new L.Control.Draw({
+            edit: {
+                featureGroup: drawnItems,
+                poly: { allowIntersection: false }
+            },
+            draw: {
+                polygon: {
+                    allowIntersection: false,
+                    showArea: true,
+                    shapeOptions: {
+                        color: '#00cc66',
+                        fillColor: '#00cc66',
+                        fillOpacity: 0.3
+                    }
+                },
+                polyline:false,
+                rectangle:false,
+                circle:false,
+                marker:false,
+                circlemarker:false
+            }
+        });
+        paymentMap.addControl(drawControl);
+
+        const submitButton = document.getElementById('submit-button');
+        const buttonText   = document.getElementById('button-text');
+        const calculatedHectaresInput = document.getElementById('calculated-hectares');
+        const hiddenHectaresInput     = document.getElementById('hectares');
+
+        paymentMap.on(L.Draw.Event.CREATED, function (event) {
+            const layer = event.layer;
+
+            drawnItems.clearLayers();
+            drawnItems.addLayer(layer);
+
+            const geojson = layer.toGeoJSON();
+
+            // Cálculo de área, pero SIN romper si turf no está
+            let areaInMeters = 0;
+            if (window.turf && typeof turf.area === 'function') {
+                areaInMeters = turf.area(geojson);
+            } else {
+                console.warn('turf.area no disponible, área aproximada = 0');
             }
 
-            // --- Animaciones de scroll ---
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -100px 0px'
+            const areaInHectares = areaInMeters / 10000;
+
+            calculatedHectaresInput.value = areaInHectares ? areaInHectares.toFixed(2) + ' ha' : '0.00 ha';
+            hiddenHectaresInput.value     = areaInHectares ? areaInHectares.toFixed(2) : '0';
+
+            window.drawnPolygonGeoJSON = JSON.stringify(geojson);
+
+            submitButton.disabled = false;
+            buttonText.textContent = 'Activar monitoreo satelital';
+        });
+
+        paymentMap.on(L.Draw.Event.DELETED, function () {
+            calculatedHectaresInput.value = '0.00 ha';
+            hiddenHectaresInput.value     = '0';
+            submitButton.disabled         = true;
+            buttonText.textContent = 'Dibuja tu finca para activar';
+        });
+    }
+
+    // =========================
+    // STRIPE + WEBHOOK n8n
+    // =========================
+
+    let stripeInstance, cardElementInstance;
+
+    function initializeStripe() {
+        try {
+            if (cardElementInstance) cardElementInstance.destroy();
+
+            stripeInstance = Stripe('pk_test_51234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // demo
+            const elements = stripeInstance.elements();
+
+            const style = {
+                base: {
+                    color: '#3E2B1D',
+                    fontFamily: '"Inter", sans-serif',
+                    fontSmoothing: 'antialiased',
+                    fontSize: '16px',
+                    '::placeholder': { color: '#7A6555' }
+                },
+                invalid: { color:'#ff6b6b', iconColor:'#ff6b6b' }
             };
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, observerOptions);
+            cardElementInstance = elements.create('card', { style });
+            const cardElementDiv = document.getElementById('card-element');
+            if (cardElementDiv) {
+                cardElementInstance.mount('#card-element');
+            }
 
-            document.querySelectorAll('.fade-in').forEach(el => {
-                observer.observe(el);
+            cardElementInstance.on('change', function (event) {
+                const displayError = document.getElementById('card-errors');
+                if (!displayError) return;
+                displayError.textContent = event.error ? event.error.message : '';
             });
 
-            // --- Smooth scroll para anclas ---
-            document.querySelectorAll('nav a[href^="#"], footer a[href^="#"], .pricing-cta[href^="#"]').forEach(anchor => {
+            const form = document.getElementById('payment-form');
+            if (!form) return;
+
+            const newForm = form.cloneNode(true);
+            form.parentNode.replaceChild(newForm, form);
+
+            newForm.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const submitBtn  = document.getElementById('submit-button');
+                const buttonText = document.getElementById('button-text');
+                const originalText = buttonText.textContent;
+
+                submitBtn.disabled = true;
+                buttonText.textContent = 'Enviando.';
+
+                const formData = {
+                    nombre:     document.getElementById('name').value,
+                    email:      document.getElementById('email').value,
+                    telefono:   document.getElementById('phone').value,
+                    empresa:    document.getElementById('empresa').value,
+                    hectareas:  document.getElementById('hectares').value,
+                    tipo_cultivo: document.getElementById('crop').value,
+                    ubicacion:  document.getElementById('ubicacion').value,
+                    plan:       document.getElementById('plan').value,
+                    roi_geojson: window.drawnPolygonGeoJSON || null
+                };
+
+                const WEBHOOK_URL = 'http://localhost:5678/webhook/webhook-new-client';
+
+                try {
+                    const response = await fetch(WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        alert('¡Solicitud enviada correctamente!\n\nTe contactaremos pronto para activar tu monitoreo satelital.');
+                        newForm.reset();
+                        document.getElementById('calculated-hectares').value = '';
+                        document.getElementById('hectares').value = '0';
+                    } else {
+                        throw new Error('Error en el servidor: ' + response.status);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error al enviar la solicitud. Por favor, inténtalo de nuevo o contacta con info@muorbita.com');
+                } finally {
+                    submitBtn.disabled = false;
+                    buttonText.textContent = originalText;
+                }
+            });
+
+        } catch (e) {
+            console.error('Error Stripe:', e);
+        }
+    }
+
+    // =========================
+    // LANDING: MENÚ, SCROLL, INIT
+    // =========================
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks      = document.getElementById('navLinks');
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+        }
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        document
+            .querySelectorAll('nav a[href^="#"], footer a[href^="#"], .pricing-cta[href^="#"]')
+            .forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     const href = this.getAttribute('href');
-                    
-                    if (href.startsWith('#') && href.length > 1 && href !== "#") {
+
+                    if (!href || href === '#') {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    if (href.startsWith('#') && href.length > 1) {
                         e.preventDefault();
                         const target = document.getElementById(href.substring(1));
                         if (target) {
                             target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                            if (navLinks) {
-                                navLinks.classList.remove('active');
-                            }
                         }
                     }
                 });
             });
 
-            // --- NUEVO: Lógica del Mapa de Pago ---
-            initializePaymentMap();
-
-            // --- Lógica de Stripe ---
-            initializeStripe();
-        });
-
-        // --- NUEVA FUNCIÓN: Inicializar Mapa de Pago ---
-        function initializePaymentMap() {
-            if (!document.getElementById('payment-map') || typeof L.Control.Draw === 'undefined') {
-                console.log("No se encuentra el div del mapa de pago o Leaflet.Draw no está cargado.");
-                return;
-            }
-
-            // Centrar el mapa en España
-            const paymentMap = L.map('payment-map').setView([40.416775, -3.703790], 6);
-            
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                subdomains: 'abcd',
-                maxZoom: 20
-            }).addTo(paymentMap);
-
-            const drawnItems = new L.FeatureGroup();
-            paymentMap.addLayer(drawnItems);
-
-            const drawControl = new L.Control.Draw({
-                edit: {
-                    featureGroup: drawnItems,
-                    poly: {
-                        allowIntersection: false
-                    }
-                },
-                draw: {
-                    polygon: {
-                        allowIntersection: false,
-                        showArea: true,
-                        shapeOptions: {
-                            color: '#00cc66',
-                            fillColor: '#00cc66',
-                            fillOpacity: 0.3
-                        }
-                    },
-                    // Deshabilitar otras herramientas de dibujo
-                    polyline: false,
-                    rectangle: false,
-                    circle: false,
-                    marker: false,
-                    circlemarker: false
-                }
-            });
-            paymentMap.addControl(drawControl);
-
-            const submitButton = document.getElementById('submit-button');
-            const buttonText = document.getElementById('button-text');
-            const calculatedHectaresInput = document.getElementById('calculated-hectares');
-            const hiddenHectaresInput = document.getElementById('hectares');
-
-            paymentMap.on(L.Draw.Event.CREATED, function (event) {
-                const layer = event.layer;
-                
-                // Limpiar dibujos anteriores
-                drawnItems.clearLayers();
-                drawnItems.addLayer(layer);
-
-                // Calcular área usando Turf.js
-                const geojson = layer.toGeoJSON();
-                const areaInMeters = turf.area(geojson);
-                const areaInHectares = areaInMeters / 10000;
-
-                // Actualizar los campos del formulario
-                calculatedHectaresInput.value = `${areaInHectares.toFixed(2)} ha`;
-                hiddenHectaresInput.value = areaInHectares.toFixed(2);
-
-                // Habilitar el botón de pago
-                submitButton.disabled = false;
-                buttonText.textContent = 'Activar Monitoreo Satelital';
-            });
-
-            paymentMap.on(L.Draw.Event.EDITED, function (event) {
-                 const layers = event.layers;
-                 layers.eachLayer(function(layer) {
-                    // Recalcular área
-                    const geojson = layer.toGeoJSON();
-                    const areaInMeters = turf.area(geojson);
-                    const areaInHectares = areaInMeters / 10000;
-
-                    calculatedHectaresInput.value = `${areaInHectares.toFixed(2)} ha`;
-                    hiddenHectaresInput.value = areaInHectares.toFixed(2);
-                 });
-            });
-
-            paymentMap.on(L.Draw.Event.DELETED, function () {
-                // Si el polígono se borra, deshabilitar el botón
-                calculatedHectaresInput.value = "0.00 ha";
-                hiddenHectaresInput.value = "0";
-                submitButton.disabled = true;
-                buttonText.textContent = 'Dibuja tu finca para activar';
-            });
-        }
-
-        // --- NUEVA FUNCIÓN: Inicializar Stripe ---
-        function initializeStripe() {
-            try {
-                const stripe = Stripe('pk_test_51234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // ⚠️ REEMPLAZAR CON TU CLAVE PÚBLICA
-                const elements = stripe.elements();
-                
-                const style = {
-                    base: {
-                        color: '#ffffff',
-                        fontFamily: '"Inter", sans-serif',
-                        fontSmoothing: 'antialiased',
-                        fontSize: '16px',
-                        '::placeholder': {
-                            color: '#888888'
-                        }
-                    },
-                    invalid: {
-                        color: '#ff6b6b',
-                        iconColor: '#ff6b6b'
-                    }
-                };
-
-                const cardElement = elements.create('card', {style: style});
-                if (document.getElementById('card-element')) {
-                     cardElement.mount('#card-element');
-                }
-
-                cardElement.on('change', function(event) {
-                    const displayError = document.getElementById('card-errors');
-                    if (event.error) {
-                        displayError.textContent = event.error.message;
-                    } else {
-                        displayError.textContent = '';
-                    }
-                });
-
-                const form = document.getElementById('payment-form');
-                const submitButton = document.getElementById('submit-button');
-                const buttonText = document.getElementById('button-text');
-
-                if (form) {
-                    form.addEventListener('submit', async function(event) {
-                        event.preventDefault();
-                        
-                        submitButton.disabled = true;
-                        buttonText.textContent = 'Procesando...';
-
-                        // AHORA LEE EL VALOR DEL CAMPO OCULTO (actualizado por el mapa)
-                        const hectares = parseFloat(document.getElementById('hectares').value);
-                        const plan = document.getElementById('plan').value;
-                        let pricePerHa = 0;
-                        
-                        if (plan === 'essential') pricePerHa = 6;
-                        else if (plan === 'professional') pricePerHa = 12;
-                        else if (plan === 'enterprise') pricePerHa = 20;
-                        
-                        const totalPrice = hectares * pricePerHa;
-                        const minimumPrice = 250;
-                        const finalPrice = Math.max(totalPrice, minimumPrice);
-
-                        // --- MODO DEMO ---
-                        console.log("Iniciando pago simulado...");
-                        setTimeout(() => {
-                            alert(`¡Pago simulado exitoso!\n\nPlan: ${plan}\nHectáreas: ${hectares.toFixed(2)} ha\nPrecio total: €${finalPrice.toFixed(2)}\n\nEn producción, este formulario procesaría el pago real.`);
-                            
-                            // Habilitar botón, pero mantenerlo deshabilitado hasta que se dibuje
-                            // submitButton.disabled = false;
-                            // buttonText.textContent = 'Activar Monitoreo Satelital';
-                            
-                            // Mejor resetear:
-                            form.reset();
-                            cardElement.clear();
-                            document.getElementById('calculated-hectares').value = "0.00 ha";
-                            document.getElementById('hectares').value = "0";
-                            submitButton.disabled = true;
-                            buttonText.textContent = 'Dibuja tu finca para activar';
-                            
-                            // Limpiar el mapa (requiere acceso a 'drawnItems', que no está en scope aquí)
-                            // drawnItems.clearLayers(); // Descomentar si se tiene acceso
-                            
-                        }, 1500);
-                    });
-                }
-            } catch (error) {
-                console.log('Error al inicializar Stripe:', error);
-            }
-        }
-    </script>
+        // Inicializar mapa de pago y Stripe
+        initializePaymentMap();
+        initializeStripe();
+    });
+</script>
 </body>
 </html>
