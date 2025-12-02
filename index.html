@@ -95,12 +95,23 @@
         }
 
         .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--white);
             text-decoration: none;
             letter-spacing: -0.5px;
             cursor: pointer;
+        }
+
+        .nav-logo-img {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 6px 16px rgba(62, 43, 29, 0.25);
         }
 
         .nav-links {
@@ -170,7 +181,7 @@
         }
 
         .hero-logo-container {
-            margin-bottom: 3rem;
+            margin-bottom: 0.5rem;
             animation: fadeIn 1.5s ease-out;
         }
 
@@ -184,6 +195,17 @@
             height: 220px;
             margin: 0 auto;
             filter: drop-shadow(0 0 60px rgba(255, 255, 255, 0.15));
+        }
+
+        .hero-logo-img {
+            width: 220px;
+            height: auto;
+            margin: 0 auto;
+            border-radius: 0%;
+            object-fit: contain;
+            background: none;
+            padding: 0px;
+            box-shadow: 0 18px 55px rgba(62, 43, 29, 0.35);
         }
 
         .hero h1 {
@@ -950,7 +972,10 @@
 
     <nav>
         <div class="nav-container">
-            <a class="nav-logo" onclick="showLanding()">Mu.Orbita</a>
+            <a class="nav-logo" onclick="showLanding()">
+                <img src="/Logo_v2.png" alt="Mu.Orbita" class="nav-logo-img">
+                <span>Mu.Orbita</span>
+            </a>
             <ul class="nav-links" id="navLinks">
                 <li><a onclick="showLanding()" href="#tecnologia">Tecnología</a></li>
                 <li><a onclick="showLanding()" href="#dashboard">Plataforma</a></li>
@@ -969,13 +994,9 @@
         <section class="hero" id="hero">
             <div class="hero-content">
                 <div class="hero-logo-container">
-                    <svg class="hero-logo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <text x="100" y="130" font-size="140" font-family="Georgia, serif" fill="white" text-anchor="middle" font-style="italic" font-weight="400">μ</text>
-                        <ellipse cx="100" cy="100" rx="90" ry="45" fill="none" stroke="white" stroke-width="1.5" opacity="0.3" transform="rotate(-25 100 100)"/>
-                        <circle cx="175" cy="75" r="3" fill="white" opacity="0.6"/>
-                    </svg>
+                    <img src="/Logo_v2.png" alt="Mu.Orbita" class="hero-logo-img">
                 </div>
-                <h1><span class="mu">μ</span>.Orbita</h1>
+                <h1><span class="mu">Mu</span>.Orbita</h1>
                 <p class="hero-tagline">Precisión desde Órbita – Sostenibilidad desde Datos</p>
             </div>
             
@@ -1186,6 +1207,16 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="form-label">Empresa / Explotación</label>
+                            <input type="text" class="form-input" id="empresa" placeholder="Cooperativa Olivarera del Sur" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Ubicación</label>
+                            <input type="text" class="form-input" id="ubicacion" placeholder="Jaén, Andalucía" required>
+                        </div>
+
+                        <div class="form-group">
                             <label class="form-label">Dibuja tu Finca</label>
                             <p style="font-size: 0.85rem; color: var(--light-gray); margin-bottom: 1rem;">
                                 Usa la herramienta de polígono (■) en el mapa para dibujar el contorno de tu explotación.
@@ -1366,10 +1397,9 @@
             // Centrar el mapa en España
             const paymentMap = L.map('payment-map').setView([40.416775, -3.703790], 6);
             
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                subdomains: 'abcd',
-                maxZoom: 20
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP',
+                maxZoom: 19
             }).addTo(paymentMap);
 
             const drawnItems = new L.FeatureGroup();
@@ -1423,6 +1453,9 @@
                 calculatedHectaresInput.value = `${areaInHectares.toFixed(2)} ha`;
                 hiddenHectaresInput.value = areaInHectares.toFixed(2);
 
+                // Guardar el GeoJSON para enviarlo al webhook
+                window.drawnPolygonGeoJSON = JSON.stringify(geojson);
+
                 // Habilitar el botón de pago
                 submitButton.disabled = false;
                 buttonText.textContent = 'Activar Monitoreo Satelital';
@@ -1451,90 +1484,98 @@
         }
 
         // --- NUEVA FUNCIÓN: Inicializar Stripe ---
+        // =========================
+        // STRIPE + WEBHOOK n8n
+        // =========================
+
+        let stripeInstance, cardElementInstance;
+
         function initializeStripe() {
             try {
-                const stripe = Stripe('pk_test_51234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // ⚠️ REEMPLAZAR CON TU CLAVE PÚBLICA
-                const elements = stripe.elements();
-                
+                if (cardElementInstance) cardElementInstance.destroy();
+
+                stripeInstance = Stripe('pk_test_51234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // demo
+                const elements = stripeInstance.elements();
+
                 const style = {
                     base: {
-                        color: '#ffffff',
+                        color: '#3E2B1D',
                         fontFamily: '"Inter", sans-serif',
                         fontSmoothing: 'antialiased',
                         fontSize: '16px',
-                        '::placeholder': {
-                            color: '#888888'
-                        }
+                        '::placeholder': { color: '#7A6555' }
                     },
-                    invalid: {
-                        color: '#ff6b6b',
-                        iconColor: '#ff6b6b'
-                    }
+                    invalid: { color:'#ff6b6b', iconColor:'#ff6b6b' }
                 };
 
-                const cardElement = elements.create('card', {style: style});
-                if (document.getElementById('card-element')) {
-                     cardElement.mount('#card-element');
+                cardElementInstance = elements.create('card', { style });
+                const cardElementDiv = document.getElementById('card-element');
+                if (cardElementDiv) {
+                    cardElementInstance.mount('#card-element');
                 }
 
-                cardElement.on('change', function(event) {
+                cardElementInstance.on('change', function (event) {
                     const displayError = document.getElementById('card-errors');
-                    if (event.error) {
-                        displayError.textContent = event.error.message;
-                    } else {
-                        displayError.textContent = '';
-                    }
+                    if (!displayError) return;
+                    displayError.textContent = event.error ? event.error.message : '';
                 });
 
                 const form = document.getElementById('payment-form');
-                const submitButton = document.getElementById('submit-button');
-                const buttonText = document.getElementById('button-text');
+                if (!form) return;
 
-                if (form) {
-                    form.addEventListener('submit', async function(event) {
-                        event.preventDefault();
-                        
-                        submitButton.disabled = true;
-                        buttonText.textContent = 'Procesando...';
+                const newForm = form.cloneNode(true);
+                form.parentNode.replaceChild(newForm, form);
 
-                        // AHORA LEE EL VALOR DEL CAMPO OCULTO (actualizado por el mapa)
-                        const hectares = parseFloat(document.getElementById('hectares').value);
-                        const plan = document.getElementById('plan').value;
-                        let pricePerHa = 0;
-                        
-                        if (plan === 'essential') pricePerHa = 6;
-                        else if (plan === 'professional') pricePerHa = 12;
-                        else if (plan === 'enterprise') pricePerHa = 20;
-                        
-                        const totalPrice = hectares * pricePerHa;
-                        const minimumPrice = 250;
-                        const finalPrice = Math.max(totalPrice, minimumPrice);
+                newForm.addEventListener('submit', async function (event) {
+                    event.preventDefault();
 
-                        // --- MODO DEMO ---
-                        console.log("Iniciando pago simulado...");
-                        setTimeout(() => {
-                            alert(`¡Pago simulado exitoso!\n\nPlan: ${plan}\nHectáreas: ${hectares.toFixed(2)} ha\nPrecio total: €${finalPrice.toFixed(2)}\n\nEn producción, este formulario procesaría el pago real.`);
-                            
-                            // Habilitar botón, pero mantenerlo deshabilitado hasta que se dibuje
-                            // submitButton.disabled = false;
-                            // buttonText.textContent = 'Activar Monitoreo Satelital';
-                            
-                            // Mejor resetear:
-                            form.reset();
-                            cardElement.clear();
-                            document.getElementById('calculated-hectares').value = "0.00 ha";
-                            document.getElementById('hectares').value = "0";
-                            submitButton.disabled = true;
-                            buttonText.textContent = 'Dibuja tu finca para activar';
-                            
-                            // Limpiar el mapa (requiere acceso a 'drawnItems', que no está en scope aquí)
-                            // drawnItems.clearLayers(); // Descomentar si se tiene acceso
-                            
-                        }, 1500);
-                    });
-                }
-            } catch (error) {
-                console.log('Error al inicializar Stripe:', error);
+                    const submitBtn  = document.getElementById('submit-button');
+                    const buttonText = document.getElementById('button-text');
+                    const originalText = buttonText.textContent;
+
+                    submitBtn.disabled = true;
+                    buttonText.textContent = 'Enviando...';
+
+                    const formData = {
+                        nombre:     document.getElementById('name').value,
+                        email:      document.getElementById('email').value,
+                        telefono:   document.getElementById('phone').value,
+                        empresa:    document.getElementById('empresa').value,
+                        hectareas:  document.getElementById('hectares').value,
+                        tipo_cultivo: document.getElementById('crop').value,
+                        ubicacion:  document.getElementById('ubicacion').value,
+                        plan:       document.getElementById('plan').value,
+                        roi_geojson: window.drawnPolygonGeoJSON || null
+                    };
+
+                    const WEBHOOK_URL = 'http://localhost:5678/webhook/webhook-new-client';
+
+                    try {
+                        const response = await fetch(WEBHOOK_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(formData)
+                        });
+
+                        if (response.ok) {
+                            alert('¡Solicitud enviada correctamente!\n\nTe contactaremos pronto para activar tu monitoreo satelital.');
+                            newForm.reset();
+                            document.getElementById('calculated-hectares').value = '';
+                            document.getElementById('hectares').value = '0';
+                        } else {
+                            throw new Error('Error en el servidor: ' + response.status);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Error al enviar la solicitud. Por favor, inténtalo de nuevo o contacta con info@muorbita.com');
+                    } finally {
+                        submitBtn.disabled = false;
+                        buttonText.textContent = originalText;
+                    }
+                });
+
+            } catch (e) {
+                console.error('Error Stripe:', e);
             }
         }
     </script>
