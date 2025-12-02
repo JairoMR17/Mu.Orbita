@@ -582,47 +582,8 @@
         #payment-map {
             height: 400px; 
             border-radius: 6px; 
-            background: #e0e0e0;
+            background: var(--mid-gray);
             margin-bottom: 1rem;
-            z-index: 1;
-            position: relative;
-        }
-
-        /* Asegurar que los controles de Leaflet funcionen */
-        .leaflet-control-container {
-            z-index: 1000 !important;
-        }
-        
-        .leaflet-draw {
-            z-index: 1000 !important;
-        }
-        
-        .leaflet-draw-toolbar a {
-            pointer-events: auto !important;
-            cursor: pointer !important;
-        }
-        
-        .leaflet-control-zoom a {
-            pointer-events: auto !important;
-            cursor: pointer !important;
-        }
-        
-        #payment-map * {
-            pointer-events: auto;
-        }
-
-        /* Forzar visibilidad de tiles de Leaflet */
-        .leaflet-tile-pane {
-            opacity: 1 !important;
-        }
-        
-        .leaflet-tile {
-            visibility: visible !important;
-            opacity: 1 !important;
-        }
-        
-        .leaflet-container {
-            background: #e0e0e0 !important;
         }
 
         #card-element {
@@ -1419,11 +1380,12 @@
                 });
             });
 
-            // --- NUEVO: Lógica del Mapa de Pago ---
-            initializePaymentMap();
-
-            // --- Lógica de Stripe ---
+            // IMPORTANTE: Stripe primero porque clona el formulario
+            // Si el mapa se inicializa antes, se pierde al clonar
             initializeStripe();
+            
+            // Ahora sí, inicializar el mapa en el formulario ya clonado
+            initializePaymentMap();
         });
 
         // --- NUEVA FUNCIÓN: Inicializar Mapa de Pago ---
