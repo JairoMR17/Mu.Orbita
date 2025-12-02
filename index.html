@@ -582,8 +582,22 @@
         #payment-map {
             height: 400px; 
             border-radius: 6px; 
-            background: var(--mid-gray);
+            background: #e0e0e0;
             margin-bottom: 1rem;
+        }
+
+        /* Forzar visibilidad de tiles de Leaflet */
+        .leaflet-tile-pane {
+            opacity: 1 !important;
+        }
+        
+        .leaflet-tile {
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        .leaflet-container {
+            background: #e0e0e0 !important;
         }
 
         #card-element {
@@ -1419,6 +1433,12 @@
                 maxZoom: 19,
                 attribution: '© OpenStreetMap'
             }).addTo(paymentMap);
+            
+            // Forzar redibujado del mapa
+            setTimeout(function() {
+                paymentMap.invalidateSize();
+                console.log('>>> Mapa redibujado');
+            }, 100);
             
             console.log('>>> Tiles añadidos, configurando herramientas de dibujo...');
 
