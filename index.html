@@ -149,11 +149,6 @@
             transform: translateY(-1px);
         }
 
-        /* NUEVO: Selector de Idioma */
-        
-        
-        
-
         .mobile-menu-btn {
             display: none;
             background: none;
@@ -163,7 +158,7 @@
             cursor: pointer;
         }
 
-        /* Hero Section (Estilos de WebMuOrbita_i7.html) */
+        /* Hero Section */
         .hero {
             height: 100vh;
             display: flex;
@@ -230,39 +225,8 @@
             letter-spacing: 1px;
             animation: fadeIn 1.5s ease-out 0.6s both;
         }
-        
-        /* Indicador de Scroll (de WebMuOrbita_i7.html) */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: bounce 2s infinite;
-            cursor: pointer;
-        }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-            40% { transform: translateX(-50%) translateY(-15px); }
-            60% { transform: translateX(-50%) translateY(-8px); }
-        }
-
-        .scroll-indicator-line {
-            width: 1px;
-            height: 60px;
-            background: linear-gradient(to bottom, transparent, var(--white), transparent);
-            margin: 0 auto 10px;
-        }
-
-        .scroll-indicator-text {
-            color: var(--light-gray);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 500;
-        }
-
-        /* Section Styles (de index.html) */
+        /* Section Styles */
         .section-dark {
             background: var(--near-black);
             padding: 8rem 3rem;
@@ -311,7 +275,7 @@
             line-height: 1.8;
         }
 
-        /* Technology Section (de index.html) */
+        /* Technology Section */
         .tech-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -355,7 +319,6 @@
             line-height: 1.7;
         }
 
-        
         .dashboard-preview {
             margin-top: 4rem;
             border-radius: 12px;
@@ -370,7 +333,7 @@
             display: block;
         }
 
-        /* Stats Grid (de index.html) */
+        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -392,7 +355,7 @@
             letter-spacing: 1px;
         }
 
-        /* Pricing Section (de index.html) */
+        /* Pricing Section */
         .pricing-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -520,7 +483,7 @@
             border-color: rgba(255, 255, 255, 0.4);
         }
 
-        /* Payment Section (de index.html) */
+        /* Payment Section */
         .payment-container {
             max-width: 600px;
             margin: 0 auto;
@@ -569,14 +532,53 @@
             border-color: var(--white);
             background: var(--near-black);
         }
-        
-        /* NUEVO: Estilo para el input de hectáreas deshabilitado */
+
         .form-input:read-only {
             background: var(--near-black);
             font-weight: bold;
             color: var(--green);
             cursor: not-allowed;
         }
+
+        .form-input.error {
+            border-color: var(--red);
+        }
+
+        .form-error {
+            color: var(--red);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .form-error.visible {
+            display: block;
+        }
+
+        .form-hint {
+            color: var(--light-gray);
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
+        /* Password strength indicator */
+        .password-strength {
+            height: 4px;
+            background: var(--mid-gray);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+        }
+
+        .password-strength-bar.weak { width: 33%; background: var(--red); }
+        .password-strength-bar.medium { width: 66%; background: var(--yellow); }
+        .password-strength-bar.strong { width: 100%; background: var(--accent-green); }
 
         /* Mapa de pago */
         #payment-map {
@@ -623,7 +625,7 @@
             cursor: not-allowed;
         }
 
-        /* Footer (de index.html) */
+        /* Footer */
         footer {
             background: var(--near-black);
             padding: 4rem 3rem 2rem;
@@ -685,7 +687,7 @@
             font-size: 0.85rem;
         }
 
-        /* Animations (de index.html) */
+        /* Animations */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
@@ -697,198 +699,7 @@
             transform: translateY(0);
         }
 
-        /* ================================ */
-        /* DASHBOARD STYLES (de Dashboard_i2.html) */
-        /* ================================ */
-        
-        
-
-        
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        
-
-        .sync-indicator {
-            width: 8px;
-            height: 8px;
-            background: var(--green);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            background: var(--mid-gray);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        
-
-        
-
-        
-
-        
-
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .status-badge.good {
-            background: rgba(0, 204, 102, 0.15);
-            color: var(--green);
-        }
-
-        .status-badge.warning {
-            background: rgba(255, 204, 0, 0.15);
-            color: var(--yellow);
-        }
-
-        
-
-        
-
-        
-
-        
-        
-        
-
-        .map-container {
-            min-height: 500px;
-            grid-column: span 2;
-        }
-
-        #map {
-            width: 100%;
-            height: 450px;
-            border-radius: 8px;
-            background-color: var(--dark-gray); /* Fondo mientras carga */
-        }
-
-        
-
-        
-
-        .chart-container {
-            grid-column: span 2;
-            min-height: 400px;
-        }
-
-        #timeSeriesChart {
-            max-height: 350px;
-        }
-
-        .legend {
-            display: flex;
-            gap: 2rem;
-            flex-wrap: wrap;
-            margin-top: 1rem;
-            padding: 1rem;
-            background: var(--dark-gray);
-            border-radius: 8px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-        }
-
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-        }
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        .priority-high {
-            background: rgba(255, 68, 68, 0.15);
-            color: var(--red);
-        }
-
-        .priority-medium {
-            background: rgba(255, 204, 0, 0.15);
-            color: var(--yellow);
-        }
-
         /* Responsive */
-        @media (max-width: 1200px) {
-            
-            
-            
-        }
-        
         @media (max-width: 1024px) {
             .tech-grid {
                 grid-template-columns: 1fr;
@@ -906,8 +717,6 @@
             .footer-content {
                 grid-template-columns: 1fr 1fr;
             }
-
-            
         }
 
         @media (max-width: 768px) {
@@ -939,9 +748,6 @@
                 display: flex;
             }
 
-            /* Mover el selector de idioma al menú móvil */
-            
-
             .mobile-menu-btn {
                 display: block;
             }
@@ -953,17 +759,6 @@
             .footer-content {
                 grid-template-columns: 1fr;
             }
-
-            /* Responsive Dashboard */
-            
-            
-            
-            
-            
-            
-            
-            
-            
         }
     </style>
 </head>
@@ -999,8 +794,6 @@
                 <h1><span class="mu">Mu</span>.Orbita</h1>
                 <p class="hero-tagline">Precisión desde Órbita – Sostenibilidad desde Datos</p>
             </div>
-            
-            
         </section>
 
         <section id="tecnologia" class="section-dark">
@@ -1088,7 +881,7 @@
                         </div>
                         <div class="tech-feature fade-in">
                             <h3>Detección Temprana de Estrés</h3>
-                            <p>Alertas automáticas cuando NDVI cae >15% en 7 días o aparecen zonas con vigor anómalo (<0.35). Intervención preventiva antes de pérdidas de cosecha.</p>
+                            <p>Alertas automáticas cuando NDVI cae >15% en 7 días o aparecen zonas con vigor anómalo (&lt;0.35). Intervención preventiva antes de pérdidas de cosecha.</p>
                         </div>
                         <div class="tech-feature fade-in">
                             <h3>Cumplimiento PAC Simplificado</h3>
@@ -1202,6 +995,21 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="form-label">Contraseña para tu Dashboard</label>
+                            <input type="password" class="form-input" id="password" placeholder="Mínimo 8 caracteres" required minlength="8">
+                            <div class="password-strength">
+                                <div class="password-strength-bar" id="password-strength-bar"></div>
+                            </div>
+                            <p class="form-hint">Usa letras, números y símbolos para mayor seguridad</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Confirmar Contraseña</label>
+                            <input type="password" class="form-input" id="password-confirm" placeholder="Repite la contraseña" required minlength="8">
+                            <div class="form-error" id="password-error">Las contraseñas no coinciden</div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="form-label">Teléfono</label>
                             <input type="tel" class="form-input" id="phone" placeholder="+34 600 000 000" required>
                         </div>
@@ -1209,11 +1017,6 @@
                         <div class="form-group">
                             <label class="form-label">Empresa / Explotación</label>
                             <input type="text" class="form-input" id="empresa" placeholder="Cooperativa Olivarera del Sur" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Ubicación</label>
-                            <input type="text" class="form-input" id="ubicacion" placeholder="Jaén, Andalucía" required>
                         </div>
 
                         <div class="form-group">
@@ -1300,9 +1103,9 @@
                 <div class="footer-column">
                     <h4>Contacto</h4>
                     <ul>
-                        <li><a href="/cdn-cgi/l/email-protection#d3babdb5bc93bea6bca1b1baa7b2fdb0bcbe"><span class="__cf_email__" data-cfemail="b3daddd5dcf3dec6dcc1d1dac7d29dd0dcde">[email&#160;protected]</span></a></li>
-                        <li><a href="/cdn-cgi/l/email-protection#89ffece7fde8fac9e4fce6fbebe0fde8a7eae6e4"><span class="__cf_email__" data-cfemail="27514249534654674a524855454e53460944484a">[email&#160;protected]</span></a></li>
-                        <li><a href="/cdn-cgi/l/email-protection#1e6d716e716c6a7b5e736b716c7c776a7f307d7173"><span class="__cf_email__" data-cfemail="cebda1bea1bcbaab8ea3bba1bcaca7baafe0ada1a3">[email&#160;protected]</span></a></li>
+                        <li><a href="mailto:info@muorbita.com">info@muorbita.com</a></li>
+                        <li><a href="mailto:soporte@muorbita.com">soporte@muorbita.com</a></li>
+                        <li><a href="mailto:ventas@muorbita.com">ventas@muorbita.com</a></li>
                     </ul>
                 </div>
             </div>
@@ -1314,19 +1117,11 @@
 
     </div>
 
-    
-
     <script>
-        
-        
-        
-
         function showLanding() {
             document.getElementById('landing-view').classList.add('active');
             window.scrollTo(0, 0);
         }
-
-        
 
         // ===================================
         // LÓGICA DE LANDING PAGE
@@ -1380,15 +1175,63 @@
                 });
             });
 
+            // --- Validación de contraseñas ---
+            const passwordInput = document.getElementById('password');
+            const passwordConfirmInput = document.getElementById('password-confirm');
+            const passwordError = document.getElementById('password-error');
+            const passwordStrengthBar = document.getElementById('password-strength-bar');
+
+            // Función para calcular fortaleza de contraseña
+            function checkPasswordStrength(password) {
+                let strength = 0;
+                if (password.length >= 8) strength++;
+                if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+                if (password.match(/\d/)) strength++;
+                if (password.match(/[^a-zA-Z\d]/)) strength++;
+                
+                passwordStrengthBar.className = 'password-strength-bar';
+                if (strength <= 1) {
+                    passwordStrengthBar.classList.add('weak');
+                } else if (strength <= 2) {
+                    passwordStrengthBar.classList.add('medium');
+                } else {
+                    passwordStrengthBar.classList.add('strong');
+                }
+            }
+
+            // Función para validar que coincidan
+            function validatePasswords() {
+                const password = passwordInput.value;
+                const confirm = passwordConfirmInput.value;
+                
+                if (confirm.length > 0 && password !== confirm) {
+                    passwordConfirmInput.classList.add('error');
+                    passwordError.classList.add('visible');
+                    return false;
+                } else {
+                    passwordConfirmInput.classList.remove('error');
+                    passwordError.classList.remove('visible');
+                    return true;
+                }
+            }
+
+            passwordInput.addEventListener('input', function() {
+                checkPasswordStrength(this.value);
+                if (passwordConfirmInput.value.length > 0) {
+                    validatePasswords();
+                }
+            });
+
+            passwordConfirmInput.addEventListener('input', validatePasswords);
+
             // IMPORTANTE: Stripe primero porque clona el formulario
-            // Si el mapa se inicializa antes, se pierde al clonar
             initializeStripe();
             
             // Ahora sí, inicializar el mapa en el formulario ya clonado
             initializePaymentMap();
         });
 
-        // --- NUEVA FUNCIÓN: Inicializar Mapa de Pago ---
+        // --- FUNCIÓN: Inicializar Mapa de Pago ---
         function initializePaymentMap() {
             console.log('>>> Iniciando initializePaymentMap');
             
@@ -1415,7 +1258,7 @@
             
             console.log('>>> Mapa creado, añadiendo tiles...');
             
-            // Tiles de OpenStreetMap - la opción más confiable
+            // Tiles de OpenStreetMap
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '© OpenStreetMap'
@@ -1449,7 +1292,6 @@
                             fillOpacity: 0.3
                         }
                     },
-                    // Deshabilitar otras herramientas de dibujo
                     polyline: false,
                     rectangle: false,
                     circle: false,
@@ -1460,12 +1302,6 @@
             paymentMap.addControl(drawControl);
             
             console.log('>>> Control de dibujo añadido');
-            console.log('>>> Verificando interactividad del mapa...');
-            
-            // Verificar que el mapa responde a eventos
-            paymentMap.on('click', function(e) {
-                console.log('>>> Click en mapa:', e.latlng);
-            });
 
             const submitButton = document.getElementById('submit-button');
             const buttonText = document.getElementById('button-text');
@@ -1499,30 +1335,26 @@
             paymentMap.on(L.Draw.Event.EDITED, function (event) {
                  const layers = event.layers;
                  layers.eachLayer(function(layer) {
-                    // Recalcular área
                     const geojson = layer.toGeoJSON();
                     const areaInMeters = turf.area(geojson);
                     const areaInHectares = areaInMeters / 10000;
 
                     calculatedHectaresInput.value = `${areaInHectares.toFixed(2)} ha`;
                     hiddenHectaresInput.value = areaInHectares.toFixed(2);
+                    window.drawnPolygonGeoJSON = JSON.stringify(geojson);
                  });
             });
 
             paymentMap.on(L.Draw.Event.DELETED, function () {
-                // Si el polígono se borra, deshabilitar el botón
                 calculatedHectaresInput.value = "0.00 ha";
                 hiddenHectaresInput.value = "0";
                 submitButton.disabled = true;
                 buttonText.textContent = 'Dibuja tu finca para activar';
+                window.drawnPolygonGeoJSON = null;
             });
         }
 
-        // --- NUEVA FUNCIÓN: Inicializar Stripe ---
-        // =========================
-        // STRIPE + WEBHOOK n8n
-        // =========================
-
+        // --- FUNCIÓN: Inicializar Stripe ---
         let stripeInstance, cardElementInstance;
 
         function initializeStripe() {
@@ -1564,6 +1396,20 @@
                 newForm.addEventListener('submit', async function (event) {
                     event.preventDefault();
 
+                    // Validar contraseñas antes de enviar
+                    const password = document.getElementById('password').value;
+                    const passwordConfirm = document.getElementById('password-confirm').value;
+                    
+                    if (password !== passwordConfirm) {
+                        alert('Las contraseñas no coinciden. Por favor, verifica.');
+                        return;
+                    }
+                    
+                    if (password.length < 8) {
+                        alert('La contraseña debe tener al menos 8 caracteres.');
+                        return;
+                    }
+
                     const submitBtn  = document.getElementById('submit-button');
                     const buttonText = document.getElementById('button-text');
                     const originalText = buttonText.textContent;
@@ -1572,15 +1418,15 @@
                     buttonText.textContent = 'Enviando...';
 
                     const formData = {
-                        nombre:     document.getElementById('name').value,
-                        email:      document.getElementById('email').value,
-                        telefono:   document.getElementById('phone').value,
-                        empresa:    document.getElementById('empresa').value,
-                        hectareas:  document.getElementById('hectares').value,
+                        nombre:       document.getElementById('name').value,
+                        email:        document.getElementById('email').value,
+                        password:     document.getElementById('password').value,
+                        telefono:     document.getElementById('phone').value,
+                        empresa:      document.getElementById('empresa').value,
+                        hectareas:    document.getElementById('hectares').value,
                         tipo_cultivo: document.getElementById('crop').value,
-                        ubicacion:  document.getElementById('ubicacion').value,
-                        plan:       document.getElementById('plan').value,
-                        roi_geojson: window.drawnPolygonGeoJSON || null
+                        plan:         document.getElementById('plan').value,
+                        roi_geojson:  window.drawnPolygonGeoJSON || null
                     };
 
                     const WEBHOOK_URL = 'http://localhost:5678/webhook/webhook-new-client';
@@ -1593,10 +1439,11 @@
                         });
 
                         if (response.ok) {
-                            alert('¡Solicitud enviada correctamente!\n\nTe contactaremos pronto para activar tu monitoreo satelital.');
+                            alert('¡Cuenta creada correctamente!\n\nYa puedes acceder a tu dashboard con tu email y contraseña.\n\nTe contactaremos pronto para activar tu monitoreo satelital.');
                             newForm.reset();
                             document.getElementById('calculated-hectares').value = '';
                             document.getElementById('hectares').value = '0';
+                            window.drawnPolygonGeoJSON = null;
                         } else {
                             throw new Error('Error en el servidor: ' + response.status);
                         }
