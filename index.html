@@ -2041,9 +2041,9 @@
                 <div class="footer-column">
                     <h4>Contacto</h4>
                     <ul>
-                        <li><a href="mailto:info@muorbita.com">info@muorbita.com</a></li>
-                        <li><a href="mailto:soporte@muorbita.com">soporte@muorbita.com</a></li>
-                        <li><a href="mailto:ventas@muorbita.com">ventas@muorbita.com</a></li>
+                        <li><a href="/cdn-cgi/l/email-protection#abc2c5cdc4ebc6dec4d9c9c2dfca85c8c4c6"><span class="__cf_email__" data-cfemail="422b2c242d022f372d30202b36236c212d2f">[email&#160;protected]</span></a></li>
+                        <li><a href="/cdn-cgi/l/email-protection#4c3f233c233e38290c2139233e2e25382d622f2321"><span class="__cf_email__" data-cfemail="dfacb0afb0adabba9fb2aab0adbdb6abbef1bcb0b2">[email&#160;protected]</span></a></li>
+                        <li><a href="/cdn-cgi/l/email-protection#0f796a617b6e7c4f627a607d6d667b6e216c6062"><span class="__cf_email__" data-cfemail="a1d7c4cfd5c0d2e1ccd4ced3c3c8d5c08fc2cecc">[email&#160;protected]</span></a></li>
                     </ul>
                 </div>
             </div>
@@ -2055,7 +2055,7 @@
 
     </div>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // =============================================
         // CONFIGURACIÓN - CAMBIAR ESTA URL PARA PRODUCCIÓN
         // =============================================
@@ -2168,9 +2168,10 @@
             async login(email, password) {
                 const response = await fetch(MUORBITA_CONFIG.apiUrl('/auth/login'), {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    'ngrok-skip-browser-warning': 'true'
-                     },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    },
                     body: JSON.stringify({ email, password })
                 });
                 
@@ -2185,7 +2186,10 @@
                 
                 // Obtener datos del usuario con /auth/me
                 const userResponse = await fetch(MUORBITA_CONFIG.apiUrl('/auth/me'), {
-                    headers: { 'Authorization': `Bearer ${data.access_token}` }
+                    headers: { 
+                        'Authorization': `Bearer ${data.access_token}`,
+                        'ngrok-skip-browser-warning': 'true'
+                    }
                 });
                 
                 if (userResponse.ok) {
@@ -2199,9 +2203,10 @@
             async register(email, password, confirmPassword) {
                 const response = await fetch(MUORBITA_CONFIG.apiUrl('/auth/register'), {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    'ngrok-skip-browser-warning': 'true'  // ← AÑADIR
-        },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    },
                     body: JSON.stringify({
                         email,
                         password,
@@ -2219,9 +2224,10 @@
                 
                 // Obtener datos del usuario
                 const userResponse = await fetch(MUORBITA_CONFIG.apiUrl('/auth/me'), {
-                    headers: { 'Authorization': `Bearer ${data.access_token}` }
-                     'ngrok-skip-browser-warning': 'true'  // ← AÑADIR
-    }
+                    headers: { 
+                        'Authorization': `Bearer ${data.access_token}`,
+                        'ngrok-skip-browser-warning': 'true'
+                    }
                 });
                 
                 if (userResponse.ok) {
@@ -3231,4 +3237,3 @@
     </script>
 </body>
 </html>
-
