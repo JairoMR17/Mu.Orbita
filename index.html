@@ -2057,12 +2057,13 @@
 
     <script>
         // =============================================
-        // CONFIGURACIÓN DEL DASHBOARD
+        // CONFIGURACIÓN - CAMBIAR ESTA URL PARA PRODUCCIÓN
         // =============================================
         
         const MUORBITA_CONFIG = {
-            // CAMBIAR EN PRODUCCIÓN A TU DOMINIO
-            API_BASE_URL: 'http://localhost:8000',
+            // ⚠️ CAMBIAR A TU URL DE NGROK O PRODUCCIÓN
+            API_BASE_URL: 'https://memphis-perkier-tobias.ngrok-free.dev',
+            API_VERSION: 'v1',
             
             // Storage keys
             TOKEN_KEY: 'muorbita_token',
@@ -2079,6 +2080,11 @@
                 background: '#F9F7F2',
                 text: '#3E2B1D',
                 border: '#E6DDD0'
+            },
+            
+            // Helper para construir URLs de API
+            apiUrl(endpoint) {
+                return `${this.API_BASE_URL}/api/${this.API_VERSION}${endpoint}`;
             }
         };
 
@@ -2099,7 +2105,10 @@
                     headers['Authorization'] = `Bearer ${token}`;
                 }
                 
-                const response = await fetch(`${MUORBITA_CONFIG.API_BASE_URL}${endpoint}`, {
+                // Usar apiUrl para construir la URL completa
+                const url = MUORBITA_CONFIG.apiUrl(endpoint);
+                
+                const response = await fetch(url, {
                     ...options,
                     headers
                 });
@@ -2156,7 +2165,7 @@
             },
             
             async login(email, password) {
-                const response = await fetch(`${MUORBITA_CONFIG.API_BASE_URL}/auth/login`, {
+                const response = await fetch(MUORBITA_CONFIG.apiUrl('/auth/login'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
@@ -2168,14 +2177,24 @@
                     throw new Error(data.detail || 'Error al iniciar sesión');
                 }
                 
+                // Guardar token
                 localStorage.setItem(MUORBITA_CONFIG.TOKEN_KEY, data.access_token);
-                localStorage.setItem(MUORBITA_CONFIG.USER_KEY, JSON.stringify(data.user));
+                
+                // Obtener datos del usuario con /auth/me
+                const userResponse = await fetch(MUORBITA_CONFIG.apiUrl('/auth/me'), {
+                    headers: { 'Authorization': `Bearer ${data.access_token}` }
+                });
+                
+                if (userResponse.ok) {
+                    const userData = await userResponse.json();
+                    localStorage.setItem(MUORBITA_CONFIG.USER_KEY, JSON.stringify(userData));
+                }
                 
                 return data;
             },
             
             async register(email, password, confirmPassword) {
-                const response = await fetch(`${MUORBITA_CONFIG.API_BASE_URL}/auth/register`, {
+                const response = await fetch(MUORBITA_CONFIG.apiUrl('/auth/register'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -2192,7 +2211,16 @@
                 }
                 
                 localStorage.setItem(MUORBITA_CONFIG.TOKEN_KEY, data.access_token);
-                localStorage.setItem(MUORBITA_CONFIG.USER_KEY, JSON.stringify(data.user));
+                
+                // Obtener datos del usuario
+                const userResponse = await fetch(MUORBITA_CONFIG.apiUrl('/auth/me'), {
+                    headers: { 'Authorization': `Bearer ${data.access_token}` }
+                });
+                
+                if (userResponse.ok) {
+                    const userData = await userResponse.json();
+                    localStorage.setItem(MUORBITA_CONFIG.USER_KEY, JSON.stringify(userData));
+                }
                 
                 return data;
             },
@@ -2208,7 +2236,7 @@
             
             async verifyToken() {
                 try {
-                    const response = await MuOrbitaUtils.apiRequest('/auth/verify', { method: 'POST' });
+                    const response = await MuOrbitaUtils.apiRequest('/auth/me');
                     return response.ok;
                 } catch {
                     return false;
@@ -2249,7 +2277,7 @@
                 } catch (error) {
                     console.error('Dashboard init error:', error);
                     this.showLoading(false);
-                    MuOrbitaUtils.showToast('Error cargando dashboard', 'error');
+                    MuOrbitaUtils.showToast('Error cargando dashboard: ' + error.message, 'error');
                 }
             },
             
@@ -2262,21 +2290,104 @@
             },
             
             async fetchDashboard() {
-                const response = await MuOrbitaUtils.apiRequest('/api/me/dashboard');
-                if (!response.ok) throw new Error('Error obteniendo dashboard');
-                return response.json();
+                // Obtener resumen del dashboard
+                const summaryResponse = await MuOrbitaUtils.apiRequest('/dashboard/summary');
+                if (!summaryResponse.ok) throw new Error('Error obteniendo dashboard');
+                const summary = await summaryResponse.json();
+                
+                // Obtener alertas
+                const alertsResponse = await MuOrbitaUtils.apiRequest('/dashboard/alerts');
+                const alerts = alertsResponse.ok ? await alertsResponse.json() : [];
+                
+                // Obtener reportes
+                const reportsResponse = await MuOrbitaUtils.apiRequest('/dashboard/reports?limit=5');
+                const reports = reportsResponse.ok ? await reportsResponse.json() : [];
+                
+                // Obtener parcelas para info adicional
+                const parcelsResponse = await MuOrbitaUtils.apiRequest('/dashboard/parcels');
+                const parcels = parcelsResponse.ok ? await parcelsResponse.json() : [];
+                
+                // Construir objeto compatible con el frontend
+                return {
+                    client: {
+                        name: summary.client_name,
+                        empresa: '',
+                        tipo_cultivo: parcels.length > 0 ? parcels[0].crop_type : '',
+                        hectareas: summary.total_hectares,
+                        ubicacion: parcels.length > 0 ? parcels[0].province : ''
+                    },
+                    kpis: {
+                        ndvi_mean: summary.avg_ndvi,
+                        ndwi_mean: null,
+                        stress_area_pct: summary.alerts_count > 0 ? 15 : 5,
+                        vigor_status: summary.avg_ndvi >= 0.6 ? 'alto' : summary.avg_ndvi >= 0.4 ? 'moderado' : 'bajo',
+                        last_update: summary.last_analysis_date
+                    },
+                    alerts: alerts.map(a => ({
+                        type: a.alert_type,
+                        severity: a.severity === 'critical' ? 'high' : a.severity,
+                        message: a.message,
+                        zone: a.parcel_name
+                    })),
+                    recent_reports: reports.map(r => ({
+                        id: r.id,
+                        job_id: r.id,
+                        analysis_type: r.report_type || 'baseline',
+                        status: 'completed',
+                        completed_at: r.generated_at,
+                        created_at: r.generated_at
+                    })),
+                    next_analysis: summary.days_until_next_report ? new Date(Date.now() + summary.days_until_next_report * 24 * 60 * 60 * 1000).toISOString() : null,
+                    parcels: parcels
+                };
             },
             
             async fetchTimeseries() {
-                const response = await MuOrbitaUtils.apiRequest('/api/me/timeseries');
-                if (!response.ok) throw new Error('Error obteniendo timeseries');
-                return response.json();
+                // Primero obtener las parcelas
+                const parcelsResponse = await MuOrbitaUtils.apiRequest('/dashboard/parcels');
+                if (!parcelsResponse.ok) return { timeseries: [] };
+                
+                const parcels = await parcelsResponse.json();
+                if (parcels.length === 0) return { timeseries: [] };
+                
+                // Obtener KPIs de la primera parcela
+                const parcelId = parcels[0].id;
+                const kpisResponse = await MuOrbitaUtils.apiRequest(`/dashboard/parcels/${parcelId}/kpis`);
+                if (!kpisResponse.ok) return { timeseries: [] };
+                
+                const kpis = await kpisResponse.json();
+                
+                return {
+                    timeseries: kpis.map(k => ({
+                        date: k.observation_date,
+                        ndvi: k.ndvi_mean,
+                        ndwi: k.ndwi_mean,
+                        evi: null
+                    }))
+                };
             },
             
             async fetchFarm() {
-                const response = await MuOrbitaUtils.apiRequest('/api/me/farm');
-                if (!response.ok) throw new Error('Error obteniendo datos de finca');
-                return response.json();
+                const response = await MuOrbitaUtils.apiRequest('/dashboard/parcels');
+                if (!response.ok) return null;
+                
+                const parcels = await response.json();
+                if (parcels.length === 0) return null;
+                
+                // Devolver la primera parcela con su GeoJSON
+                const parcel = parcels[0];
+                if (!parcel.roi_geojson) return null;
+                
+                return {
+                    type: 'Feature',
+                    geometry: parcel.roi_geojson,
+                    properties: {
+                        name: parcel.parcel_name,
+                        hectareas: parcel.hectares,
+                        tipo_cultivo: parcel.crop_type,
+                        ubicacion: parcel.province
+                    }
+                };
             },
             
             renderHeader(client) {
@@ -2407,7 +2518,7 @@
                                     </td>
                                     <td>
                                         ${report.status === 'completed' 
-                                            ? `<button class="btn-download" onclick="MuOrbitaDashboard.downloadReport('${report.job_id}')">
+                                            ? `<button class="btn-download" onclick="MuOrbitaDashboard.downloadReport('${report.id}')">
                                                 📄 Ver PDF
                                                </button>`
                                             : '<span class="text-muted">-</span>'
@@ -2429,10 +2540,20 @@
             
             renderChart(timeseries) {
                 const canvas = document.getElementById('timeseries-chart');
-                if (!canvas || !timeseries || timeseries.length === 0) return;
+                if (!canvas) return;
                 
                 if (this.chartInstance) {
                     this.chartInstance.destroy();
+                }
+                
+                if (!timeseries || timeseries.length === 0) {
+                    // Mostrar mensaje si no hay datos
+                    const ctx = canvas.getContext('2d');
+                    ctx.font = '14px Inter';
+                    ctx.fillStyle = '#7A6555';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('No hay datos de series temporales disponibles', canvas.width / 2, canvas.height / 2);
+                    return;
                 }
                 
                 const ctx = canvas.getContext('2d');
@@ -2491,6 +2612,7 @@
                                 padding: 12,
                                 callbacks: {
                                     label: function(context) {
+                                        if (context.parsed.y === null) return null;
                                         return `${context.dataset.label}: ${context.parsed.y.toFixed(3)}`;
                                     }
                                 }
@@ -2539,17 +2661,14 @@
                 setTimeout(() => this.mapInstance.invalidateSize(), 100);
             },
             
-            async downloadReport(jobId) {
+            async downloadReport(reportId) {
                 try {
-                    const response = await MuOrbitaUtils.apiRequest(`/api/me/report/${jobId}/download`);
-                    const data = await response.json();
+                    const response = await MuOrbitaUtils.apiRequest(`/dashboard/reports/${reportId}/download`);
                     
-                    if (data.pdf_url) {
-                        window.open(data.pdf_url, '_blank');
-                    } else if (data.download_url) {
-                        window.open(data.download_url, '_blank');
+                    if (response.redirected) {
+                        window.open(response.url, '_blank');
                     } else {
-                        MuOrbitaUtils.showToast('Reporte no disponible aún', 'warning');
+                        MuOrbitaUtils.showToast('Descargando reporte...', 'info');
                     }
                 } catch (error) {
                     MuOrbitaUtils.showToast('Error descargando reporte', 'error');
@@ -2558,12 +2677,14 @@
             
             // Helpers
             getVigorClass(ndvi) {
+                if (ndvi === null || ndvi === undefined) return '';
                 if (ndvi >= 0.6) return 'kpi-good';
                 if (ndvi >= 0.4) return 'kpi-warning';
                 return 'kpi-bad';
             },
             
             getWaterClass(ndwi) {
+                if (ndwi === null || ndwi === undefined) return '';
                 if (ndwi >= 0.2) return 'kpi-good';
                 if (ndwi >= 0.1) return 'kpi-warning';
                 return 'kpi-bad';
@@ -2575,12 +2696,12 @@
             },
             
             getAlertIcon(type) {
-                const icons = { 'water': '💧', 'stress': '⚠️', 'thermal': '🌡️', 'anomaly': '🔍' };
+                const icons = { 'water': '💧', 'stress': '⚠️', 'thermal': '🌡️', 'anomaly': '🔍', 'low_vigor': '🌿', 'stress_area': '📊' };
                 return icons[type] || '📌';
             },
             
             getAlertTypeLabel(type) {
-                const labels = { 'water': 'Hídrico', 'stress': 'Estrés', 'thermal': 'Térmico', 'anomaly': 'Anomalía' };
+                const labels = { 'water': 'Hídrico', 'stress': 'Estrés', 'thermal': 'Térmico', 'anomaly': 'Anomalía', 'low_vigor': 'Bajo vigor', 'stress_area': 'Área estrés' };
                 return labels[type] || type;
             },
             
@@ -3068,7 +3189,7 @@
                         roi_geojson:  window.drawnPolygonGeoJSON || null
                     };
 
-                    // CAMBIAR EN PRODUCCIÓN
+                    // ⚠️ CAMBIAR EN PRODUCCIÓN A TU WEBHOOK
                     const WEBHOOK_URL = 'http://localhost:5678/webhook/webhook-new-client';
 
                     try {
