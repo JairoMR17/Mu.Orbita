@@ -2098,6 +2098,7 @@
                 
                 const headers = {
                     'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
                     ...options.headers
                 };
                 
@@ -2168,6 +2169,8 @@
                 const response = await fetch(MUORBITA_CONFIG.apiUrl('/auth/login'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    'ngrok-skip-browser-warning': 'true'
+                     },
                     body: JSON.stringify({ email, password })
                 });
                 
@@ -2197,6 +2200,8 @@
                 const response = await fetch(MUORBITA_CONFIG.apiUrl('/auth/register'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    'ngrok-skip-browser-warning': 'true'  // ← AÑADIR
+        },
                     body: JSON.stringify({
                         email,
                         password,
@@ -2215,6 +2220,8 @@
                 // Obtener datos del usuario
                 const userResponse = await fetch(MUORBITA_CONFIG.apiUrl('/auth/me'), {
                     headers: { 'Authorization': `Bearer ${data.access_token}` }
+                     'ngrok-skip-browser-warning': 'true'  // ← AÑADIR
+    }
                 });
                 
                 if (userResponse.ok) {
@@ -3224,3 +3231,4 @@
     </script>
 </body>
 </html>
+
