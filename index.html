@@ -699,7 +699,654 @@
             transform: translateY(0);
         }
 
+        /* ============================================
+           DASHBOARD STYLES - LOGIN MODAL
+           ============================================ */
+
+        #muorbita-login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(62, 43, 29, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .login-modal-content {
+            background: var(--black);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+            padding: 2.5rem;
+            position: relative;
+            box-shadow: 0 25px 80px rgba(62, 43, 29, 0.4);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .login-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.2rem;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--light-gray);
+            cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+
+        .login-modal-close:hover {
+            color: var(--white);
+        }
+
+        .login-modal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-modal-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+
+        .login-modal-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-modal-header p {
+            color: var(--light-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Auth Tabs */
+        .auth-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--dark-gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.8rem;
+            background: none;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--light-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .auth-tab:hover {
+            color: var(--white);
+        }
+
+        .auth-tab.active {
+            color: var(--accent-green);
+            border-bottom-color: var(--accent-green);
+        }
+
+        /* Auth Forms */
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active,
+        .auth-form[style*="display: block"] {
+            display: block;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 1px solid var(--dark-gray);
+            border-radius: 8px;
+            background: var(--near-black);
+            color: var(--white);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(34, 139, 34, 0.15);
+        }
+
+        .form-group input::placeholder {
+            color: var(--light-gray);
+        }
+
+        .modal-form-error {
+            display: none;
+            background: rgba(204, 68, 68, 0.15);
+            color: var(--red);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent-green);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: #1e7a1e;
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--light-gray);
+            font-size: 0.85rem;
+        }
+
+        .form-footer a {
+            color: var(--accent-green);
+            text-decoration: none;
+        }
+
+        /* ============================================
+           DASHBOARD VIEW
+           ============================================ */
+
+        #dashboard-view {
+            min-height: 100vh;
+            background: var(--black);
+            padding-top: 80px;
+        }
+
+        /* Dashboard Loader */
+        #dashboard-loader {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 80px);
+            gap: 1rem;
+        }
+
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--dark-gray);
+            border-top-color: var(--accent-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loader-text {
+            color: var(--light-gray);
+            font-size: 0.95rem;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            background: var(--near-black);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 3rem;
+        }
+
+        .dashboard-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .dashboard-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--accent-green);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .dashboard-user-info h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 0.2rem;
+        }
+
+        .dashboard-user-info p {
+            color: var(--light-gray);
+            font-size: 0.85rem;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-back {
+            padding: 0.6rem 1.2rem;
+            background: var(--dark-gray);
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            background: var(--mid-gray);
+        }
+
+        .btn-logout {
+            padding: 0.6rem 1.2rem;
+            background: transparent;
+            color: var(--light-gray);
+            border: 1px solid var(--dark-gray);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        /* Dashboard Content */
+        #dashboard-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 3rem;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: var(--near-black);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(62, 43, 29, 0.15);
+        }
+
+        .kpi-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--light-gray);
+            margin-bottom: 0.8rem;
+        }
+
+        .kpi-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 0.3rem;
+        }
+
+        .kpi-value.kpi-good { color: var(--accent-green); }
+        .kpi-value.kpi-warning { color: var(--yellow); }
+        .kpi-value.kpi-bad { color: var(--red); }
+
+        .kpi-subtitle {
+            font-size: 0.8rem;
+            color: var(--light-gray);
+        }
+
+        /* Dashboard Grid Layout */
+        .dashboard-main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Cards */
+        .dashboard-card {
+            background: var(--near-black);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Chart */
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        #timeseries-chart {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Map */
+        .map-container {
+            height: 300px;
+        }
+
+        #farm-map {
+            width: 100%;
+            height: 100%;
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* Alerts */
+        #alerts-container {
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .alert-empty {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem;
+            background: rgba(34, 139, 34, 0.1);
+            border-radius: 8px;
+            color: var(--accent-green);
+        }
+
+        .alert-item {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            border-left: 4px solid;
+        }
+
+        .alert-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .alert-high {
+            background: rgba(204, 68, 68, 0.1);
+            border-left-color: var(--red);
+        }
+
+        .alert-medium {
+            background: rgba(204, 153, 51, 0.1);
+            border-left-color: var(--yellow);
+        }
+
+        .alert-low {
+            background: rgba(34, 139, 34, 0.1);
+            border-left-color: var(--accent-green);
+        }
+
+        .alert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .alert-type {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--white);
+        }
+
+        .alert-severity {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .severity-high { background: var(--red); color: white; }
+        .severity-medium { background: var(--yellow); color: #3E2B1D; }
+        .severity-low { background: var(--accent-green); color: white; }
+
+        .alert-message {
+            font-size: 0.9rem;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .alert-zone {
+            font-size: 0.8rem;
+            color: var(--light-gray);
+        }
+
+        /* Reports Table */
+        .reports-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .reports-table th,
+        .reports-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .reports-table th {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--light-gray);
+            font-weight: 600;
+        }
+
+        .reports-table td {
+            font-size: 0.9rem;
+            color: var(--white);
+        }
+
+        .reports-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .reports-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: rgba(34, 139, 34, 0.15);
+            color: var(--accent-green);
+        }
+
+        .status-processing {
+            background: rgba(204, 153, 51, 0.15);
+            color: var(--yellow);
+        }
+
+        .status-pending {
+            background: rgba(122, 101, 85, 0.15);
+            color: var(--light-gray);
+        }
+
+        .status-failed {
+            background: rgba(204, 68, 68, 0.15);
+            color: var(--red);
+        }
+
+        .btn-download {
+            padding: 0.4rem 0.8rem;
+            background: var(--accent-green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-download:hover {
+            background: #1e7a1e;
+        }
+
+        .text-muted {
+            color: var(--light-gray);
+        }
+
+        /* Info Card */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .info-item {
+            padding: 1rem;
+            background: var(--dark-gray);
+            border-radius: 8px;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--light-gray);
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        /* Toast Notifications */
+        .muorbita-toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 1rem 1.5rem;
+            background: var(--white);
+            color: var(--black);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 10001;
+        }
+
+        .muorbita-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .muorbita-toast-success { border-left: 4px solid var(--accent-green); }
+        .muorbita-toast-error { border-left: 4px solid var(--red); }
+        .muorbita-toast-warning { border-left: 4px solid var(--yellow); }
+        .muorbita-toast-info { border-left: 4px solid var(--blue); }
+
         /* Responsive */
+        @media (max-width: 1200px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dashboard-main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 1024px) {
             .tech-grid {
                 grid-template-columns: 1fr;
@@ -759,6 +1406,42 @@
             .footer-content {
                 grid-template-columns: 1fr;
             }
+
+            .dashboard-header {
+                padding: 1rem 1.5rem;
+            }
+            
+            .dashboard-header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            #dashboard-content {
+                padding: 1.5rem;
+            }
+            
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .login-modal-content {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .reports-table {
+                font-size: 0.85rem;
+            }
+            
+            .reports-table th,
+            .reports-table td {
+                padding: 0.8rem;
+            }
         }
     </style>
 </head>
@@ -778,11 +1461,266 @@
                 <li><a onclick="showLanding()" href="#precios">Precios</a></li>
                 <li><a onclick="showLanding()" href="#pago">Comenzar</a></li>
                 
-                <li><a href="#pago" class="nav-cta">🔐 Área Cliente</a></li>
+                <li><a onclick="openClientArea()" class="nav-cta" style="cursor: pointer;">🔐 Área Cliente</a></li>
             </ul>
             <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
         </div>
     </nav>
+
+    <!-- ============================================
+         MODAL DE LOGIN/REGISTRO
+         ============================================ -->
+    <div id="muorbita-login-modal">
+        <div class="login-modal-content">
+            <button class="login-modal-close" onclick="closeLoginModal()">&times;</button>
+            
+            <div class="login-modal-header">
+                <img src="/Logo_v2.png" alt="Mu.Orbita" class="login-modal-logo">
+                <h2>Área Cliente</h2>
+                <p>Accede a tu dashboard de monitoreo satelital</p>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="auth-tabs">
+                <button id="tab-login" class="auth-tab active" onclick="switchAuthTab('login')">
+                    Iniciar Sesión
+                </button>
+                <button id="tab-register" class="auth-tab" onclick="switchAuthTab('register')">
+                    Activar Cuenta
+                </button>
+            </div>
+            
+            <!-- Formulario Login -->
+            <form id="login-form" class="auth-form" onsubmit="handleLogin(event)" style="display: block;">
+                <div id="login-error" class="modal-form-error"></div>
+                
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input 
+                        type="email" 
+                        id="login-email" 
+                        placeholder="tu@email.com" 
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password">Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="login-password" 
+                        placeholder="••••••••" 
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
+                
+                <button type="submit" class="btn-submit">Iniciar Sesión</button>
+                
+                <div class="form-footer">
+                    ¿Primera vez? <a href="#" onclick="switchAuthTab('register'); return false;">Activa tu cuenta</a>
+                </div>
+            </form>
+            
+            <!-- Formulario Registro/Activación -->
+            <form id="register-form" class="auth-form" onsubmit="handleRegister(event)" style="display: none;">
+                <div id="register-error" class="modal-form-error"></div>
+                
+                <p style="color: var(--light-gray); font-size: 0.85rem; margin-bottom: 1.2rem;">
+                    Si ya te registraste en nuestra web, activa tu cuenta creando una contraseña.
+                </p>
+                
+                <div class="form-group">
+                    <label for="register-email">Email de registro</label>
+                    <input 
+                        type="email" 
+                        id="register-email" 
+                        placeholder="tu@email.com" 
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-password">Nueva contraseña</label>
+                    <input 
+                        type="password" 
+                        id="register-password" 
+                        placeholder="Mínimo 8 caracteres" 
+                        required
+                        minlength="8"
+                        autocomplete="new-password"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-confirm-password">Confirmar contraseña</label>
+                    <input 
+                        type="password" 
+                        id="register-confirm-password" 
+                        placeholder="Repite la contraseña" 
+                        required
+                        minlength="8"
+                        autocomplete="new-password"
+                    >
+                </div>
+                
+                <button type="submit" class="btn-submit">Activar Cuenta</button>
+                
+                <div class="form-footer">
+                    ¿Ya tienes cuenta? <a href="#" onclick="switchAuthTab('login'); return false;">Inicia sesión</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================
+         VISTA DEL DASHBOARD
+         ============================================ -->
+    <div id="dashboard-view" class="view">
+        
+        <!-- Loader -->
+        <div id="dashboard-loader">
+            <div class="loader-spinner"></div>
+            <span class="loader-text">Cargando tu dashboard...</span>
+        </div>
+        
+        <!-- Dashboard Content -->
+        <div id="dashboard-content" style="display: none;">
+            
+            <!-- Header del Dashboard -->
+            <div class="dashboard-header">
+                <div class="dashboard-header-content">
+                    <div class="dashboard-user">
+                        <div id="client-avatar" class="dashboard-avatar">MO</div>
+                        <div class="dashboard-user-info">
+                            <h3 id="client-name">Cliente</h3>
+                            <p id="client-empresa">Empresa</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-actions">
+                        <button class="btn-back" onclick="showLanding()">
+                            ← Volver a inicio
+                        </button>
+                        <button class="btn-logout" onclick="MuOrbitaAuth.logout()">
+                            Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- KPIs -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">NDVI Actual</div>
+                    <div id="kpi-ndvi" class="kpi-value">-</div>
+                    <div class="kpi-subtitle">Índice de vegetación</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Estado Hídrico</div>
+                    <div id="kpi-ndwi" class="kpi-value">-</div>
+                    <div class="kpi-subtitle">NDWI medio</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Área con Estrés</div>
+                    <div id="kpi-stress" class="kpi-value">-</div>
+                    <div class="kpi-subtitle">NDVI < 0.35</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Estado General</div>
+                    <div id="kpi-vigor" class="kpi-value">-</div>
+                    <div id="kpi-last-update" class="kpi-subtitle">-</div>
+                </div>
+            </div>
+            
+            <!-- Main Grid -->
+            <div class="dashboard-main-grid">
+                
+                <!-- Columna izquierda: Gráfico + Mapa -->
+                <div>
+                    <!-- Gráfico de Series Temporales -->
+                    <div class="dashboard-card" style="margin-bottom: 1.5rem;">
+                        <div class="card-header">
+                            <h3>📈 Evolución de Índices</h3>
+                            <span style="font-size: 0.8rem; color: var(--light-gray);">Últimos 6 meses</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="timeseries-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mapa de la Finca -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>🗺️ Mi Finca</h3>
+                        </div>
+                        <div class="map-container">
+                            <div id="farm-map"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Columna derecha: Alertas + Info -->
+                <div>
+                    <!-- Alertas -->
+                    <div class="dashboard-card" style="margin-bottom: 1.5rem;">
+                        <div class="card-header">
+                            <h3>⚠️ Alertas Activas</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="alerts-container">
+                                <!-- Se llena dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Info de la Explotación -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>🌿 Mi Explotación</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <div class="info-label">Cultivo</div>
+                                    <div id="info-cultivo" class="info-value">-</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Superficie</div>
+                                    <div id="info-hectareas" class="info-value">-</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Ubicación</div>
+                                    <div id="info-ubicacion" class="info-value">-</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Próximo Análisis</div>
+                                    <div id="next-analysis" class="info-value">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tabla de Reportes -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>📄 Mis Reportes</h3>
+                    <span style="font-size: 0.8rem; color: var(--light-gray);">Últimos informes generados</span>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <div id="reports-container">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
 
     <div id="landing-view" class="view active">
         
@@ -1118,16 +2056,730 @@
     </div>
 
     <script>
+        // =============================================
+        // CONFIGURACIÓN DEL DASHBOARD
+        // =============================================
+        
+        const MUORBITA_CONFIG = {
+            // CAMBIAR EN PRODUCCIÓN A TU DOMINIO
+            API_BASE_URL: 'http://localhost:8000',
+            
+            // Storage keys
+            TOKEN_KEY: 'muorbita_token',
+            USER_KEY: 'muorbita_user',
+            
+            // Chart colors (tema tierra)
+            COLORS: {
+                ndvi: '#228B22',
+                ndwi: '#4169E1',
+                evi: '#DAA520',
+                stress: '#CC4444',
+                good: '#2E8B57',
+                warning: '#CC9933',
+                background: '#F9F7F2',
+                text: '#3E2B1D',
+                border: '#E6DDD0'
+            }
+        };
+
+        // =============================================
+        // UTILIDADES
+        // =============================================
+        
+        const MuOrbitaUtils = {
+            async apiRequest(endpoint, options = {}) {
+                const token = localStorage.getItem(MUORBITA_CONFIG.TOKEN_KEY);
+                
+                const headers = {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                };
+                
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+                
+                const response = await fetch(`${MUORBITA_CONFIG.API_BASE_URL}${endpoint}`, {
+                    ...options,
+                    headers
+                });
+                
+                if (response.status === 401) {
+                    MuOrbitaAuth.logout();
+                    throw new Error('Sesión expirada. Por favor, inicia sesión de nuevo.');
+                }
+                
+                return response;
+            },
+            
+            formatDate(dateString) {
+                if (!dateString) return '-';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
+            },
+            
+            formatNumber(num, decimals = 2) {
+                if (num === null || num === undefined) return '-';
+                return Number(num).toFixed(decimals);
+            },
+            
+            showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `muorbita-toast muorbita-toast-${type}`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => toast.classList.add('show'), 100);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+        };
+
+        // =============================================
+        // AUTENTICACIÓN
+        // =============================================
+        
+        const MuOrbitaAuth = {
+            isLoggedIn() {
+                return !!localStorage.getItem(MUORBITA_CONFIG.TOKEN_KEY);
+            },
+            
+            getCurrentUser() {
+                const userJson = localStorage.getItem(MUORBITA_CONFIG.USER_KEY);
+                return userJson ? JSON.parse(userJson) : null;
+            },
+            
+            async login(email, password) {
+                const response = await fetch(`${MUORBITA_CONFIG.API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Error al iniciar sesión');
+                }
+                
+                localStorage.setItem(MUORBITA_CONFIG.TOKEN_KEY, data.access_token);
+                localStorage.setItem(MUORBITA_CONFIG.USER_KEY, JSON.stringify(data.user));
+                
+                return data;
+            },
+            
+            async register(email, password, confirmPassword) {
+                const response = await fetch(`${MUORBITA_CONFIG.API_BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email,
+                        password,
+                        confirm_password: confirmPassword
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Error al activar cuenta');
+                }
+                
+                localStorage.setItem(MUORBITA_CONFIG.TOKEN_KEY, data.access_token);
+                localStorage.setItem(MUORBITA_CONFIG.USER_KEY, JSON.stringify(data.user));
+                
+                return data;
+            },
+            
+            logout() {
+                localStorage.removeItem(MUORBITA_CONFIG.TOKEN_KEY);
+                localStorage.removeItem(MUORBITA_CONFIG.USER_KEY);
+                showLanding();
+                const modal = document.getElementById('muorbita-login-modal');
+                if (modal) modal.style.display = 'none';
+                MuOrbitaUtils.showToast('Sesión cerrada', 'info');
+            },
+            
+            async verifyToken() {
+                try {
+                    const response = await MuOrbitaUtils.apiRequest('/auth/verify', { method: 'POST' });
+                    return response.ok;
+                } catch {
+                    return false;
+                }
+            }
+        };
+
+        // =============================================
+        // DASHBOARD
+        // =============================================
+        
+        const MuOrbitaDashboard = {
+            chartInstance: null,
+            mapInstance: null,
+            farmLayer: null,
+            
+            async init() {
+                try {
+                    this.showLoading(true);
+                    
+                    const dashboardData = await this.fetchDashboard();
+                    
+                    this.renderHeader(dashboardData.client);
+                    this.renderKPIs(dashboardData.kpis);
+                    this.renderAlerts(dashboardData.alerts);
+                    this.renderReports(dashboardData.recent_reports);
+                    this.renderNextAnalysis(dashboardData.next_analysis);
+                    this.renderClientInfo(dashboardData.client);
+                    
+                    const timeseriesData = await this.fetchTimeseries();
+                    this.renderChart(timeseriesData.timeseries);
+                    
+                    const farmData = await this.fetchFarm();
+                    this.renderMap(farmData);
+                    
+                    this.showLoading(false);
+                    
+                } catch (error) {
+                    console.error('Dashboard init error:', error);
+                    this.showLoading(false);
+                    MuOrbitaUtils.showToast('Error cargando dashboard', 'error');
+                }
+            },
+            
+            showLoading(show) {
+                const loader = document.getElementById('dashboard-loader');
+                const content = document.getElementById('dashboard-content');
+                
+                if (loader) loader.style.display = show ? 'flex' : 'none';
+                if (content) content.style.display = show ? 'none' : 'block';
+            },
+            
+            async fetchDashboard() {
+                const response = await MuOrbitaUtils.apiRequest('/api/me/dashboard');
+                if (!response.ok) throw new Error('Error obteniendo dashboard');
+                return response.json();
+            },
+            
+            async fetchTimeseries() {
+                const response = await MuOrbitaUtils.apiRequest('/api/me/timeseries');
+                if (!response.ok) throw new Error('Error obteniendo timeseries');
+                return response.json();
+            },
+            
+            async fetchFarm() {
+                const response = await MuOrbitaUtils.apiRequest('/api/me/farm');
+                if (!response.ok) throw new Error('Error obteniendo datos de finca');
+                return response.json();
+            },
+            
+            renderHeader(client) {
+                const nameEl = document.getElementById('client-name');
+                const empresaEl = document.getElementById('client-empresa');
+                const avatarEl = document.getElementById('client-avatar');
+                
+                if (nameEl) nameEl.textContent = client.name || 'Cliente';
+                if (empresaEl) empresaEl.textContent = client.empresa || '';
+                if (avatarEl) {
+                    const initials = (client.name || 'C')
+                        .split(' ')
+                        .map(n => n[0])
+                        .join('')
+                        .toUpperCase()
+                        .slice(0, 2);
+                    avatarEl.textContent = initials;
+                }
+            },
+            
+            renderClientInfo(client) {
+                const cultivoEl = document.getElementById('info-cultivo');
+                const hectareasEl = document.getElementById('info-hectareas');
+                const ubicacionEl = document.getElementById('info-ubicacion');
+                
+                if (cultivoEl) cultivoEl.textContent = this.capitalizeFirst(client.tipo_cultivo) || '-';
+                if (hectareasEl) hectareasEl.textContent = client.hectareas ? `${client.hectareas} ha` : '-';
+                if (ubicacionEl) ubicacionEl.textContent = client.ubicacion || '-';
+            },
+            
+            renderKPIs(kpis) {
+                if (!kpis) {
+                    document.getElementById('kpi-ndvi').textContent = '-';
+                    document.getElementById('kpi-ndwi').textContent = '-';
+                    document.getElementById('kpi-stress').textContent = '-';
+                    document.getElementById('kpi-vigor').textContent = 'Sin datos';
+                    return;
+                }
+                
+                const ndviEl = document.getElementById('kpi-ndvi');
+                if (ndviEl) {
+                    ndviEl.textContent = MuOrbitaUtils.formatNumber(kpis.ndvi_mean);
+                    ndviEl.className = 'kpi-value ' + this.getVigorClass(kpis.ndvi_mean);
+                }
+                
+                const ndwiEl = document.getElementById('kpi-ndwi');
+                if (ndwiEl) {
+                    ndwiEl.textContent = MuOrbitaUtils.formatNumber(kpis.ndwi_mean);
+                    ndwiEl.className = 'kpi-value ' + this.getWaterClass(kpis.ndwi_mean);
+                }
+                
+                const stressEl = document.getElementById('kpi-stress');
+                if (stressEl) {
+                    stressEl.textContent = `${MuOrbitaUtils.formatNumber(kpis.stress_area_pct, 1)}%`;
+                    stressEl.className = 'kpi-value ' + (kpis.stress_area_pct > 15 ? 'kpi-bad' : 'kpi-good');
+                }
+                
+                const vigorEl = document.getElementById('kpi-vigor');
+                if (vigorEl) {
+                    vigorEl.textContent = this.capitalizeFirst(kpis.vigor_status);
+                    vigorEl.className = 'kpi-value ' + this.getVigorStatusClass(kpis.vigor_status);
+                }
+                
+                const updateEl = document.getElementById('kpi-last-update');
+                if (updateEl && kpis.last_update) {
+                    updateEl.textContent = `Actualizado: ${MuOrbitaUtils.formatDate(kpis.last_update)}`;
+                }
+            },
+            
+            renderAlerts(alerts) {
+                const container = document.getElementById('alerts-container');
+                if (!container) return;
+                
+                if (!alerts || alerts.length === 0) {
+                    container.innerHTML = `
+                        <div class="alert-empty">
+                            <span>✓</span>
+                            <span>Sin alertas activas</span>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = alerts.map(alert => `
+                    <div class="alert-item alert-${alert.severity}">
+                        <div class="alert-header">
+                            <span class="alert-type">${this.getAlertIcon(alert.type)} ${this.getAlertTypeLabel(alert.type)}</span>
+                            <span class="alert-severity severity-${alert.severity}">${alert.severity.toUpperCase()}</span>
+                        </div>
+                        <p class="alert-message">${alert.message}</p>
+                        ${alert.zone ? `<span class="alert-zone">📍 ${alert.zone}</span>` : ''}
+                    </div>
+                `).join('');
+            },
+            
+            renderReports(reports) {
+                const container = document.getElementById('reports-container');
+                if (!container) return;
+                
+                if (!reports || reports.length === 0) {
+                    container.innerHTML = `
+                        <div style="padding: 2rem; text-align: center; color: var(--light-gray);">
+                            <p>No hay reportes disponibles</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = `
+                    <table class="reports-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Tipo</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reports.map(report => `
+                                <tr>
+                                    <td>${MuOrbitaUtils.formatDate(report.completed_at || report.created_at)}</td>
+                                    <td>${this.getAnalysisTypeLabel(report.analysis_type)}</td>
+                                    <td>
+                                        <span class="status-badge status-${report.status}">
+                                            ${this.getStatusLabel(report.status)}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        ${report.status === 'completed' 
+                                            ? `<button class="btn-download" onclick="MuOrbitaDashboard.downloadReport('${report.job_id}')">
+                                                📄 Ver PDF
+                                               </button>`
+                                            : '<span class="text-muted">-</span>'
+                                        }
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            },
+            
+            renderNextAnalysis(nextDate) {
+                const el = document.getElementById('next-analysis');
+                if (el) {
+                    el.textContent = nextDate ? MuOrbitaUtils.formatDate(nextDate) : 'Pendiente';
+                }
+            },
+            
+            renderChart(timeseries) {
+                const canvas = document.getElementById('timeseries-chart');
+                if (!canvas || !timeseries || timeseries.length === 0) return;
+                
+                if (this.chartInstance) {
+                    this.chartInstance.destroy();
+                }
+                
+                const ctx = canvas.getContext('2d');
+                
+                this.chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: timeseries.map(d => d.date),
+                        datasets: [
+                            {
+                                label: 'NDVI',
+                                data: timeseries.map(d => d.ndvi),
+                                borderColor: MUORBITA_CONFIG.COLORS.ndvi,
+                                backgroundColor: `${MUORBITA_CONFIG.COLORS.ndvi}20`,
+                                fill: true,
+                                tension: 0.3,
+                                pointRadius: 4,
+                                pointHoverRadius: 6
+                            },
+                            {
+                                label: 'NDWI',
+                                data: timeseries.map(d => d.ndwi),
+                                borderColor: MUORBITA_CONFIG.COLORS.ndwi,
+                                backgroundColor: 'transparent',
+                                fill: false,
+                                tension: 0.3,
+                                pointRadius: 3,
+                                pointHoverRadius: 5
+                            },
+                            {
+                                label: 'EVI',
+                                data: timeseries.map(d => d.evi),
+                                borderColor: MUORBITA_CONFIG.COLORS.evi,
+                                backgroundColor: 'transparent',
+                                fill: false,
+                                tension: 0.3,
+                                pointRadius: 3,
+                                pointHoverRadius: 5,
+                                borderDash: [5, 5]
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { intersect: false, mode: 'index' },
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { usePointStyle: true, padding: 20, font: { family: 'Inter', size: 12 } }
+                            },
+                            tooltip: {
+                                backgroundColor: '#3E2B1D',
+                                titleFont: { family: 'Inter', size: 13 },
+                                bodyFont: { family: 'Inter', size: 12 },
+                                padding: 12,
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.parsed.y.toFixed(3)}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { grid: { color: '#E6DDD020' }, ticks: { font: { family: 'Inter', size: 11 }, maxTicksLimit: 8 } },
+                            y: { min: 0, max: 1, grid: { color: '#E6DDD040' }, ticks: { font: { family: 'Inter', size: 11 }, callback: value => value.toFixed(1) } }
+                        }
+                    }
+                });
+            },
+            
+            renderMap(farmData) {
+                const container = document.getElementById('farm-map');
+                if (!container) return;
+                
+                if (!this.mapInstance) {
+                    this.mapInstance = L.map('farm-map').setView([37.5, -4.0], 8);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap'
+                    }).addTo(this.mapInstance);
+                }
+                
+                if (this.farmLayer) {
+                    this.mapInstance.removeLayer(this.farmLayer);
+                }
+                
+                if (farmData && farmData.geometry) {
+                    this.farmLayer = L.geoJSON(farmData, {
+                        style: { color: '#228B22', weight: 3, fillColor: '#228B22', fillOpacity: 0.2 },
+                        onEachFeature: (feature, layer) => {
+                            const props = feature.properties || {};
+                            layer.bindPopup(`
+                                <strong>${props.name || 'Mi Finca'}</strong><br>
+                                ${props.hectareas ? `${props.hectareas} ha` : ''}<br>
+                                ${props.tipo_cultivo || ''}<br>
+                                ${props.ubicacion || ''}
+                            `);
+                        }
+                    }).addTo(this.mapInstance);
+                    
+                    this.mapInstance.fitBounds(this.farmLayer.getBounds(), { padding: [50, 50] });
+                }
+                
+                setTimeout(() => this.mapInstance.invalidateSize(), 100);
+            },
+            
+            async downloadReport(jobId) {
+                try {
+                    const response = await MuOrbitaUtils.apiRequest(`/api/me/report/${jobId}/download`);
+                    const data = await response.json();
+                    
+                    if (data.pdf_url) {
+                        window.open(data.pdf_url, '_blank');
+                    } else if (data.download_url) {
+                        window.open(data.download_url, '_blank');
+                    } else {
+                        MuOrbitaUtils.showToast('Reporte no disponible aún', 'warning');
+                    }
+                } catch (error) {
+                    MuOrbitaUtils.showToast('Error descargando reporte', 'error');
+                }
+            },
+            
+            // Helpers
+            getVigorClass(ndvi) {
+                if (ndvi >= 0.6) return 'kpi-good';
+                if (ndvi >= 0.4) return 'kpi-warning';
+                return 'kpi-bad';
+            },
+            
+            getWaterClass(ndwi) {
+                if (ndwi >= 0.2) return 'kpi-good';
+                if (ndwi >= 0.1) return 'kpi-warning';
+                return 'kpi-bad';
+            },
+            
+            getVigorStatusClass(status) {
+                const map = { 'alto': 'kpi-good', 'moderado': 'kpi-warning', 'bajo': 'kpi-bad' };
+                return map[status] || '';
+            },
+            
+            getAlertIcon(type) {
+                const icons = { 'water': '💧', 'stress': '⚠️', 'thermal': '🌡️', 'anomaly': '🔍' };
+                return icons[type] || '📌';
+            },
+            
+            getAlertTypeLabel(type) {
+                const labels = { 'water': 'Hídrico', 'stress': 'Estrés', 'thermal': 'Térmico', 'anomaly': 'Anomalía' };
+                return labels[type] || type;
+            },
+            
+            getAnalysisTypeLabel(type) {
+                const labels = { 'completo': 'Baseline', 'bisemanal': 'Seguimiento', 'baseline': 'Baseline' };
+                return labels[type] || type;
+            },
+            
+            getStatusLabel(status) {
+                const labels = { 'completed': 'Completado', 'processing': 'En proceso', 'pending': 'Pendiente', 'failed': 'Error' };
+                return labels[status] || status;
+            },
+            
+            capitalizeFirst(str) {
+                if (!str) return '';
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            }
+        };
+
+        // =============================================
+        // UI HANDLERS
+        // =============================================
+        
+        function openClientArea() {
+            if (MuOrbitaAuth.isLoggedIn()) {
+                showDashboard();
+            } else {
+                openLoginModal();
+            }
+        }
+        
+        function openLoginModal() {
+            const modal = document.getElementById('muorbita-login-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    const emailInput = document.getElementById('login-email');
+                    if (emailInput) emailInput.focus();
+                }, 100);
+            }
+        }
+        
+        function closeLoginModal() {
+            const modal = document.getElementById('muorbita-login-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                const loginForm = document.getElementById('login-form');
+                const registerForm = document.getElementById('register-form');
+                if (loginForm) loginForm.reset();
+                if (registerForm) registerForm.reset();
+            }
+        }
+        
+        function switchAuthTab(tab) {
+            const loginTab = document.getElementById('tab-login');
+            const registerTab = document.getElementById('tab-register');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            
+            if (tab === 'login') {
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+            } else {
+                loginTab.classList.remove('active');
+                registerTab.classList.add('active');
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+            }
+        }
+        
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorEl = document.getElementById('login-error');
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Iniciando sesión...';
+                errorEl.style.display = 'none';
+                
+                await MuOrbitaAuth.login(email, password);
+                
+                closeLoginModal();
+                showDashboard();
+                MuOrbitaUtils.showToast('¡Bienvenido!', 'success');
+                
+            } catch (error) {
+                errorEl.textContent = error.message;
+                errorEl.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Iniciar Sesión';
+            }
+        }
+        
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            const errorEl = document.getElementById('register-error');
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            
+            if (password !== confirmPassword) {
+                errorEl.textContent = 'Las contraseñas no coinciden';
+                errorEl.style.display = 'block';
+                return;
+            }
+            
+            if (password.length < 8) {
+                errorEl.textContent = 'La contraseña debe tener al menos 8 caracteres';
+                errorEl.style.display = 'block';
+                return;
+            }
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Activando cuenta...';
+                errorEl.style.display = 'none';
+                
+                await MuOrbitaAuth.register(email, password, confirmPassword);
+                
+                closeLoginModal();
+                showDashboard();
+                MuOrbitaUtils.showToast('¡Cuenta activada correctamente!', 'success');
+                
+            } catch (error) {
+                errorEl.textContent = error.message;
+                errorEl.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Activar Cuenta';
+            }
+        }
+        
         function showLanding() {
             document.getElementById('landing-view').classList.add('active');
-            window.scrollTo(0, 0);
+            document.getElementById('dashboard-view').classList.remove('active');
+            updateNavigation(false);
+        }
+        
+        function showDashboard() {
+            document.getElementById('landing-view').classList.remove('active');
+            document.getElementById('dashboard-view').classList.add('active');
+            updateNavigation(true);
+            MuOrbitaDashboard.init();
+        }
+        
+        function updateNavigation(isInDashboard) {
+            const navCta = document.querySelector('.nav-cta');
+            
+            if (navCta) {
+                if (MuOrbitaAuth.isLoggedIn() && isInDashboard) {
+                    navCta.textContent = '🚪 Cerrar Sesión';
+                    navCta.onclick = () => MuOrbitaAuth.logout();
+                } else if (MuOrbitaAuth.isLoggedIn()) {
+                    navCta.textContent = '📊 Mi Dashboard';
+                    navCta.onclick = () => showDashboard();
+                } else {
+                    navCta.textContent = '🔐 Área Cliente';
+                    navCta.onclick = () => openClientArea();
+                }
+            }
         }
 
-        // ===================================
-        // LÓGICA DE LANDING PAGE
-        // ===================================
+        // =============================================
+        // LANDING PAGE - LÓGICA ORIGINAL
+        // =============================================
         
         document.addEventListener('DOMContentLoaded', function() {
+        
+            // --- Verificar sesión activa ---
+            if (MuOrbitaAuth.isLoggedIn()) {
+                MuOrbitaAuth.verifyToken().then(valid => {
+                    if (!valid) {
+                        MuOrbitaAuth.logout();
+                    } else {
+                        updateNavigation(false);
+                    }
+                });
+            }
+            
+            // --- Event listeners para modal ---
+            const modal = document.getElementById('muorbita-login-modal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) closeLoginModal();
+                });
+            }
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeLoginModal();
+            });
         
             // --- Menú móvil ---
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -1162,7 +2814,7 @@
                 anchor.addEventListener('click', function (e) {
                     const href = this.getAttribute('href');
                     
-                    if (href.startsWith('#') && href.length > 1 && href !== "#") {
+                    if (href && href.startsWith('#') && href.length > 1 && href !== "#") {
                         e.preventDefault();
                         const target = document.getElementById(href.substring(1));
                         if (target) {
@@ -1181,7 +2833,6 @@
             const passwordError = document.getElementById('password-error');
             const passwordStrengthBar = document.getElementById('password-strength-bar');
 
-            // Función para calcular fortaleza de contraseña
             function checkPasswordStrength(password) {
                 let strength = 0;
                 if (password.length >= 8) strength++;
@@ -1199,7 +2850,6 @@
                 }
             }
 
-            // Función para validar que coincidan
             function validatePasswords() {
                 const password = passwordInput.value;
                 const confirm = passwordConfirmInput.value;
@@ -1215,14 +2865,18 @@
                 }
             }
 
-            passwordInput.addEventListener('input', function() {
-                checkPasswordStrength(this.value);
-                if (passwordConfirmInput.value.length > 0) {
-                    validatePasswords();
-                }
-            });
+            if (passwordInput) {
+                passwordInput.addEventListener('input', function() {
+                    checkPasswordStrength(this.value);
+                    if (passwordConfirmInput.value.length > 0) {
+                        validatePasswords();
+                    }
+                });
+            }
 
-            passwordConfirmInput.addEventListener('input', validatePasswords);
+            if (passwordConfirmInput) {
+                passwordConfirmInput.addEventListener('input', validatePasswords);
+            }
 
             // IMPORTANTE: Stripe primero porque clona el formulario
             initializeStripe();
@@ -1253,18 +2907,15 @@
 
             console.log('>>> Creando mapa...');
             
-            // Centrar el mapa en España
             const paymentMap = L.map('payment-map').setView([40.416775, -3.703790], 6);
             
             console.log('>>> Mapa creado, añadiendo tiles...');
             
-            // Tiles de OpenStreetMap
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '© OpenStreetMap'
             }).addTo(paymentMap);
             
-            // Forzar redibujado del mapa
             setTimeout(function() {
                 paymentMap.invalidateSize();
                 console.log('>>> Mapa redibujado');
@@ -1278,19 +2929,13 @@
             const drawControl = new L.Control.Draw({
                 edit: {
                     featureGroup: drawnItems,
-                    poly: {
-                        allowIntersection: false
-                    }
+                    poly: { allowIntersection: false }
                 },
                 draw: {
                     polygon: {
                         allowIntersection: false,
                         showArea: true,
-                        shapeOptions: {
-                            color: '#00cc66',
-                            fillColor: '#00cc66',
-                            fillOpacity: 0.3
-                        }
+                        shapeOptions: { color: '#00cc66', fillColor: '#00cc66', fillOpacity: 0.3 }
                     },
                     polyline: false,
                     rectangle: false,
@@ -1311,23 +2956,18 @@
             paymentMap.on(L.Draw.Event.CREATED, function (event) {
                 const layer = event.layer;
                 
-                // Limpiar dibujos anteriores
                 drawnItems.clearLayers();
                 drawnItems.addLayer(layer);
 
-                // Calcular área usando Turf.js
                 const geojson = layer.toGeoJSON();
                 const areaInMeters = turf.area(geojson);
                 const areaInHectares = areaInMeters / 10000;
 
-                // Actualizar los campos del formulario
                 calculatedHectaresInput.value = `${areaInHectares.toFixed(2)} ha`;
                 hiddenHectaresInput.value = areaInHectares.toFixed(2);
 
-                // Guardar el GeoJSON para enviarlo al webhook
                 window.drawnPolygonGeoJSON = JSON.stringify(geojson);
 
-                // Habilitar el botón de pago
                 submitButton.disabled = false;
                 buttonText.textContent = 'Activar Monitoreo Satelital';
             });
@@ -1396,7 +3036,6 @@
                 newForm.addEventListener('submit', async function (event) {
                     event.preventDefault();
 
-                    // Validar contraseñas antes de enviar
                     const password = document.getElementById('password').value;
                     const passwordConfirm = document.getElementById('password-confirm').value;
                     
@@ -1429,6 +3068,7 @@
                         roi_geojson:  window.drawnPolygonGeoJSON || null
                     };
 
+                    // CAMBIAR EN PRODUCCIÓN
                     const WEBHOOK_URL = 'http://localhost:5678/webhook/webhook-new-client';
 
                     try {
