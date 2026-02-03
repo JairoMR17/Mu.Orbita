@@ -1015,6 +1015,21 @@
             color: var(--red);
         }
 
+        .btn-profile {
+    background: var(--near-black);
+    border: 1px solid var(--border-color);
+    color: var(--white);
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.btn-profile:hover {
+    background: var(--dark-gray);
+}
+
         /* Dashboard Content */
         #dashboard-content {
             max-width: 1400px;
@@ -1530,6 +1545,50 @@
             <div class="loader-spinner"></div>
             <span class="loader-text">Cargando tu dashboard...</span>
         </div>
+
+<!-- ============================================
+     MODAL DE PERFIL
+     ============================================ -->
+<div id="profile-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
+    <div class="login-modal-content" style="max-width: 450px;">
+        <button class="login-modal-close" onclick="closeProfileModal()">&times;</button>
+        
+        <div class="login-modal-header">
+            <h2>Mi Perfil</h2>
+            <p>Actualiza tus datos de contacto</p>
+        </div>
+        
+        <form id="profile-form" class="auth-form" onsubmit="saveProfile(event)">
+            <div id="profile-message" class="modal-form-error"></div>
+            
+            <div class="form-group">
+                <label for="profile-nombre">Nombre Completo</label>
+                <input type="text" id="profile-nombre" placeholder="Tu nombre completo">
+            </div>
+            
+            <div class="form-group">
+                <label for="profile-telefono">Teléfono</label>
+                <input type="tel" id="profile-telefono" placeholder="+34 600 000 000">
+            </div>
+            
+            <div class="form-group">
+                <label for="profile-empresa">Empresa / Explotación</label>
+                <input type="text" id="profile-empresa" placeholder="Nombre de tu empresa">
+            </div>
+            
+            <div class="form-group">
+                <label for="profile-email">Email</label>
+                <input type="email" id="profile-email" disabled style="opacity: 0.6;">
+                <p style="font-size: 0.75rem; color: var(--light-gray); margin-top: 0.3rem;">
+                    El email no se puede modificar
+                </p>
+            </div>
+            
+            <button type="submit" class="btn-submit">Guardar Cambios</button>
+        </form>
+    </div>
+</div>
+
         
         <!-- Dashboard Content -->
         <div id="dashboard-content" style="display: none;">
@@ -1544,12 +1603,9 @@
                             <p id="client-empresa">Empresa</p>
                         </div>
                     </div>
-                    <div class="dashboard-actions">
-                        <button class="btn-back" onclick="showLanding()">
-                            ← Volver a inicio
-                        </button>
-                        <button class="btn-logout" onclick="MuOrbitaAuth.logout()">
-                            Cerrar sesión
+                     <div class="dashboard-actions">
+                        <button class="btn-profile" onclick="openProfileModal()">
+                            ⚙️ Mi Perfil
                         </button>
                     </div>
                 </div>
@@ -3057,6 +3113,73 @@
             });
         }
 
+
+// --- FUNCIONES DE PERFIL ---
+function openProfileModal() {
+    const modal = document.getElementById('profile-modal');
+    modal.style.display = 'flex';
+    
+    // Cargar datos actuales del cliente
+    const clientData = JSON.parse(localStorage.getItem('muorbita_client') || '{}');
+    document.getElementById('profile-nombre').value = clientData.nombre || '';
+    document.getElementById('profile-telefono').value = clientData.telefono || '';
+    document.getElementById('profile-empresa').value = clientData.empresa || '';
+    document.getElementById('profile-email').value = clientData.email || '';
+}
+
+function closeProfileModal() {
+    document.getElementById('profile-modal').style.display = 'none';
+}
+
+async function saveProfile(event) {
+    event.preventDefault();
+    
+    const clientData = JSON.parse(localStorage.getItem('muorbita_client') || '{}');
+    const messageDiv = document.getElementById('profile-message');
+    
+    const updatedData = {
+        ...clientData,
+        nombre: document.getElementById('profile-nombre').value,
+        telefono: document.getElementById('profile-telefono').value,
+        empresa: document.getElementById('profile-empresa').value
+    };
+    
+    try {
+        // Guardar en localStorage
+        localStorage.setItem('muorbita_client', JSON.stringify(updatedData));
+        
+        // Actualizar UI del dashboard
+        document.getElementById('client-name').textContent = updatedData.nombre || 'Cliente';
+        document.getElementById('client-empresa').textContent = updatedData.empresa || '';
+        
+        // Actualizar avatar
+        if (updatedData.nombre) {
+            const initials = updatedData.nombre.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('client-avatar').textContent = initials;
+        }
+        
+        messageDiv.style.color = 'var(--accent-green)';
+        messageDiv.textContent = '✓ Datos guardados correctamente';
+        
+        setTimeout(() => {
+            closeProfileModal();
+            messageDiv.textContent = '';
+        }, 1500);
+        
+    } catch (error) {
+        messageDiv.style.color = 'var(--red)';
+        messageDiv.textContent = 'Error al guardar. Inténtalo de nuevo.';
+    }
+}
+
+// Cerrar modal al hacer clic fuera
+document.getElementById('profile-modal')?.addEventListener('click', function(e) {
+    if (e.target === this) closeProfileModal();
+});
+
+
+        
+        
         // --- FUNCIÓN: Inicializar Stripe ---
         let stripeInstance, cardElementInstance;
 
@@ -3163,6 +3286,7 @@
     </script>
 </body>
 </html>
+
 
 
 
