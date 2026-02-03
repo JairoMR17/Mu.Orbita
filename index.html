@@ -3130,29 +3130,27 @@ function openProfileModal() {
     const modal = document.getElementById('profile-modal');
     modal.style.display = 'flex';
     
-    // Cargar datos del cliente desde localStorage
+    // Cargar datos del cliente
     const clientData = MuOrbitaAuth.getCurrentUser() || {};
     
-    // Campos editables (pueden estar vacíos)
-    document.getElementById('profile-nombre').value = clientData.nombre || '';
-    document.getElementById('profile-telefono').value = clientData.telefono || '';
-    document.getElementById('profile-empresa').value = clientData.empresa || '';
-    
-    // Campos de solo lectura (datos existentes)
-    document.getElementById('profile-email-display').textContent = clientData.email || '-';
-    document.getElementById('profile-plan-display').textContent = clientData.plan || '-';
-    document.getElementById('profile-hectareas-display').textContent = clientData.hectareas ? `${clientData.hectareas} ha` : '-';
-    document.getElementById('profile-cultivo-display').textContent = formatCultivo(clientData.tipo_cultivo) || '-';
+    // Todos los campos en orden (los editables con su valor o vacío)
+    document.getElementById('profile-nombre').value = clientData.client_name || '';
+    document.getElementById('profile-email').value = clientData.email || '';
+    document.getElementById('profile-telefono').value = clientData.phone || '';
+    document.getElementById('profile-empresa').value = clientData.company || '';
+    document.getElementById('profile-hectareas').value = clientData.hectareas ? `${clientData.hectareas} ha` : '';
+    document.getElementById('profile-cultivo').value = formatCultivo(clientData.tipo_cultivo);
+    document.getElementById('profile-plan').value = clientData.plan || '';
 }
 
 function formatCultivo(tipo) {
     const cultivos = {
         'olive': 'Olivo',
-        'vineyard': 'Viñedo',
+        'vineyard': 'Viñedo', 
         'almond': 'Almendro',
         'other': 'Otro'
     };
-    return cultivos[tipo] || tipo || '-';
+    return cultivos[tipo] || tipo || '';
 }
 
 function closeProfileModal() {
@@ -3162,32 +3160,52 @@ function closeProfileModal() {
 async function saveProfile(event) {
     event.preventDefault();
     
-    const clientData = JSON.parse(localStorage.getItem('muorbita_client') || '{}');
     const messageDiv = document.getElementById('profile-message');
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Guardando...';
+    messageDiv.textContent = '';
     
     const updatedData = {
-        ...clientData,
-        nombre: document.getElementById('profile-nombre').value,
-        telefono: document.getElementById('profile-telefono').value,
-        empresa: document.getElementById('profile-empresa').value
+        client_name: document.getElementById('profile-nombre').value || null,
+        phone: document.getElementById('profile-telefono').value || null,
+        company: document.getElementById('profile-empresa').value || null
     };
     
     try {
-        // Guardar en localStorage
-        localStorage.setItem('muorbita_client', JSON.stringify(updatedData));
+        const token = localStorage.getItem(MUORBITA_CONFIG.TOKEN_KEY);
+        
+        const response = await fetch(MUORBITA_CONFIG.apiUrl('/auth/me'), {
+            method: 'PUT',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(updatedData)
+        });
+        
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.detail || 'Error al guardar');
+        }
+        
+        const updatedClient = await response.json();
+        
+        // Actualizar localStorage
+        localStorage.setItem(MUORBITA_CONFIG.USER_KEY, JSON.stringify(updatedClient));
         
         // Actualizar UI del dashboard
-        document.getElementById('client-name').textContent = updatedData.nombre || 'Cliente';
-        document.getElementById('client-empresa').textContent = updatedData.empresa || '';
+        document.getElementById('client-name').textContent = updatedClient.client_name || 'Cliente';
+        document.getElementById('client-empresa').textContent = updatedClient.company || '';
         
-        // Actualizar avatar
-        if (updatedData.nombre) {
-            const initials = updatedData.nombre.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        if (updatedClient.client_name) {
+            const initials = updatedClient.client_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
             document.getElementById('client-avatar').textContent = initials;
         }
         
         messageDiv.style.color = 'var(--accent-green)';
-        messageDiv.textContent = '✓ Datos guardados correctamente';
+        messageDiv.textContent = '✓ Perfil actualizado correctamente';
         
         setTimeout(() => {
             closeProfileModal();
@@ -3195,8 +3213,12 @@ async function saveProfile(event) {
         }, 1500);
         
     } catch (error) {
+        console.error('Error:', error);
         messageDiv.style.color = 'var(--red)';
-        messageDiv.textContent = 'Error al guardar. Inténtalo de nuevo.';
+        messageDiv.textContent = error.message || 'Error al guardar. Inténtalo de nuevo.';
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Guardar Cambios';
     }
 }
 
@@ -3314,6 +3336,7 @@ document.getElementById('profile-modal')?.addEventListener('click', function(e) 
     </script>
 </body>
 </html>
+
 
 
 
