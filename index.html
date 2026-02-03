@@ -1550,7 +1550,7 @@
      MODAL DE PERFIL
      ============================================ -->
 <div id="profile-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
-    <div class="login-modal-content" style="max-width: 500px;">
+    <div class="login-modal-content" style="max-width: 450px;">
         <button class="login-modal-close" onclick="closeProfileModal()">&times;</button>
         
         <div class="login-modal-header">
@@ -1561,48 +1561,39 @@
         <form id="profile-form" class="auth-form" onsubmit="saveProfile(event)" style="display: block;">
             <div id="profile-message" class="modal-form-error"></div>
             
-            <!-- SECCIÓN: Datos a completar -->
-            <div style="background: rgba(34, 139, 34, 0.1); border: 1px solid rgba(34, 139, 34, 0.3); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
-                <p style="font-size: 0.8rem; color: var(--accent-green); font-weight: 600; margin-bottom: 0.8rem;">📝 Completa tu perfil</p>
-                
-                <div class="form-group" style="margin-bottom: 0.8rem;">
-                    <label for="profile-nombre">Nombre Completo</label>
-                    <input type="text" id="profile-nombre" placeholder="Ej: Juan García López">
-                </div>
-                
-                <div class="form-group" style="margin-bottom: 0.8rem;">
-                    <label for="profile-telefono">Teléfono</label>
-                    <input type="tel" id="profile-telefono" placeholder="Ej: +34 600 123 456">
-                </div>
-                
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="profile-empresa">Empresa / Explotación</label>
-                    <input type="text" id="profile-empresa" placeholder="Ej: Cooperativa Olivarera del Sur">
-                </div>
+            <div class="form-group">
+                <label for="profile-nombre">Nombre Completo</label>
+                <input type="text" id="profile-nombre" placeholder="">
             </div>
             
-            <!-- SECCIÓN: Datos de tu cuenta (solo lectura) -->
-            <div style="background: var(--dark-gray); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
-                <p style="font-size: 0.8rem; color: var(--light-gray); font-weight: 600; margin-bottom: 0.8rem;">📋 Datos de tu cuenta</p>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
-                    <div>
-                        <p style="font-size: 0.75rem; color: var(--light-gray); margin-bottom: 0.2rem;">Email</p>
-                        <p id="profile-email-display" style="font-size: 0.9rem; color: var(--white); font-weight: 500;">-</p>
-                    </div>
-                    <div>
-                        <p style="font-size: 0.75rem; color: var(--light-gray); margin-bottom: 0.2rem;">Plan</p>
-                        <p id="profile-plan-display" style="font-size: 0.9rem; color: var(--white); font-weight: 500;">-</p>
-                    </div>
-                    <div>
-                        <p style="font-size: 0.75rem; color: var(--light-gray); margin-bottom: 0.2rem;">Hectáreas</p>
-                        <p id="profile-hectareas-display" style="font-size: 0.9rem; color: var(--white); font-weight: 500;">-</p>
-                    </div>
-                    <div>
-                        <p style="font-size: 0.75rem; color: var(--light-gray); margin-bottom: 0.2rem;">Cultivo</p>
-                        <p id="profile-cultivo-display" style="font-size: 0.9rem; color: var(--white); font-weight: 500;">-</p>
-                    </div>
-                </div>
+            <div class="form-group">
+                <label for="profile-email">Email</label>
+                <input type="email" id="profile-email" disabled style="opacity: 0.7; cursor: not-allowed;">
+            </div>
+            
+            <div class="form-group">
+                <label for="profile-telefono">Teléfono</label>
+                <input type="tel" id="profile-telefono" placeholder="">
+            </div>
+            
+            <div class="form-group">
+                <label for="profile-empresa">Empresa / Explotación</label>
+                <input type="text" id="profile-empresa" placeholder="">
+            </div>
+            
+            <div class="form-group">
+                <label for="profile-hectareas">Hectáreas</label>
+                <input type="text" id="profile-hectareas" disabled style="opacity: 0.7; cursor: not-allowed;">
+            </div>
+            
+            <div class="form-group">
+                <label for="profile-cultivo">Cultivo</label>
+                <input type="text" id="profile-cultivo" disabled style="opacity: 0.7; cursor: not-allowed;">
+            </div>
+            
+            <div class="form-group">
+                <label for="profile-plan">Plan</label>
+                <input type="text" id="profile-plan" disabled style="opacity: 0.7; cursor: not-allowed;">
             </div>
             
             <button type="submit" class="btn-submit">Guardar Cambios</button>
@@ -3323,6 +3314,7 @@ document.getElementById('profile-modal')?.addEventListener('click', function(e) 
     </script>
 </body>
 </html>
+
 
 
 
