@@ -1486,9 +1486,6 @@
                 <button id="tab-login" class="auth-tab active" onclick="switchAuthTab('login')">
                     Iniciar Sesión
                 </button>
-                <button id="tab-register" class="auth-tab" onclick="switchAuthTab('register')">
-                    Activar Cuenta
-                </button>
             </div>
             
             <!-- Formulario Login -->
@@ -1520,59 +1517,10 @@
                 <button type="submit" class="btn-submit">Iniciar Sesión</button>
                 
                 <div class="form-footer">
-                    ¿Primera vez? <a href="#" onclick="switchAuthTab('register'); return false;">Activa tu cuenta</a>
+                    <a href="#" onclick="alert('Contacta a info@muorbita.com para recuperar tu contraseña'); return false;">Olvidé mi contraseña</a>
                 </div>
             </form>
             
-            <!-- Formulario Registro/Activación -->
-            <form id="register-form" class="auth-form" onsubmit="handleRegister(event)" style="display: none;">
-                <div id="register-error" class="modal-form-error"></div>
-                
-                <p style="color: var(--light-gray); font-size: 0.85rem; margin-bottom: 1.2rem;">
-                    Si ya te registraste en nuestra web, activa tu cuenta creando una contraseña.
-                </p>
-                
-                <div class="form-group">
-                    <label for="register-email">Email de registro</label>
-                    <input 
-                        type="email" 
-                        id="register-email" 
-                        placeholder="tu@email.com" 
-                        required
-                        autocomplete="email"
-                    >
-                </div>
-                
-                <div class="form-group">
-                    <label for="register-password">Nueva contraseña</label>
-                    <input 
-                        type="password" 
-                        id="register-password" 
-                        placeholder="Mínimo 8 caracteres" 
-                        required
-                        minlength="8"
-                        autocomplete="new-password"
-                    >
-                </div>
-                
-                <div class="form-group">
-                    <label for="register-confirm-password">Confirmar contraseña</label>
-                    <input 
-                        type="password" 
-                        id="register-confirm-password" 
-                        placeholder="Repite la contraseña" 
-                        required
-                        minlength="8"
-                        autocomplete="new-password"
-                    >
-                </div>
-                
-                <button type="submit" class="btn-submit">Activar Cuenta</button>
-                
-                <div class="form-footer">
-                    ¿Ya tienes cuenta? <a href="#" onclick="switchAuthTab('login'); return false;">Inicia sesión</a>
-                </div>
-            </form>
         </div>
     </div>
 
@@ -1923,11 +1871,6 @@
 
                     <form id="payment-form">
                         <div class="form-group">
-                            <label class="form-label">Nombre Completo</label>
-                            <input type="text" class="form-input" id="name" placeholder="Juan García López" required>
-                        </div>
-
-                        <div class="form-group">
                             <label class="form-label">Email</label>
                             <input type="email" class="form-input" id="email" placeholder="juan@explotacion.com" required>
                         </div>
@@ -1945,16 +1888,6 @@
                             <label class="form-label">Confirmar Contraseña</label>
                             <input type="password" class="form-input" id="password-confirm" placeholder="Repite la contraseña" required minlength="8">
                             <div class="form-error" id="password-error">Las contraseñas no coinciden</div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Teléfono</label>
-                            <input type="tel" class="form-input" id="phone" placeholder="+34 600 000 000" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Empresa / Explotación</label>
-                            <input type="text" class="form-input" id="empresa" placeholder="Cooperativa Olivarera del Sur" required>
                         </div>
 
                         <div class="form-group">
@@ -3191,11 +3124,8 @@
                     buttonText.textContent = 'Enviando...';
 
                     const formData = {
-                        nombre:       document.getElementById('name').value,
                         email:        document.getElementById('email').value,
                         password:     document.getElementById('password').value,
-                        telefono:     document.getElementById('phone').value,
-                        empresa:      document.getElementById('empresa').value,
                         hectareas:    document.getElementById('hectares').value,
                         tipo_cultivo: document.getElementById('crop').value,
                         plan:         document.getElementById('plan').value,
@@ -3237,6 +3167,7 @@
     </script>
 </body>
 </html>
+
 
 
 
