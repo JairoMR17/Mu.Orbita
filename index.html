@@ -1550,37 +1550,65 @@
      MODAL DE PERFIL
      ============================================ -->
 <div id="profile-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
-    <div class="login-modal-content" style="max-width: 450px;">
+    <div class="login-modal-content" style="max-width: 500px;">
         <button class="login-modal-close" onclick="closeProfileModal()">&times;</button>
         
         <div class="login-modal-header">
             <h2>Mi Perfil</h2>
-            <p>Actualiza tus datos de contacto</p>
+            <p>Gestiona tu información de cuenta</p>
         </div>
         
         <form id="profile-form" class="auth-form" onsubmit="saveProfile(event)" style="display: block;">
             <div id="profile-message" class="modal-form-error"></div>
             
-            <div class="form-group">
-                <label for="profile-nombre">Nombre Completo</label>
-                <input type="text" id="profile-nombre" placeholder="Tu nombre completo">
+            <!-- SECCIÓN: Datos a completar -->
+            <div style="background: rgba(34, 139, 34, 0.1); border: 1px solid rgba(34, 139, 34, 0.3); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+                <p style="font-size: 0.8rem; color: var(--accent-green); font-weight: 600; margin-bottom: 0.8rem;">📝 Completa tu perfil</p>
+                
+                <div class="form-group" style="margin-bottom: 0.8rem;">
+                    <label for="profile-nombre">Nombre Completo</label>
+                    <input type="text" id="profile-nombre" placeholder="Ej: Juan García López">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 0.8rem;">
+                    <label for="profile-telefono">Teléfono</label>
+                    <input type="tel" id="profile-telefono" placeholder="Ej: +34 600 123 456">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="profile-empresa">Empresa / Explotación</label>
+                    <input type="text" id="profile-empresa" placeholder="Ej: Cooperativa Olivarera del Sur">
+                </div>
             </div>
             
-            <div class="form-group">
-                <label for="profile-telefono">Teléfono</label>
-                <input type="tel" id="profile-telefono" placeholder="+34 600 000 000">
+            <!-- SECCIÓN: Datos de tu cuenta (solo lectura) -->
+            <div style="background: var(--dark-gray); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+                <p style="font-size: 0.8rem; color: var(--light-gray); font-weight: 600; margin-bottom: 0.8rem;">📋 Datos de tu cuenta</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+                    <div>
+                        <p style="font-size: 0.75rem; color: var(--light-gray); margin-bottom: 0.2rem;">Email</p>
+                        <p id="profile-email-display" style="font-size: 0.9rem; color: var(--white); font-weight: 500;">-</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 0.75rem; color: var(--light-gray); margin-bottom: 0.2rem;">Plan</p>
+                        <p id="profile-plan-display" style="font-size: 0.9rem; color: var(--white); font-weight: 500;">-</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 0.75rem; color: var(--light-gray); margin-bottom: 0.2rem;">Hectáreas</p>
+                        <p id="profile-hectareas-display" style="font-size: 0.9rem; color: var(--white); font-weight: 500;">-</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 0.75rem; color: var(--light-gray); margin-bottom: 0.2rem;">Cultivo</p>
+                        <p id="profile-cultivo-display" style="font-size: 0.9rem; color: var(--white); font-weight: 500;">-</p>
+                    </div>
+                </div>
             </div>
             
-            <div class="form-group">
-                <label for="profile-empresa">Empresa / Explotación</label>
-                <input type="text" id="profile-empresa" placeholder="Nombre de tu empresa">
-            </div>
-                      
             <button type="submit" class="btn-submit">Guardar Cambios</button>
         </form>
     </div>
 </div>
-
         
         <!-- Dashboard Content -->
         <div id="dashboard-content" style="display: none;">
@@ -3111,12 +3139,29 @@ function openProfileModal() {
     const modal = document.getElementById('profile-modal');
     modal.style.display = 'flex';
     
-    // Cargar datos actuales del cliente
-    const clientData = JSON.parse(localStorage.getItem('muorbita_client') || '{}');
+    // Cargar datos del cliente desde localStorage
+    const clientData = MuOrbitaAuth.getCurrentUser() || {};
+    
+    // Campos editables (pueden estar vacíos)
     document.getElementById('profile-nombre').value = clientData.nombre || '';
     document.getElementById('profile-telefono').value = clientData.telefono || '';
     document.getElementById('profile-empresa').value = clientData.empresa || '';
-    document.getElementById('profile-email').value = clientData.email || '';
+    
+    // Campos de solo lectura (datos existentes)
+    document.getElementById('profile-email-display').textContent = clientData.email || '-';
+    document.getElementById('profile-plan-display').textContent = clientData.plan || '-';
+    document.getElementById('profile-hectareas-display').textContent = clientData.hectareas ? `${clientData.hectareas} ha` : '-';
+    document.getElementById('profile-cultivo-display').textContent = formatCultivo(clientData.tipo_cultivo) || '-';
+}
+
+function formatCultivo(tipo) {
+    const cultivos = {
+        'olive': 'Olivo',
+        'vineyard': 'Viñedo',
+        'almond': 'Almendro',
+        'other': 'Otro'
+    };
+    return cultivos[tipo] || tipo || '-';
 }
 
 function closeProfileModal() {
@@ -3278,6 +3323,7 @@ document.getElementById('profile-modal')?.addEventListener('click', function(e) 
     </script>
 </body>
 </html>
+
 
 
 
