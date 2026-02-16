@@ -2376,7 +2376,7 @@
                 };
             },
             
-            async fetchFarm() {
+          async fetchFarm() {
                 const response = await MuOrbitaUtils.apiRequest('/dashboard/parcels');
                 if (!response.ok) return null;
                 
@@ -2387,14 +2387,37 @@
                 const parcel = parcels[0];
                 if (!parcel.roi_geojson) return null;
                 
+                // Parsear GeoJSON si viene como string
+                let geometry;
+                try {
+                    geometry = typeof parcel.roi_geojson === 'string' 
+                        ? JSON.parse(parcel.roi_geojson) 
+                        : parcel.roi_geojson;
+                } catch (e) {
+                    console.error('Error parseando GeoJSON:', e);
+                    return null;
+                }
+                
+                // Extraer ubicación del centroide si no hay province
+                let ubicacion = parcel.province || parcel.location || '';
+                if (!ubicacion && geometry && geometry.coordinates) {
+                    try {
+                        const centroid = turf.centroid({ type: 'Feature', geometry: geometry });
+                        const [lng, lat] = centroid.geometry.coordinates;
+                        ubicacion = `${lat.toFixed(4)}°N, ${Math.abs(lng).toFixed(4)}°W`;
+                    } catch (e) {
+                        console.warn('No se pudo calcular centroide:', e);
+                    }
+                }
+                
                 return {
                     type: 'Feature',
-                    geometry: parcel.roi_geojson,
+                    geometry: geometry,
                     properties: {
                         name: parcel.parcel_name,
                         hectareas: parcel.hectares,
                         tipo_cultivo: parcel.crop_type,
-                        ubicacion: parcel.province
+                        ubicacion: ubicacion
                     }
                 };
             },
@@ -2635,7 +2658,7 @@
                 });
             },
             
-            renderMap(farmData) {
+                renderMap(farmData) {
                 const container = document.getElementById('farm-map');
                 if (!container) return;
                 
@@ -2665,6 +2688,13 @@
                     }).addTo(this.mapInstance);
                     
                     this.mapInstance.fitBounds(this.farmLayer.getBounds(), { padding: [50, 50] });
+                    
+                    // Actualizar ubicación en Mi Explotación si está disponible
+                    const props = farmData.properties || {};
+                    const ubicacionEl = document.getElementById('info-ubicacion');
+                    if (ubicacionEl && props.ubicacion) {
+                        ubicacionEl.textContent = props.ubicacion;
+                    }
                 }
                 
                 setTimeout(() => this.mapInstance.invalidateSize(), 100);
@@ -3336,6 +3366,7 @@ document.getElementById('profile-modal')?.addEventListener('click', function(e) 
     </script>
 </body>
 </html>
+
 
 
 
