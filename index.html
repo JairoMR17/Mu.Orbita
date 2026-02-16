@@ -2376,7 +2376,7 @@
                 };
             },
             
-          async fetchFarm() {
+async fetchFarm() {
                 const response = await MuOrbitaUtils.apiRequest('/dashboard/parcels');
                 if (!response.ok) return null;
                 
@@ -2387,14 +2387,43 @@
                 const parcel = parcels[0];
                 if (!parcel.roi_geojson) return null;
                 
-                // Parsear GeoJSON si viene como string
+                console.log('>>> roi_geojson raw:', parcel.roi_geojson);
+                console.log('>>> roi_geojson type:', typeof parcel.roi_geojson);
+                
+                // Parsear GeoJSON - manejar múltiples niveles de encoding
                 let geometry;
                 try {
-                    geometry = typeof parcel.roi_geojson === 'string' 
-                        ? JSON.parse(parcel.roi_geojson) 
-                        : parcel.roi_geojson;
+                    let parsed = parcel.roi_geojson;
+                    
+                    // Parsear mientras sea string (puede haber doble encoding)
+                    while (typeof parsed === 'string') {
+                        parsed = JSON.parse(parsed);
+                    }
+                    
+                    console.log('>>> parsed GeoJSON:', parsed);
+                    console.log('>>> parsed type:', parsed.type);
+                    
+                    // Extraer geometry según la estructura
+                    if (parsed.type === 'Feature') {
+                        geometry = parsed.geometry;
+                    } else if (parsed.type === 'FeatureCollection' && parsed.features && parsed.features.length > 0) {
+                        geometry = parsed.features[0].geometry;
+                    } else if (parsed.type === 'Polygon' || parsed.type === 'MultiPolygon') {
+                        geometry = parsed;
+                    } else {
+                        console.error('Estructura GeoJSON no reconocida:', parsed);
+                        return null;
+                    }
+                    
+                    console.log('>>> Final geometry:', geometry);
+                    
                 } catch (e) {
                     console.error('Error parseando GeoJSON:', e);
+                    return null;
+                }
+                
+                if (!geometry || !geometry.coordinates) {
+                    console.error('Geometry inválida o sin coordenadas');
                     return null;
                 }
                 
@@ -3366,6 +3395,7 @@ document.getElementById('profile-modal')?.addEventListener('click', function(e) 
     </script>
 </body>
 </html>
+
 
 
 
