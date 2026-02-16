@@ -2716,7 +2716,10 @@ async fetchFarm() {
                         }
                     }).addTo(this.mapInstance);
                     
-                    this.mapInstance.fitBounds(this.farmLayer.getBounds(), { padding: [50, 50] });
+                   this.mapInstance.fitBounds(this.farmLayer.getBounds(), { 
+                        padding: [50, 50],
+                        maxZoom: 15 
+                    });
                     
                     // Actualizar ubicación en Mi Explotación si está disponible
                     const props = farmData.properties || {};
@@ -3395,6 +3398,7 @@ document.getElementById('profile-modal')?.addEventListener('click', function(e) 
     </script>
 </body>
 </html>
+
 
 
 
