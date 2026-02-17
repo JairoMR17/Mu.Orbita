@@ -2427,17 +2427,22 @@
                     this.renderChart(timeseriesData.timeseries);
                     
 const farmData = await this.fetchFarm();
-// Preparar datos de imágenes satelitales desde KPIs
-const satelliteData = {
-    bounds: dashboardData.kpis ? {
-        south: dashboardData.kpis.bounds_south,
-        west: dashboardData.kpis.bounds_west,
-        north: dashboardData.kpis.bounds_north,
-        east: dashboardData.kpis.bounds_east
-    } : null,
-    images: dashboardData.images || null,
-    job_id: dashboardData.job_id || null
-};
+
+// Cargar datos del mapa con capas satelitales
+let satelliteData = null;
+try {
+    const mapDataResponse = await MuOrbitaUtils.apiRequest('/dashboard/map-data');
+    if (mapDataResponse && mapDataResponse.bounds) {
+        satelliteData = {
+            bounds: mapDataResponse.bounds,
+            images: mapDataResponse.images,
+            job_id: mapDataResponse.job_id
+        };
+    }
+} catch (e) {
+    console.log('No satellite data available:', e);
+}
+                    
 this.renderMap(farmData, satelliteData);
                     
                     this.showLoading(false);
@@ -3871,6 +3876,7 @@ class MuOrbitaSatelliteLayers {
     </script>
 </body>
 </html>
+
 
 
 
