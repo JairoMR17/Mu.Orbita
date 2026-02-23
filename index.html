@@ -2693,8 +2693,9 @@ async fetchFarm() {
                         updateEl.textContent = `Actualizado: ${MuOrbitaUtils.formatDate(kpis.last_update)}`;
                     } else {
                         updateEl.textContent = '-';
-                    }
-                },
+                   }
+                }
+            },
             
             renderAlerts(alerts) {
                 const container = document.getElementById('alerts-container');
@@ -3925,6 +3926,7 @@ class MuOrbitaSatelliteLayers {
     </script>
 </body>
 </html>
+
 
 
 
