@@ -2491,10 +2491,14 @@ this.renderMap(farmData, satelliteData);
                     },
                     kpis: {
                         ndvi_mean: summary.avg_ndvi,
-                        ndwi_mean: null,
-                        stress_area_pct: summary.alerts_count > 0 ? 15 : 5,
+                        ndwi_mean: summary.avg_ndwi || null,
+                        stress_area_pct: summary.stress_area_pct || (summary.alerts_count > 0 ? 15 : 5),
                         vigor_status: summary.avg_ndvi >= 0.6 ? 'alto' : summary.avg_ndvi >= 0.4 ? 'moderado' : 'bajo',
-                        last_update: summary.last_analysis_date
+                        last_update: summary.last_analysis_date,
+                        pheno_phase: summary.pheno_phase || null,
+                        pheno_status: summary.pheno_status || null,
+                        ndvi_expected: summary.ndvi_expected || null,
+                        ndvi_deviation_pct: summary.ndvi_deviation_pct || null
                     },
                     alerts: alerts.map(a => ({
                         type: a.alert_type,
@@ -2672,15 +2676,25 @@ async fetchFarm() {
                 
                 const vigorEl = document.getElementById('kpi-vigor');
                 if (vigorEl) {
-                    vigorEl.textContent = this.capitalizeFirst(kpis.vigor_status);
-                    vigorEl.className = 'kpi-value ' + this.getVigorStatusClass(kpis.vigor_status);
+                    if (kpis.pheno_status && kpis.pheno_status !== 'sin_datos') {
+                        vigorEl.textContent = this.getPhenoStatusLabel(kpis.pheno_status, kpis.ndvi_deviation_pct, kpis.pheno_phase);
+                        vigorEl.className = 'kpi-value ' + this.getPhenoStatusClass(kpis.pheno_status);
+                    } else {
+                        vigorEl.textContent = this.capitalizeFirst(kpis.vigor_status);
+                        vigorEl.className = 'kpi-value ' + this.getVigorStatusClass(kpis.vigor_status);
+                    }
                 }
                 
                 const updateEl = document.getElementById('kpi-last-update');
-                if (updateEl && kpis.last_update) {
-                    updateEl.textContent = `Actualizado: ${MuOrbitaUtils.formatDate(kpis.last_update)}`;
+                if (updateEl) {
+                    if (kpis.pheno_phase && kpis.pheno_phase !== 'No definida') {
+                        updateEl.textContent = `📅 ${kpis.pheno_phase}`;
+                    } else if (kpis.last_update) {
+                        updateEl.textContent = `Actualizado: ${MuOrbitaUtils.formatDate(kpis.last_update)}`;
+                    } else {
+                        updateEl.textContent = '-';
+                    }
                 }
-            },
             
             renderAlerts(alerts) {
                 const container = document.getElementById('alerts-container');
@@ -2969,6 +2983,41 @@ async fetchFarm() {
             getVigorStatusClass(status) {
                 const map = { 'alto': 'kpi-good', 'moderado': 'kpi-warning', 'bajo': 'kpi-bad' };
                 return map[status] || '';
+            },
+
+// ========== SEMÁFORO FENOLÓGICO v3.2 ==========
+            getPhenoStatusColor(phenoStatus) {
+                const colors = {
+                    'adelantado': '#2196F3',
+                    'normal':     '#4CAF50',
+                    'retrasado':  '#FF9800',
+                    'critico':    '#F44336',
+                    'sin_datos':  '#9E9E9E'
+                };
+                return colors[phenoStatus] || colors['sin_datos'];
+            },
+            
+            getPhenoStatusLabel(phenoStatus, deviationPct, phenoPhase) {
+                if (!phenoStatus || phenoStatus === 'sin_datos') return 'Sin datos';
+                const deviation = deviationPct ? Math.abs(deviationPct).toFixed(1) : '?';
+                switch (phenoStatus) {
+                    case 'adelantado': return `Superior (+${deviation}%)`;
+                    case 'normal': return `Normal`;
+                    case 'retrasado': return `Inferior (-${deviation}%)`;
+                    case 'critico': return `Crítico (-${deviation}%)`;
+                    default: return 'Sin datos';
+                }
+            },
+            
+            getPhenoStatusClass(phenoStatus) {
+                const classes = {
+                    'adelantado': 'kpi-good',
+                    'normal':     'kpi-good',
+                    'retrasado':  'kpi-warning',
+                    'critico':    'kpi-bad',
+                    'sin_datos':  ''
+                };
+                return classes[phenoStatus] || '';
             },
             
             getAlertIcon(type) {
@@ -3876,6 +3925,7 @@ class MuOrbitaSatelliteLayers {
     </script>
 </body>
 </html>
+
 
 
 
