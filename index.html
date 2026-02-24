@@ -2874,19 +2874,16 @@ async fetchFarm() {
     if (!this.mapInstance) {
         this.mapInstance = L.map('farm-map', { zoomControl: true }).setView([37.5, -4.0], 8);
         
-        // Capa base satelital (mejor para agricultura)
+// Capa base satelital (mejor para agricultura)
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles © Esri',
             maxZoom: 19
-        }).addTo(this.mapInstance);
-    }
+        }).addTo(paymentMap);
 
-    // Capa de etiquetas (ciudades, carreteras) encima
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19,
-        attribution: ''
-    }).addTo(paymentMap);
-                    
+        // Capa de etiquetas (ciudades, carreteras) encima
+        L.tileLayer('https://services.arcgisonline.com/arcgis/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19
+        }).addTo(paymentMap);
     // Remover capa de finca anterior
     if (this.farmLayer) {
         this.mapInstance.removeLayer(this.farmLayer);
@@ -3932,6 +3929,7 @@ class MuOrbitaSatelliteLayers {
     </script>
 </body>
 </html>
+
 
 
 
