@@ -3358,9 +3358,9 @@ async fetchFarm() {
             
             console.log('>>> Mapa creado, añadiendo tiles...');
             
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 maxZoom: 19,
-                attribution: '© OpenStreetMap'
+                attribution: '© Esri'
             }).addTo(paymentMap);
             
             setTimeout(function() {
@@ -3926,6 +3926,7 @@ class MuOrbitaSatelliteLayers {
     </script>
 </body>
 </html>
+
 
 
 
