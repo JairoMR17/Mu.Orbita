@@ -2866,28 +2866,28 @@ async fetchFarm() {
                 });
             },
             
-                renderMap(farmData, satelliteData = null) {
-    const container = document.getElementById('farm-map');
-    if (!container) return;
+   renderMap(farmData, satelliteData = null) {
+        const container = document.getElementById('farm-map');
+        if (!container) return;
     
-    // Inicializar mapa base
-    if (!this.mapInstance) {
-        this.mapInstance = L.map('farm-map', { zoomControl: true }).setView([37.5, -4.0], 8);
+        if (!this.mapInstance) {
+            this.mapInstance = L.map('farm-map', { zoomControl: true }).setView([37.5, -4.0], 8);
         
-// Capa base satelital (mejor para agricultura)
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles © Esri',
-            maxZoom: 19
-        }).addTo(paymentMap);
+            // Capa base satelital
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles © Esri',
+                maxZoom: 19
+            }).addTo(this.mapInstance);
 
-        // Capa de etiquetas (ciudades, carreteras) encima
-        L.tileLayer('https://services.arcgisonline.com/arcgis/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
-            maxZoom: 19
-        }).addTo(paymentMap);
-    // Remover capa de finca anterior
-    if (this.farmLayer) {
-        this.mapInstance.removeLayer(this.farmLayer);
-    }
+            // Capa de etiquetas (ciudades, carreteras) encima
+            L.tileLayer('https://services.arcgisonline.com/arcgis/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+                maxZoom: 19
+            }).addTo(this.mapInstance);
+        }
+    
+        if (this.farmLayer) {
+            this.mapInstance.removeLayer(this.farmLayer);
+        }
     
     // Añadir polígono de la finca
     if (farmData && farmData.geometry) {
@@ -3929,6 +3929,7 @@ class MuOrbitaSatelliteLayers {
     </script>
 </body>
 </html>
+
 
 
 
