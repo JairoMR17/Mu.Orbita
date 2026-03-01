@@ -2432,12 +2432,15 @@ const farmData = await this.fetchFarm();
 let satelliteData = null;
 try {
     const mapDataResponse = await MuOrbitaUtils.apiRequest('/dashboard/map-data');
-    if (mapDataResponse && mapDataResponse.bounds) {
-        satelliteData = {
-            bounds: mapDataResponse.bounds,
-            images: mapDataResponse.images,
-            job_id: mapDataResponse.job_id
-        };
+    if (mapDataResponse.ok) {
+        const mapData = await mapDataResponse.json();
+        if (mapData.bounds && mapData.has_satellite_layers) {
+            satelliteData = {
+                bounds: mapData.bounds,
+                images: mapData.images,
+                job_id: mapData.job_id
+            };
+        }
     }
 } catch (e) {
     console.log('No satellite data available:', e);
@@ -3933,6 +3936,7 @@ class MuOrbitaSatelliteLayers {
     </script>
 </body>
 </html>
+
 
 
 
