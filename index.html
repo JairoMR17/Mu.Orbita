@@ -3735,10 +3735,13 @@ class MuOrbitaSatelliteLayers {
             [jobData.bounds.north, jobData.bounds.east]
         );
         
-        // Cargar cada imagen disponible
+        // v5.5: Preferir versiones _WEB (overlay limpio para Leaflet)
+        // Si no existen _WEB (jobs antiguos), usar la versión estándar
         if (jobData.images) {
-            for (const [layerId, url] of Object.entries(jobData.images)) {
-                if (this.layerDefs[layerId] && url) {
+            for (const [layerId, def] of Object.entries(this.layerDefs)) {
+                const webKey = `${layerId}_WEB`;
+                const url = jobData.images[webKey] || jobData.images[layerId];
+                if (url) {
                     this.layers[layerId] = {
                         leafletLayer: L.imageOverlay(url, this.bounds, {
                             opacity: this.config.opacity,
@@ -3936,6 +3939,7 @@ class MuOrbitaSatelliteLayers {
     </script>
 </body>
 </html>
+
 
 
 
