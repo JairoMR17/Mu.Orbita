@@ -2495,8 +2495,8 @@ this.renderMap(farmData, satelliteData);
                     kpis: {
                         ndvi_mean: summary.avg_ndvi,
                         ndwi_mean: summary.avg_ndwi || null,
-                        stress_area_pct: summary.stress_area_pct || (summary.alerts_count > 0 ? 15 : 5),
-                        vigor_status: summary.avg_ndvi >= 0.6 ? 'alto' : summary.avg_ndvi >= 0.4 ? 'moderado' : 'bajo',
+                        stress_area_pct: summary.stress_area_pct ?? 0,
+                        vigor_status: summary.avg_ndvi != null ? (summary.avg_ndvi >= 0.6 ? 'alto' : summary.avg_ndvi >= 0.4 ? 'moderado' : 'bajo') : 'Sin datos',
                         last_update: summary.last_analysis_date,
                         pheno_phase: summary.pheno_phase || null,
                         pheno_status: summary.pheno_status || null,
@@ -3939,6 +3939,7 @@ class MuOrbitaSatelliteLayers {
     </script>
 </body>
 </html>
+
 
 
 
