@@ -2937,18 +2937,24 @@ async fetchFarm() {
             showLegend: true
         });
         
-        // Construir URLs de imágenes
-        const jobId = satelliteData.job_id;
+        // Convertir URLs relativas a absolutas para que Leaflet las cargue desde Railway
+        const baseUrl = MUORBITA_CONFIG.API_BASE_URL;
+        const absoluteImages = {};
+        if (satelliteData.images) {
+            for (const [key, relUrl] of Object.entries(satelliteData.images)) {
+                absoluteImages[key] = relUrl.startsWith('http') ? relUrl : `${baseUrl}${relUrl}`;
+            }
+        }
         const imageData = {
             bounds: satelliteData.bounds,
-            images: satelliteData.images || (jobId ? {
-                NDVI: `/api/images/${jobId}/PNG_NDVI.png`,
-                NDWI: `/api/images/${jobId}/PNG_NDWI.png`,
-                EVI: `/api/images/${jobId}/PNG_EVI.png`,
-                NDCI: `/api/images/${jobId}/PNG_NDCI.png`,
-                SAVI: `/api/images/${jobId}/PNG_SAVI.png`,
-                VRA: `/api/images/${jobId}/PNG_VRA.png`,
-                LST: `/api/images/${jobId}/PNG_LST.png`
+            images: Object.keys(absoluteImages).length > 0 ? absoluteImages : (jobId ? {
+                NDVI: `${baseUrl}/api/images/${jobId}/PNG_NDVI.png`,
+                NDWI: `${baseUrl}/api/images/${jobId}/PNG_NDWI.png`,
+                EVI: `${baseUrl}/api/images/${jobId}/PNG_EVI.png`,
+                NDCI: `${baseUrl}/api/images/${jobId}/PNG_NDCI.png`,
+                SAVI: `${baseUrl}/api/images/${jobId}/PNG_SAVI.png`,
+                VRA: `${baseUrl}/api/images/${jobId}/PNG_VRA.png`,
+                LST: `${baseUrl}/api/images/${jobId}/PNG_LST.png`
             } : {})
         };
         
@@ -3909,7 +3915,7 @@ class MuOrbitaSatelliteLayers {
         container.innerHTML = html;
         
         const LegendControl = L.Control.extend({
-            options: { position: 'bottomright' },
+            options: { position: 'bottomleft' },
             onAdd: () => container
         });
         
@@ -3939,6 +3945,7 @@ class MuOrbitaSatelliteLayers {
     </script>
 </body>
 </html>
+
 
 
 
