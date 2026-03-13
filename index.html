@@ -2980,10 +2980,13 @@ async fetchFarm() {
             
             async downloadReport(reportId) {
                 try {
-                    const token = localStorage.getItem(MUORBITA_CONFIG.TOKEN_KEY);
-                    const downloadUrl = `${MUORBITA_CONFIG.API_BASE_URL}/api/v1/dashboard/reports/${reportId}/download?token=${token}`;
-                    window.open(downloadUrl, '_blank');
-                    MuOrbitaUtils.showToast('Descargando reporte...', 'info');
+                    const response = await MuOrbitaUtils.apiRequest(`/dashboard/reports/${reportId}/download`);
+                    const data = await response.json();
+                    if (data.url) {
+                        window.open(data.url, '_blank');
+                    } else {
+                        MuOrbitaUtils.showToast('PDF no disponible', 'error');
+                    }
                 } catch (error) {
                     MuOrbitaUtils.showToast('Error descargando reporte', 'error');
                 }
@@ -3956,6 +3959,7 @@ class MuOrbitaSatelliteLayers {
     </script>
 </body>
 </html>
+
 
 
 
