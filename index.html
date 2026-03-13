@@ -1809,7 +1809,7 @@
                     <div class="dashboard-card" style="margin-bottom: 1.5rem;">
                         <div class="card-header">
                             <h3>📈 Evolución de Índices</h3>
-                            <span style="font-size: 0.8rem; color: var(--light-gray);">Últimos 6 meses</span>
+                            <span style="font-size: 0.8rem; color: var(--light-gray);">Último año</span>
                         </div>
                         <div class="card-body">
                             <div class="chart-container">
@@ -2548,7 +2548,7 @@ this.renderMap(farmData, satelliteData);
                         date: k.observation_date,
                         ndvi: k.ndvi_mean,
                         ndwi: k.ndwi_mean,
-                        evi: null
+                        evi: k.evi_mean || null
                     }))
                 };
             },
@@ -3959,6 +3959,7 @@ class MuOrbitaSatelliteLayers {
     </script>
 </body>
 </html>
+
 
 
 
