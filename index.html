@@ -2978,19 +2978,19 @@ async fetchFarm() {
     setTimeout(() => this.mapInstance.invalidateSize(), 100);
 },
             
-            async downloadReport(reportId) {
-                try {
-                    const response = await MuOrbitaUtils.apiRequest(`/dashboard/reports/${reportId}/download`);
-                    const data = await response.json();
-                    if (data.url) {
-                        window.open(data.url, '_blank');
-                    } else {
-                        MuOrbitaUtils.showToast('PDF no disponible', 'error');
-                    }
-                } catch (error) {
-                    MuOrbitaUtils.showToast('Error descargando reporte', 'error');
+        async downloadReport(reportId) {
+            try {
+                const response = await MuOrbitaUtils.apiRequest(`/dashboard/reports/${reportId}/download`);
+                const data = await response.json();
+                if (data.url) {
+                    window.open(data.url, '_blank');
+                } else {
+                    MuOrbitaUtils.showToast('PDF no disponible', 'error');
                 }
-            },
+            } catch (error) {
+                MuOrbitaUtils.showToast('Error descargando reporte', 'error');
+            }
+        },
             
             // Helpers
             getVigorClass(ndvi) {
@@ -3959,6 +3959,7 @@ class MuOrbitaSatelliteLayers {
     </script>
 </body>
 </html>
+
 
 
 
