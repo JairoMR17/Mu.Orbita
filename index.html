@@ -2876,7 +2876,15 @@ async fetchFarm() {
         if (!container) return;
     
         if (!this.mapInstance) {
-            this.mapInstance = L.map('farm-map', { zoomControl: true }).setView([37.5, -4.0], 8);
+            this.mapInstance = L.map('farm-map', { 
+                zoomControl: true,
+                attributionControl: false  // lo añadimos manual abajo
+            }).setView([37.5, -4.0], 8);
+            
+            // Atribución compacta en bottomleft (donde ya está la leyenda, no molesta)
+            L.control.attribution({ position: 'bottomleft', prefix: false })
+                .addAttribution('Tiles © Esri')
+                .addTo(this.mapInstance);
         
             // Capa base satelital
             L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -3947,6 +3955,7 @@ class MuOrbitaSatelliteLayers {
     </script>
 </body>
 </html>
+
 
 
 
