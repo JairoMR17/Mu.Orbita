@@ -736,6 +736,8 @@
             position: relative;
             box-shadow: 0 25px 80px rgba(62, 43, 29, 0.4);
             animation: slideUp 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         @keyframes slideUp {
@@ -1460,6 +1462,7 @@
             .login-modal-content {
                 margin: 1rem;
                 padding: 1.5rem;
+                max-height: 85vh;
             }
             
             .reports-table {
@@ -3479,15 +3482,31 @@ function openProfileModal() {
     
     // Cargar datos del cliente
     const clientData = MuOrbitaAuth.getCurrentUser() || {};
+
+    // Fallback: leer datos ya visibles en el dashboard (vienen de parcels)
+    const dashCultivo = document.getElementById('info-cultivo')?.textContent?.trim();
+    const dashHectareas = document.getElementById('info-hectareas')?.textContent?.trim();
     
     // Todos los campos en orden (los editables con su valor o vacío)
     document.getElementById('profile-nombre').value = clientData.client_name || '';
     document.getElementById('profile-email').value = clientData.email || '';
     document.getElementById('profile-telefono').value = clientData.phone || '';
     document.getElementById('profile-empresa').value = clientData.company || '';
-    document.getElementById('profile-hectareas').value = clientData.hectareas ? `${clientData.hectareas} ha` : '';
-    document.getElementById('profile-cultivo').value = formatCultivo(clientData.tipo_cultivo);
-    document.getElementById('profile-plan').value = clientData.plan || '';
+}
+
+            // Campos de solo lectura — API usa nombres en inglés: hectares, crop_type, subscription_tier
+    // Fallback a datos del dashboard si el cliente no los tiene directamente
+    const hectares = clientData.hectares || clientData.hectareas;
+    document.getElementById('profile-hectareas').value = hectares 
+        ? `${hectares} ha` 
+        : (dashHectareas && dashHectareas !== '-' ? dashHectareas : '');
+    
+    const cropType = clientData.crop_type || clientData.tipo_cultivo;
+    document.getElementById('profile-cultivo').value = cropType 
+        ? formatCultivo(cropType) 
+        : (dashCultivo && dashCultivo !== '-' ? dashCultivo : '');
+    
+    document.getElementById('profile-plan').value = clientData.subscription_tier || clientData.plan || '';
 }
 
 function formatCultivo(tipo) {
