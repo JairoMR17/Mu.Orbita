@@ -2827,8 +2827,8 @@ async fetchFarm() {
                                 label: 'NDVI',
                                 data: timeseries.map(d => d.ndvi),
                                 borderColor: MUORBITA_CONFIG.COLORS.ndvi,
-                                backgroundColor: `${MUORBITA_CONFIG.COLORS.ndvi}20`,
-                                fill: true,
+                                backgroundColor: 'transparent',
+                                fill: false,
                                 tension: 0.3,
                                 pointRadius: 4,
                                 pointHoverRadius: 6
