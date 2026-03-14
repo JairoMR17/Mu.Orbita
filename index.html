@@ -732,12 +732,12 @@
             border-radius: 16px;
             width: 100%;
             max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
             padding: 2.5rem;
             position: relative;
             box-shadow: 0 25px 80px rgba(62, 43, 29, 0.4);
             animation: slideUp 0.3s ease;
-            max-height: 90vh;
-            overflow-y: auto;
         }
 
         @keyframes slideUp {
@@ -3480,21 +3480,20 @@ function openProfileModal() {
     const modal = document.getElementById('profile-modal');
     modal.style.display = 'flex';
     
-    // Cargar datos del cliente
+    // Cargar datos del cliente desde localStorage (/auth/me)
     const clientData = MuOrbitaAuth.getCurrentUser() || {};
-
+    
     // Fallback: leer datos ya visibles en el dashboard (vienen de parcels)
     const dashCultivo = document.getElementById('info-cultivo')?.textContent?.trim();
     const dashHectareas = document.getElementById('info-hectareas')?.textContent?.trim();
     
-    // Todos los campos en orden (los editables con su valor o vacío)
+    // Campos editables
     document.getElementById('profile-nombre').value = clientData.client_name || '';
     document.getElementById('profile-email').value = clientData.email || '';
     document.getElementById('profile-telefono').value = clientData.phone || '';
     document.getElementById('profile-empresa').value = clientData.company || '';
-}
-
-            // Campos de solo lectura — API usa nombres en inglés: hectares, crop_type, subscription_tier
+    
+    // Campos de solo lectura — API usa nombres en inglés: hectares, crop_type, subscription_tier
     // Fallback a datos del dashboard si el cliente no los tiene directamente
     const hectares = clientData.hectares || clientData.hectareas;
     document.getElementById('profile-hectareas').value = hectares 
@@ -3978,65 +3977,3 @@ class MuOrbitaSatelliteLayers {
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
