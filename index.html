@@ -3488,17 +3488,28 @@ function openProfileModal() {
     const modal = document.getElementById('profile-modal');
     modal.style.display = 'flex';
     
-    // Cargar datos del cliente
+    // Cargar datos del cliente (localStorage)
     const clientData = MuOrbitaAuth.getCurrentUser() || {};
     
-    // Todos los campos en orden (los editables con su valor o vacío)
+    // Datos directos del usuario
     document.getElementById('profile-nombre').value = clientData.client_name || '';
     document.getElementById('profile-email').value = clientData.email || '';
     document.getElementById('profile-telefono').value = clientData.phone || '';
     document.getElementById('profile-empresa').value = clientData.company || '';
-    document.getElementById('profile-hectareas').value = clientData.hectareas ? `${clientData.hectareas} ha` : '';
-    document.getElementById('profile-cultivo').value = formatCultivo(clientData.tipo_cultivo);
-    document.getElementById('profile-plan').value = clientData.plan || '';
+    
+    // Hectáreas y cultivo: primero de localStorage, si no del DOM del dashboard
+    const hectFromDOM = document.getElementById('info-hectareas')?.textContent?.trim();
+    const cultivoFromDOM = document.getElementById('info-cultivo')?.textContent?.trim();
+    
+    document.getElementById('profile-hectareas').value = clientData.hectareas 
+        ? `${clientData.hectareas} ha` 
+        : (hectFromDOM && hectFromDOM !== '-' ? hectFromDOM : '');
+    
+    document.getElementById('profile-cultivo').value = clientData.tipo_cultivo 
+        ? formatCultivo(clientData.tipo_cultivo) 
+        : (cultivoFromDOM && cultivoFromDOM !== '-' ? cultivoFromDOM : '');
+    
+    document.getElementById('profile-plan').value = clientData.plan || clientData.subscription_plan || 'Profesional';
 }
 
 function formatCultivo(tipo) {
