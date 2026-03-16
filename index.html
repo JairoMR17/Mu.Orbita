@@ -1876,7 +1876,17 @@
             <div class="dashboard-card">
                 <div class="card-header">
                     <h3>📄 Mis Reportes</h3>
-                    <span style="font-size: 0.8rem; color: var(--light-gray);">Últimos informes generados</span>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 0.8rem; color: var(--light-gray);">Últimos informes generados</span>
+                        <button id="btn-generate-pac" onclick="MuOrbitaDashboard.openPacModal()" style="
+                            background: #2E7D32; color: white; border: none; border-radius: 6px;
+                            padding: 5px 12px; font-size: 0.75rem; font-weight: 600;
+                            cursor: pointer; letter-spacing: 0.5px; white-space: nowrap;
+                            transition: background 0.2s;
+                        " onmouseover="this.style.background='#1B5E20'" onmouseout="this.style.background='#2E7D32'">
+                            🛡️ Informe PAC
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body" style="padding: 0;">
                     <div id="reports-container">
@@ -2752,12 +2762,23 @@ async fetchFarm() {
                                 <th>Fecha</th>
                                 <th>Tipo</th>
                                 <th>Estado</th>
+                                <th>Firma</th>
                                 <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${reports.map(report => `
-                                <tr>
+                            ${reports.map(report => {
+                                const isPac = report.analysis_type && report.analysis_type.startsWith('pac_');
+                                const sigStatus = report.signature_status || '';
+                                const sigBadge = isPac
+                                    ? (sigStatus === 'signed'
+                                        ? '<span style="color:#2E7D32;font-size:0.75rem;font-weight:600;">✓ Firmado</span>'
+                                        : sigStatus === 'pending'
+                                            ? '<span style="color:#F57F17;font-size:0.75rem;">⏳ Pendiente</span>'
+                                            : '<span style="color:#AAAAAA;font-size:0.75rem;">—</span>')
+                                    : '<span style="color:#AAAAAA;font-size:0.75rem;">—</span>';
+                                return `
+                                <tr style="${isPac ? 'background: rgba(46,125,50,0.04);' : ''}">
                                     <td>${MuOrbitaUtils.formatDate(report.completed_at || report.created_at)}</td>
                                     <td>${this.getAnalysisTypeLabel(report.analysis_type)}</td>
                                     <td>
@@ -2765,19 +2786,136 @@ async fetchFarm() {
                                             ${this.getStatusLabel(report.status)}
                                         </span>
                                     </td>
+                                    <td>${sigBadge}</td>
                                     <td>
-                                        ${report.status === 'completed' 
+                                        ${report.status === 'completed'
                                             ? `<button class="btn-download" onclick="MuOrbitaDashboard.downloadReport('${report.id}')">
                                                 📄 Ver PDF
                                                </button>`
                                             : '<span class="text-muted">-</span>'
                                         }
                                     </td>
-                                </tr>
-                            `).join('')}
+                                </tr>`;
+                            }).join('')}
                         </tbody>
                     </table>
                 `;
+            },
+
+            openPacModal() {
+                let modal = document.getElementById('pac-modal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'pac-modal';
+                    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;';
+                    modal.innerHTML = `
+                        <div style="background:#F9F7F2;border-radius:12px;padding:32px;max-width:460px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                                <h3 style="margin:0;color:#3E2B1D;font-size:1.1rem;">🛡️ Generar Informe PAC</h3>
+                                <button onclick="document.getElementById('pac-modal').remove()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#7A7A7A;">×</button>
+                            </div>
+                            <p style="color:#5C4033;font-size:0.9rem;margin-bottom:20px;line-height:1.5;">
+                                Genera un informe de conformidad PAC con los datos satelitales del último año.
+                                Incluye evaluación de actividad del cultivo, cubierta vegetal y gestión hídrica.
+                            </p>
+                            <div style="margin-bottom:16px;">
+                                <label style="font-size:0.85rem;font-weight:600;color:#3E2B1D;display:block;margin-bottom:6px;">Tipo de informe</label>
+                                <select id="pac-type" style="width:100%;padding:8px 12px;border:1px solid #E6DDD0;border-radius:6px;background:#fff;color:#3E2B1D;font-size:0.9rem;">
+                                    <option value="pac_inspeccion">Informe para Inspección (bajo demanda)</option>
+                                    <option value="pac_anual">Informe Anual PAC</option>
+                                </select>
+                            </div>
+                            <div style="margin-bottom:20px;padding:14px;background:#E8F5E9;border-radius:8px;border-left:4px solid #2E7D32;">
+                                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                                    <input type="checkbox" id="pac-signature" style="margin-top:3px;accent-color:#2E7D32;">
+                                    <div>
+                                        <span style="font-weight:600;color:#2E7D32;font-size:0.9rem;">Solicitar firma de agrónomo colegiado</span><br>
+                                        <span style="font-size:0.8rem;color:#5C4033;">Mu.Orbita asignará un técnico para firmar y sellar el informe. Recibirás el informe firmado por email en 24-48h.</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div style="display:flex;gap:10px;">
+                                <button onclick="document.getElementById('pac-modal').remove()" style="flex:1;padding:10px;border:1px solid #E6DDD0;border-radius:6px;background:#fff;color:#5C4033;cursor:pointer;font-size:0.9rem;">Cancelar</button>
+                                <button onclick="MuOrbitaDashboard.generatePacReport()" style="flex:2;padding:10px;border:none;border-radius:6px;background:#2E7D32;color:white;cursor:pointer;font-size:0.9rem;font-weight:600;">Generar Informe PAC</button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+                modal.style.display = 'flex';
+            },
+
+            async generatePacReport() {
+                const typeEl = document.getElementById('pac-type');
+                const sigEl  = document.getElementById('pac-signature');
+                if (!typeEl) return;
+
+                const reportType       = typeEl.value;
+                const requestSignature = sigEl ? sigEl.checked : false;
+
+                let parcelId = window._currentParcelId || null;
+                if (!parcelId) {
+                    try {
+                        const r = await MuOrbitaUtils.apiRequest('/dashboard/parcels');
+                        if (r.ok) {
+                            const ps = await r.json();
+                            if (ps.length > 0) parcelId = ps[0].id;
+                        }
+                    } catch(e) {}
+                }
+
+                if (!parcelId) {
+                    MuOrbitaUtils.showToast('No se encontró parcela activa', 'error');
+                    return;
+                }
+
+                const modal = document.getElementById('pac-modal');
+                if (modal) modal.remove();
+
+                MuOrbitaUtils.showToast('Generando informe PAC… puede tardar unos segundos', 'info');
+
+                try {
+                    const response = await MuOrbitaUtils.apiRequest('/dashboard/reports/generate-pac', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            parcel_id:         parcelId,
+                            report_type:       reportType,
+                            request_signature: requestSignature
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok || !data.success) {
+                        MuOrbitaUtils.showToast('Error generando informe PAC', 'error');
+                        return;
+                    }
+
+                    if (data.pdf_base64) {
+                        const byteChars = atob(data.pdf_base64);
+                        const byteNums  = new Array(byteChars.length);
+                        for (let i = 0; i < byteChars.length; i++) byteNums[i] = byteChars.charCodeAt(i);
+                        const blob = new Blob([new Uint8Array(byteNums)], { type: 'application/pdf' });
+                        const url  = URL.createObjectURL(blob);
+                        const a    = document.createElement('a');
+                        a.href     = url;
+                        a.download = data.filename || `InformePAC_${data.report_ref}.pdf`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                    }
+
+                    const sigMsg = requestSignature
+                        ? ' La solicitud de firma ha sido enviada a Mu.Orbita — recibirás el informe firmado en 24-48h.'
+                        : '';
+                    MuOrbitaUtils.showToast(`✅ Informe PAC generado correctamente.${sigMsg}`, 'success');
+
+                    setTimeout(() => MuOrbitaDashboard.loadDashboard(), 1500);
+
+                } catch (err) {
+                    console.error('PAC report error:', err);
+                    MuOrbitaUtils.showToast('Error generando informe PAC', 'error');
+                }
             },
             
             renderNextAnalysis(nextDate) {
@@ -3069,7 +3207,14 @@ async fetchFarm() {
             },
             
             getAnalysisTypeLabel(type) {
-                const labels = { 'completo': 'Baseline', 'bisemanal': 'Seguimiento', 'baseline': 'Baseline' };
+                const labels = {
+                    'completo':         'Baseline',
+                    'bisemanal':        'Seguimiento',
+                    'baseline':         'Baseline',
+                    'biweekly':         'Seguimiento',
+                    'pac_inspeccion':   '🛡️ PAC Inspección',
+                    'pac_anual':        '🛡️ PAC Anual',
+                };
                 return labels[type] || type;
             },
             
