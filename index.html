@@ -1090,13 +1090,15 @@
             color: var(--light-gray);
         }
 
-        /* Dashboard Grid Layout */
-        .dashboard-main-grid {
+        /* Dashboard Row Layout v2 — full-width stacking */
+        .dashboard-row {
             display: grid;
-            grid-template-columns: 2fr 1fr;
             gap: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
+        .dashboard-row-map   { grid-template-columns: 1fr 2fr; }
+        .dashboard-row-chart { grid-template-columns: 2fr 1fr; }
+        .dashboard-row-recs  { grid-template-columns: repeat(3, 1fr); }
 
         /* Cards */
         .dashboard-card {
@@ -1370,7 +1372,11 @@
                 grid-template-columns: repeat(2, 1fr);
             }
             
-            .dashboard-main-grid {
+            .dashboard-row-map,
+            .dashboard-row-chart {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-row-recs {
                 grid-template-columns: 1fr;
             }
         }
@@ -1958,121 +1964,117 @@
                 </div>
             </div>
             
-            <!-- Main Grid -->
-            <div class="dashboard-main-grid">
-                
-                <!-- Columna izquierda: Gráfico + Mapa -->
-                <div>
-                    <!-- Gráfico de Series Temporales -->
-                    <div class="dashboard-card" style="margin-bottom: 1.5rem;">
-                        <div class="card-header">
-                            <h3>📈 Evolución de Índices</h3>
-                            <span style="font-size: 0.8rem; color: var(--light-gray);">Último año</span>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="timeseries-chart"></canvas>
+            <!-- ============================================
+                 ROW 1: Mi Explotación (izq) + Mapa (der)
+                 ============================================ -->
+            <div class="dashboard-row dashboard-row-map">
+                <!-- Info de la Explotación + Clima -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>🌿 Mi Explotación</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Cultivo</div>
+                                <div id="info-cultivo" class="info-value">-</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Superficie</div>
+                                <div id="info-hectareas" class="info-value">-</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Ubicación</div>
+                                <div id="info-ubicacion" class="info-value">-</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Próximo Análisis</div>
+                                <div id="next-analysis" class="info-value">-</div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Mapa de la Finca -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3>🗺️ Mi Finca</h3>
-                        </div>
-                        <div class="map-container">
-                            <div id="farm-map"></div>
+                        <!-- Climate summary -->
+                        <div id="climate-summary-container" style="margin-top: 1rem; display: none;">
+                            <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--light-gray); margin-bottom: 0.5rem; font-weight: 600;">Clima últimas 2 semanas</div>
+                            <div id="climate-rows"></div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Columna derecha: Recomendaciones + Forecast + Alertas + Riesgos + Info -->
-                <div>
-                    <!-- Recomendaciones Prioritarias -->
-                    <div class="dashboard-card" style="margin-bottom: 1.5rem;">
-                        <div class="card-header">
-                            <h3>🎯 Recomendaciones</h3>
-                            <span id="rec-source" style="font-size: 0.75rem; color: var(--light-gray);"></span>
-                        </div>
-                        <div class="card-body">
-                            <div id="recommendations-container">
-                                <div style="text-align: center; color: var(--light-gray); font-size: 0.9rem; padding: 1rem 0;">Cargando...</div>
-                            </div>
+                <!-- Mapa de la Finca -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>🗺️ Mi Finca</h3>
+                    </div>
+                    <div class="map-container">
+                        <div id="farm-map"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 ROW 2: Gráfica (izq) + Forecast/Riesgos/Alertas (der)
+                 ============================================ -->
+            <div class="dashboard-row dashboard-row-chart">
+                <!-- Gráfico de Series Temporales -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>📈 Evolución de Índices</h3>
+                        <span style="font-size: 0.8rem; color: var(--light-gray);">Último año</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="timeseries-chart"></canvas>
                         </div>
                     </div>
-
-                    <!-- Previsión Meteorológica 7 días -->
-                    <div class="dashboard-card" style="margin-bottom: 1.5rem;">
-                        <div class="card-header">
-                            <h3>🌤️ Previsión 7 días</h3>
+                </div>
+                
+                <!-- Forecast + Riesgos + Alertas (fusionados en 1 card) -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>🌤️ Previsión 7 días</h3>
+                    </div>
+                    <div class="card-body" style="padding-bottom: 0.5rem;">
+                        <div id="forecast-container">
+                            <div style="text-align: center; color: var(--light-gray); font-size: 0.9rem; padding: 0.5rem 0;">Cargando...</div>
                         </div>
-                        <div class="card-body">
-                            <div id="forecast-container">
-                                <div style="text-align: center; color: var(--light-gray); font-size: 0.9rem; padding: 1rem 0;">Cargando...</div>
+                        
+                        <!-- Riesgos (separador interno) -->
+                        <div style="border-top: 1px solid var(--border-color); margin-top: 0.8rem; padding-top: 0.8rem;">
+                            <div style="font-size: 0.9rem; font-weight: 600; color: var(--white); margin-bottom: 0.5rem;">🚦 Evaluación de Riesgos</div>
+                            <div id="risk-container">
+                                <div style="text-align: center; color: var(--light-gray); font-size: 0.85rem; padding: 0.3rem 0;">—</div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Alertas -->
-                    <div class="dashboard-card" style="margin-bottom: 1.5rem;">
-                        <div class="card-header">
-                            <h3>⚠️ Alertas Activas</h3>
-                        </div>
-                        <div class="card-body">
+                        
+                        <!-- Alertas (separador interno) -->
+                        <div style="border-top: 1px solid var(--border-color); margin-top: 0.8rem; padding-top: 0.8rem;">
+                            <div style="font-size: 0.9rem; font-weight: 600; color: var(--white); margin-bottom: 0.5rem;">⚠️ Alertas</div>
                             <div id="alerts-container">
                                 <!-- Se llena dinámicamente -->
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Evaluación de Riesgos -->
-                    <div class="dashboard-card" style="margin-bottom: 1.5rem;">
-                        <div class="card-header">
-                            <h3>🚦 Evaluación de Riesgos</h3>
-                        </div>
-                        <div class="card-body">
-                            <div id="risk-container">
-                                <div style="text-align: center; color: var(--light-gray); font-size: 0.9rem; padding: 0.5rem 0;">—</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Info de la Explotación -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3>🌿 Mi Explotación</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <div class="info-label">Cultivo</div>
-                                    <div id="info-cultivo" class="info-value">-</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-label">Superficie</div>
-                                    <div id="info-hectareas" class="info-value">-</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-label">Ubicación</div>
-                                    <div id="info-ubicacion" class="info-value">-</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-label">Próximo Análisis</div>
-                                    <div id="next-analysis" class="info-value">-</div>
-                                </div>
-                            </div>
-                            <!-- Climate summary injected here -->
-                            <div id="climate-summary-container" style="margin-top: 1rem; display: none;">
-                                <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--light-gray); margin-bottom: 0.5rem; font-weight: 600;">Clima últimas 2 semanas</div>
-                                <div id="climate-rows"></div>
-                            </div>
-                        </div>
+            <!-- ============================================
+                 ROW 3: Recomendaciones (full-width, 3 columnas)
+                 ============================================ -->
+            <div class="dashboard-card" style="margin-bottom: 1.5rem;">
+                <div class="card-header">
+                    <h3>🎯 Recomendaciones Prioritarias</h3>
+                    <span id="rec-source" style="font-size: 0.75rem; color: var(--light-gray);"></span>
+                </div>
+                <div class="card-body">
+                    <div id="recommendations-container">
+                        <div style="text-align: center; color: var(--light-gray); font-size: 0.9rem; padding: 1rem 0;">Cargando...</div>
                     </div>
                 </div>
             </div>
             
-            <!-- Tabla de Reportes -->
+            <!-- ============================================
+                 ROW 4: Tabla de Reportes (full-width)
+                 ============================================ -->
             <div class="dashboard-card">
                 <div class="card-header">
                     <h3>📄 Mis Reportes</h3>
@@ -3220,7 +3222,7 @@ async fetchFarm() {
                     sourceEl.textContent = `${typeLabel} · ${MuOrbitaUtils.formatDate(data.report_date)}`;
                 }
 
-                container.innerHTML = `<div class="rec-list">
+                container.innerHTML = `<div class="dashboard-row dashboard-row-recs">
                     ${data.recommendations.map(r => {
                         const prio = (r.priority || 'Media').toLowerCase();
                         const prioClass = prio === 'alta' ? 'alta' : prio === 'baja' ? 'baja' : 'media';
