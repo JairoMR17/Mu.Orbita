@@ -2337,10 +2337,10 @@
                             <label class="form-label">Tipo de Cultivo</label>
                             <select class="form-select" id="crop" required>
                                 <option value="">Selecciona...</option>
-                                <option value="olive">Olivo</option>
-                                <option value="vineyard">Viñedo</option>
-                                <option value="almond">Almendro</option>
-                                <option value="other">Otro</option>
+                                <option value="olivo">Olivo</option>
+                                <option value="viñedo">Viñedo</option>
+                                <option value="almendro">Almendro</option>
+                                <option value="otro">Otro</option>
                             </select>
                         </div>
 
@@ -2403,9 +2403,9 @@
                 <div class="footer-column">
     <h4>Contacto</h4>
     <ul>
-        <li><a href="mailto:info@mu.orbita.com">info@mu.orbita.com</a></li>
-        <li><a href="mailto:sales@mu.orbita.com">sales@mu.orbita.com</a></li>
-        <li><a href="mailto:contacto@mu.orbita.com">contact@mu.orbita.com</a></li>
+        <li><a href="mailto:info@muorbita.com">info@muorbita.com</a></li>
+        <li><a href="mailto:sales@muorbita.com">sales@muorbita.com</a></li>
+        <li><a href="mailto:contacto@muorbita.com">contacto@muorbita.com</a></li>
     </ul>
 </div>
             </div>
@@ -2884,7 +2884,7 @@ async fetchFarm() {
                 const hectareasEl = document.getElementById('info-hectareas');
                 const ubicacionEl = document.getElementById('info-ubicacion');
                 
-                if (cultivoEl) cultivoEl.textContent = this.capitalizeFirst(client.tipo_cultivo) || '-';
+                if (cultivoEl) cultivoEl.textContent = formatCultivo(client.tipo_cultivo) || '-';
                 if (hectareasEl) hectareasEl.textContent = client.hectareas ? `${client.hectareas} ha` : '-';
                 if (ubicacionEl) ubicacionEl.textContent = client.ubicacion || '-';
             },
@@ -4110,11 +4110,16 @@ function openProfileModal() {
 function formatCultivo(tipo) {
     const cultivos = {
         'olive': 'Olivo',
-        'vineyard': 'Viñedo', 
+        'olivo': 'Olivo',
+        'vineyard': 'Viñedo',
+        'viñedo': 'Viñedo',
+        'viña': 'Viñedo',
         'almond': 'Almendro',
-        'other': 'Otro'
+        'almendro': 'Almendro',
+        'other': 'Otro',
+        'otro': 'Otro'
     };
-    return cultivos[tipo] || tipo || '';
+    return cultivos[(tipo || '').toLowerCase()] || tipo || '';
 }
 
 function closeProfileModal() {
@@ -4276,7 +4281,7 @@ document.getElementById('profile-modal')?.addEventListener('click', function(e) 
                         });
 
                         if (response.ok) {
-                            alert('¡Cuenta creada correctamente!\n\nYa puedes acceder a tu dashboard con tu email y contraseña.\n\nTe contactaremos pronto para activar tu monitoreo satelital.');
+                            alert('¡Cuenta creada correctamente!\n\nEn unos minutos recibirás un email cuando tu dashboard esté listo con los datos de tu explotación.\n\nPodrás acceder con tu email y contraseña en mu-orbita.vercel.app');
                             newForm.reset();
                             document.getElementById('calculated-hectares').value = '';
                             document.getElementById('hectares').value = '0';
