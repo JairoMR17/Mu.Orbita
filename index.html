@@ -1473,6 +1473,155 @@
         }
 
 
+        /* ===== DASHBOARD v2.0: NEW COMPONENT STYLES ===== */
+
+        /* KPI Grid: 5 columns */
+        .kpi-grid {
+            grid-template-columns: repeat(5, 1fr) !important;
+        }
+
+        .kpi-delta {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.2rem;
+        }
+        .kpi-delta.positive { color: var(--accent-green); }
+        .kpi-delta.negative { color: var(--red); }
+        .kpi-delta.neutral { color: var(--light-gray); }
+
+        /* Recommendations Card */
+        .rec-list { display: flex; flex-direction: column; gap: 0.8rem; }
+        .rec-item {
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid;
+            background: var(--dark-gray);
+        }
+        .rec-item.rec-alta { border-left-color: var(--red); }
+        .rec-item.rec-media { border-left-color: var(--yellow); }
+        .rec-item.rec-baja { border-left-color: var(--accent-green); }
+        .rec-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.4rem;
+        }
+        .rec-item-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--white);
+        }
+        .rec-badge {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .rec-badge-alta { background: rgba(204,68,68,0.15); color: var(--red); }
+        .rec-badge-media { background: rgba(204,153,51,0.15); color: var(--yellow); }
+        .rec-badge-baja { background: rgba(34,139,34,0.15); color: var(--accent-green); }
+        .rec-item-detail {
+            font-size: 0.8rem;
+            color: var(--light-gray);
+            line-height: 1.5;
+        }
+
+        /* Forecast Card */
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        .forecast-stat {
+            text-align: center;
+            padding: 0.8rem;
+            background: var(--dark-gray);
+            border-radius: 8px;
+        }
+        .forecast-stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+        .forecast-stat-label {
+            font-size: 0.7rem;
+            color: var(--light-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.2rem;
+        }
+        .forecast-alert-banner {
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .forecast-alert-warn { background: rgba(204,153,51,0.15); color: var(--yellow); }
+        .forecast-alert-danger { background: rgba(204,68,68,0.15); color: var(--red); }
+        .forecast-alert-ok { background: rgba(34,139,34,0.1); color: var(--accent-green); }
+
+        /* Risk Semaphore */
+        .risk-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+        .risk-row {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.6rem 0.8rem;
+            background: var(--dark-gray);
+            border-radius: 8px;
+        }
+        .risk-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .risk-dot-bajo { background: var(--accent-green); }
+        .risk-dot-moderado { background: var(--yellow); }
+        .risk-dot-alto { background: var(--red); }
+        .risk-dot-null { background: var(--light-gray); opacity: 0.4; }
+        .risk-label {
+            font-size: 0.85rem;
+            color: var(--white);
+            flex: 1;
+        }
+        .risk-level {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Climate mini-card (inside Mi Explotación) */
+        .climate-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+        .climate-row:last-child { border-bottom: none; }
+        .climate-icon { font-size: 1rem; }
+        .climate-label { color: var(--light-gray); flex: 1; }
+        .climate-value { font-weight: 600; color: var(--white); }
+
+        @media (max-width: 1200px) {
+            .kpi-grid { grid-template-columns: repeat(3, 1fr) !important; }
+            .forecast-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .kpi-grid { grid-template-columns: 1fr !important; }
+            .forecast-grid { grid-template-columns: 1fr; }
+        }
+
         /* ===== SATELLITE LAYER CONTROL ===== */
 .muorbita-layer-control {
     background: white;
@@ -1781,17 +1930,26 @@
                 <div class="kpi-card">
                     <div class="kpi-label">NDVI Actual</div>
                     <div id="kpi-ndvi" class="kpi-value">-</div>
+                    <div id="kpi-ndvi-delta" class="kpi-delta neutral"></div>
                     <div class="kpi-subtitle">Índice de vegetación</div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-label">Estado Hídrico</div>
                     <div id="kpi-ndwi" class="kpi-value">-</div>
+                    <div id="kpi-ndwi-delta" class="kpi-delta neutral"></div>
                     <div class="kpi-subtitle">NDWI medio</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Productividad</div>
+                    <div id="kpi-evi" class="kpi-value">-</div>
+                    <div id="kpi-evi-delta" class="kpi-delta neutral"></div>
+                    <div class="kpi-subtitle">EVI medio</div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-label">Área con Estrés</div>
                     <div id="kpi-stress" class="kpi-value">-</div>
-                    <div class="kpi-subtitle">NDVI < 0.35</div>
+                    <div id="kpi-stress-delta" class="kpi-delta neutral"></div>
+                    <div class="kpi-subtitle">NDVI &lt; 0.35</div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-label">Estado General</div>
@@ -1829,8 +1987,33 @@
                     </div>
                 </div>
                 
-                <!-- Columna derecha: Alertas + Info -->
+                <!-- Columna derecha: Recomendaciones + Forecast + Alertas + Riesgos + Info -->
                 <div>
+                    <!-- Recomendaciones Prioritarias -->
+                    <div class="dashboard-card" style="margin-bottom: 1.5rem;">
+                        <div class="card-header">
+                            <h3>🎯 Recomendaciones</h3>
+                            <span id="rec-source" style="font-size: 0.75rem; color: var(--light-gray);"></span>
+                        </div>
+                        <div class="card-body">
+                            <div id="recommendations-container">
+                                <div style="text-align: center; color: var(--light-gray); font-size: 0.9rem; padding: 1rem 0;">Cargando...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Previsión Meteorológica 7 días -->
+                    <div class="dashboard-card" style="margin-bottom: 1.5rem;">
+                        <div class="card-header">
+                            <h3>🌤️ Previsión 7 días</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="forecast-container">
+                                <div style="text-align: center; color: var(--light-gray); font-size: 0.9rem; padding: 1rem 0;">Cargando...</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Alertas -->
                     <div class="dashboard-card" style="margin-bottom: 1.5rem;">
                         <div class="card-header">
@@ -1839,6 +2022,18 @@
                         <div class="card-body">
                             <div id="alerts-container">
                                 <!-- Se llena dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Evaluación de Riesgos -->
+                    <div class="dashboard-card" style="margin-bottom: 1.5rem;">
+                        <div class="card-header">
+                            <h3>🚦 Evaluación de Riesgos</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="risk-container">
+                                <div style="text-align: center; color: var(--light-gray); font-size: 0.9rem; padding: 0.5rem 0;">—</div>
                             </div>
                         </div>
                     </div>
@@ -1866,6 +2061,11 @@
                                     <div class="info-label">Próximo Análisis</div>
                                     <div id="next-analysis" class="info-value">-</div>
                                 </div>
+                            </div>
+                            <!-- Climate summary injected here -->
+                            <div id="climate-summary-container" style="margin-top: 1rem; display: none;">
+                                <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--light-gray); margin-bottom: 0.5rem; font-weight: 600;">Clima últimas 2 semanas</div>
+                                <div id="climate-rows"></div>
                             </div>
                         </div>
                     </div>
@@ -2438,11 +2638,21 @@
                     this.renderReports(dashboardData.recent_reports);
                     this.renderNextAnalysis(dashboardData.next_analysis);
                     this.renderClientInfo(dashboardData.client);
+                    this.renderRiskSemaphore(dashboardData.kpis);
                     
-                    const timeseriesData = await this.fetchTimeseries();
+                    // Parallel fetch: timeseries + farm + new v2 endpoints
+                    const [timeseriesData, farmData, recsData, forecastData, climateData] = await Promise.all([
+                        this.fetchTimeseries(),
+                        this.fetchFarm(),
+                        this.fetchRecommendations().catch(() => null),
+                        this.fetchForecast().catch(() => null),
+                        this.fetchClimateSummary().catch(() => null),
+                    ]);
+                    
                     this.renderChart(timeseriesData.timeseries);
-                    
-const farmData = await this.fetchFarm();
+                    if (recsData) this.renderRecommendations(recsData);
+                    if (forecastData) this.renderForecast(forecastData);
+                    if (climateData) this.renderClimateSummary(climateData);
 
 // Cargar datos del mapa con capas satelitales
 let satelliteData = null;
@@ -2511,13 +2721,24 @@ this.renderMap(farmData, satelliteData);
                     kpis: {
                         ndvi_mean: summary.avg_ndvi,
                         ndwi_mean: summary.avg_ndwi || null,
+                        evi_mean: summary.avg_evi || null,
                         stress_area_pct: summary.stress_area_pct ?? 0,
                         vigor_status: summary.avg_ndvi != null ? (summary.avg_ndvi >= 0.6 ? 'alto' : summary.avg_ndvi >= 0.4 ? 'moderado' : 'bajo') : 'Sin datos',
                         last_update: summary.last_analysis_date,
                         pheno_phase: summary.pheno_phase || null,
                         pheno_status: summary.pheno_status || null,
                         ndvi_expected: summary.ndvi_expected || null,
-                        ndvi_deviation_pct: summary.ndvi_deviation_pct || null
+                        ndvi_deviation_pct: summary.ndvi_deviation_pct || null,
+                        // v2.0: Deltas
+                        ndvi_delta: summary.ndvi_delta,
+                        ndvi_delta_pct: summary.ndvi_delta_pct,
+                        ndwi_delta: summary.ndwi_delta,
+                        evi_delta: summary.evi_delta,
+                        stress_delta: summary.stress_delta,
+                        // v2.0: Risk levels
+                        risk_hydric_level: summary.risk_hydric_level,
+                        risk_thermal_level: summary.risk_thermal_level,
+                        risk_heterogeneity_level: summary.risk_heterogeneity_level,
                     },
                     alerts: alerts.map(a => ({
                         type: a.alert_type,
@@ -2670,27 +2891,59 @@ async fetchFarm() {
                 if (!kpis) {
                     document.getElementById('kpi-ndvi').textContent = '-';
                     document.getElementById('kpi-ndwi').textContent = '-';
+                    document.getElementById('kpi-evi').textContent = '-';
                     document.getElementById('kpi-stress').textContent = '-';
                     document.getElementById('kpi-vigor').textContent = 'Sin datos';
                     return;
                 }
+                
+                // Helper: render delta indicator
+                const renderDelta = (elId, delta, suffix = '') => {
+                    const el = document.getElementById(elId);
+                    if (!el) return;
+                    if (delta === null || delta === undefined) { el.textContent = ''; return; }
+                    const val = Number(delta);
+                    const arrow = val > 0.001 ? '▲' : val < -0.001 ? '▼' : '—';
+                    const cls = val > 0.001 ? 'positive' : val < -0.001 ? 'negative' : 'neutral';
+                    const display = Math.abs(val) < 0.001 ? 'estable' : `${arrow} ${val > 0 ? '+' : ''}${val.toFixed(suffix === '%' ? 1 : 3)}${suffix}`;
+                    el.textContent = display;
+                    el.className = `kpi-delta ${cls}`;
+                };
                 
                 const ndviEl = document.getElementById('kpi-ndvi');
                 if (ndviEl) {
                     ndviEl.textContent = MuOrbitaUtils.formatNumber(kpis.ndvi_mean);
                     ndviEl.className = 'kpi-value ' + this.getVigorClass(kpis.ndvi_mean);
                 }
+                renderDelta('kpi-ndvi-delta', kpis.ndvi_delta_pct, '%');
                 
                 const ndwiEl = document.getElementById('kpi-ndwi');
                 if (ndwiEl) {
                     ndwiEl.textContent = MuOrbitaUtils.formatNumber(kpis.ndwi_mean);
                     ndwiEl.className = 'kpi-value ' + this.getWaterClass(kpis.ndwi_mean);
                 }
+                renderDelta('kpi-ndwi-delta', kpis.ndwi_delta);
+                
+                const eviEl = document.getElementById('kpi-evi');
+                if (eviEl) {
+                    eviEl.textContent = MuOrbitaUtils.formatNumber(kpis.evi_mean);
+                    eviEl.className = 'kpi-value ' + this.getEviClass(kpis.evi_mean);
+                }
+                renderDelta('kpi-evi-delta', kpis.evi_delta);
                 
                 const stressEl = document.getElementById('kpi-stress');
                 if (stressEl) {
                     stressEl.textContent = `${MuOrbitaUtils.formatNumber(kpis.stress_area_pct, 1)}%`;
                     stressEl.className = 'kpi-value ' + (kpis.stress_area_pct > 15 ? 'kpi-bad' : 'kpi-good');
+                }
+                // For stress, negative delta = improvement (less stress)
+                const stressDeltaEl = document.getElementById('kpi-stress-delta');
+                if (stressDeltaEl && kpis.stress_delta !== null && kpis.stress_delta !== undefined) {
+                    const sd = Number(kpis.stress_delta);
+                    const arrow = sd > 0.1 ? '▲' : sd < -0.1 ? '▼' : '—';
+                    const cls = sd > 0.1 ? 'negative' : sd < -0.1 ? 'positive' : 'neutral'; // inverted!
+                    stressDeltaEl.textContent = Math.abs(sd) < 0.1 ? 'estable' : `${arrow} ${sd > 0 ? '+' : ''}${sd.toFixed(1)}%`;
+                    stressDeltaEl.className = `kpi-delta ${cls}`;
                 }
                 
                 const vigorEl = document.getElementById('kpi-vigor');
@@ -2924,6 +3177,159 @@ async fetchFarm() {
                     el.textContent = nextDate ? MuOrbitaUtils.formatDate(nextDate) : 'Pendiente';
                 }
             },
+
+            // =============================================
+            // v2.0: NEW FETCH FUNCTIONS
+            // =============================================
+
+            async fetchRecommendations() {
+                const resp = await MuOrbitaUtils.apiRequest('/dashboard/recommendations');
+                if (!resp.ok) return null;
+                return await resp.json();
+            },
+
+            async fetchForecast() {
+                const resp = await MuOrbitaUtils.apiRequest('/dashboard/weather-forecast');
+                if (!resp.ok) return null;
+                const data = await resp.json();
+                return data.available ? data : null;
+            },
+
+            async fetchClimateSummary() {
+                const resp = await MuOrbitaUtils.apiRequest('/dashboard/climate-summary?days=14');
+                if (!resp.ok) return null;
+                return await resp.json();
+            },
+
+            // =============================================
+            // v2.0: NEW RENDER FUNCTIONS
+            // =============================================
+
+            renderRecommendations(data) {
+                const container = document.getElementById('recommendations-container');
+                const sourceEl = document.getElementById('rec-source');
+                if (!container) return;
+
+                if (!data || !data.recommendations || data.recommendations.length === 0) {
+                    container.innerHTML = '<div style="text-align:center;color:var(--light-gray);font-size:0.9rem;padding:1rem 0;">Sin recomendaciones disponibles</div>';
+                    return;
+                }
+
+                if (sourceEl && data.report_date) {
+                    const typeLabel = data.report_type === 'biweekly' ? 'Seguimiento' : 'Baseline';
+                    sourceEl.textContent = `${typeLabel} · ${MuOrbitaUtils.formatDate(data.report_date)}`;
+                }
+
+                container.innerHTML = `<div class="rec-list">
+                    ${data.recommendations.map(r => {
+                        const prio = (r.priority || 'Media').toLowerCase();
+                        const prioClass = prio === 'alta' ? 'alta' : prio === 'baja' ? 'baja' : 'media';
+                        return `
+                        <div class="rec-item rec-${prioClass}">
+                            <div class="rec-item-header">
+                                <span class="rec-item-title">${r.title}</span>
+                                <span class="rec-badge rec-badge-${prioClass}">${r.priority} · ${r.deadline_days}d</span>
+                            </div>
+                            <div class="rec-item-detail">
+                                ${r.zone ? `📍 ${r.zone}` : ''}${r.zone && r.justification ? ' — ' : ''}${r.justification || ''}
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>`;
+            },
+
+            renderForecast(data) {
+                const container = document.getElementById('forecast-container');
+                if (!container || !data) {
+                    if (container) container.innerHTML = '<div style="text-align:center;color:var(--light-gray);font-size:0.9rem;">No disponible</div>';
+                    return;
+                }
+
+                const s = data.summary || {};
+                const a = data.alerts || {};
+
+                // Alert banners
+                let alertsHtml = '';
+                if (a.heat_wave_risk) alertsHtml += '<div class="forecast-alert-banner forecast-alert-danger">🌡️ Riesgo de ola de calor — ajustar riego preventivamente</div>';
+                if (a.frost_risk) alertsHtml += '<div class="forecast-alert-banner forecast-alert-danger">❄️ Riesgo de helada — proteger cultivo</div>';
+                if (a.drought_risk) alertsHtml += '<div class="forecast-alert-banner forecast-alert-warn">🏜️ Déficit hídrico previsto — incrementar riego</div>';
+                if (a.heavy_rain_risk) alertsHtml += '<div class="forecast-alert-banner forecast-alert-warn">🌧️ Lluvias intensas previstas — suspender riego</div>';
+                if (!alertsHtml) alertsHtml = '<div class="forecast-alert-banner forecast-alert-ok">✓ Sin alertas meteorológicas</div>';
+
+                container.innerHTML = `
+                    ${alertsHtml}
+                    <div class="forecast-grid">
+                        <div class="forecast-stat">
+                            <div class="forecast-stat-value">${s.avg_tmax != null ? s.avg_tmax + '°' : '—'}</div>
+                            <div class="forecast-stat-label">Tmax media</div>
+                        </div>
+                        <div class="forecast-stat">
+                            <div class="forecast-stat-value">${s.avg_tmin != null ? s.avg_tmin + '°' : '—'}</div>
+                            <div class="forecast-stat-label">Tmin media</div>
+                        </div>
+                        <div class="forecast-stat">
+                            <div class="forecast-stat-value">${s.total_precip_mm != null ? s.total_precip_mm + '' : '0'}</div>
+                            <div class="forecast-stat-label">Precip. (mm)</div>
+                        </div>
+                    </div>
+                    <div style="font-size:0.75rem;color:var(--light-gray);text-align:center;">
+                        Balance hídrico previsto: <strong style="color:${(s.water_balance_mm || 0) < 0 ? 'var(--yellow)' : 'var(--accent-green)'}">${s.water_balance_mm != null ? (s.water_balance_mm > 0 ? '+' : '') + s.water_balance_mm + ' mm' : '—'}</strong>
+                    </div>
+                `;
+            },
+
+            renderClimateSummary(data) {
+                const container = document.getElementById('climate-summary-container');
+                const rowsEl = document.getElementById('climate-rows');
+                if (!container || !rowsEl || !data || data.observations_count === 0) return;
+
+                container.style.display = 'block';
+
+                let html = '';
+                if (data.tmax_mean != null) {
+                    html += `<div class="climate-row"><span class="climate-icon">🌡️</span><span class="climate-label">Tmax media</span><span class="climate-value">${data.tmax_mean} °C</span></div>`;
+                }
+                if (data.precip_total_mm != null) {
+                    html += `<div class="climate-row"><span class="climate-icon">🌧️</span><span class="climate-label">Precipitación</span><span class="climate-value">${data.precip_total_mm} mm</span></div>`;
+                }
+                if (data.lst_mean != null) {
+                    html += `<div class="climate-row"><span class="climate-icon">🛰️</span><span class="climate-label">LST media</span><span class="climate-value">${data.lst_mean} °C</span></div>`;
+                }
+
+                if (!html) { container.style.display = 'none'; return; }
+                rowsEl.innerHTML = html;
+            },
+
+            renderRiskSemaphore(kpis) {
+                const container = document.getElementById('risk-container');
+                if (!container) return;
+
+                const risks = [
+                    { label: 'Estrés Hídrico', level: kpis.risk_hydric_level, icon: '💧' },
+                    { label: 'Estrés Térmico', level: kpis.risk_thermal_level, icon: '🌡️' },
+                    { label: 'Heterogeneidad', level: kpis.risk_heterogeneity_level, icon: '🗺️' },
+                ];
+
+                const hasAny = risks.some(r => r.level);
+                if (!hasAny) {
+                    container.innerHTML = '<div style="text-align:center;color:var(--light-gray);font-size:0.85rem;padding:0.3rem 0;">Disponible tras primer informe</div>';
+                    return;
+                }
+
+                container.innerHTML = `<div class="risk-grid">
+                    ${risks.map(r => {
+                        const lvl = (r.level || '').toLowerCase();
+                        const dotClass = lvl === 'bajo' || lvl === 'baja' ? 'bajo' : lvl === 'moderado' || lvl === 'media' ? 'moderado' : lvl === 'alto' || lvl === 'alta' ? 'alto' : 'null';
+                        const colorClass = dotClass === 'bajo' ? 'var(--accent-green)' : dotClass === 'moderado' ? 'var(--yellow)' : dotClass === 'alto' ? 'var(--red)' : 'var(--light-gray)';
+                        return `
+                        <div class="risk-row">
+                            <span class="risk-dot risk-dot-${dotClass}"></span>
+                            <span class="risk-label">${r.icon} ${r.label}</span>
+                            <span class="risk-level" style="color:${colorClass}">${r.level || '—'}</span>
+                        </div>`;
+                    }).join('')}
+                </div>`;
+            },
             
             renderChart(timeseries) {
                 const canvas = document.getElementById('timeseries-chart');
@@ -2956,8 +3362,43 @@ async fetchFarm() {
                 const yMin = Math.floor((dataMin - padding) * 10) / 10;
                 const yMax = Math.ceil((dataMax + padding) * 10) / 10;
                 
+                // Custom plugin: reference lines for NDVI thresholds
+                const refLinesPlugin = {
+                    id: 'refLines',
+                    afterDraw(chart) {
+                        const { ctx, chartArea, scales } = chart;
+                        if (!chartArea || !scales.y) return;
+                        const yScale = scales.y;
+                        
+                        const lines = [
+                            { value: 0.60, color: 'rgba(34,139,34,0.35)', label: 'Óptimo' },
+                            { value: 0.35, color: 'rgba(204,68,68,0.35)', label: 'Estrés' },
+                        ];
+                        
+                        lines.forEach(line => {
+                            if (line.value < yScale.min || line.value > yScale.max) return;
+                            const y = yScale.getPixelForValue(line.value);
+                            ctx.save();
+                            ctx.setLineDash([6, 4]);
+                            ctx.strokeStyle = line.color;
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.moveTo(chartArea.left, y);
+                            ctx.lineTo(chartArea.right, y);
+                            ctx.stroke();
+                            // Label
+                            ctx.fillStyle = line.color.replace('0.35', '0.7');
+                            ctx.font = '10px Inter';
+                            ctx.textAlign = 'right';
+                            ctx.fillText(line.label, chartArea.right - 4, y - 4);
+                            ctx.restore();
+                        });
+                    }
+                };
+                
                 this.chartInstance = new Chart(ctx, {
                     type: 'line',
+                    plugins: [refLinesPlugin],
                     data: {
                         labels: timeseries.map(d => d.date),
                         datasets: [
@@ -3153,6 +3594,13 @@ async fetchFarm() {
                 if (ndwi === null || ndwi === undefined) return '';
                 if (ndwi >= 0.2) return 'kpi-good';
                 if (ndwi >= 0.1) return 'kpi-warning';
+                return 'kpi-bad';
+            },
+            
+            getEviClass(evi) {
+                if (evi === null || evi === undefined) return '';
+                if (evi >= 0.35) return 'kpi-good';
+                if (evi >= 0.2) return 'kpi-warning';
                 return 'kpi-bad';
             },
             
