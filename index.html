@@ -2922,7 +2922,7 @@
                     <div class="pricing-card fade-in">
                         <div class="pricing-tier">Nivel I</div>
                         <div class="pricing-name">Essential</div>
-                        <div class="pricing-price">€6<span>/ha/año</span></div>
+                        <div class="pricing-price">€1<span>/ha/mes</span></div>
                         <div class="pricing-description">Monitoreo satelital básico para eficiencia operacional.</div>
                         <ul class="pricing-features">
                             <li>Índices NDVI, NDWI, EVI</li>
@@ -2939,7 +2939,7 @@
                         <div class="pricing-badge">Más Popular</div>
                         <div class="pricing-tier">Nivel II</div>
                         <div class="pricing-name">Professional</div>
-                        <div class="pricing-price">€12<span>/ha/año</span></div>
+                        <div class="pricing-price">€2<span>/ha/mes</span></div>
                         <div class="pricing-description">Análisis bisemanal con IA agronómica y alertas de estrés.</div>
                         <ul class="pricing-features">
                             <li>Todo en Essential</li>
@@ -2957,7 +2957,7 @@
                     <div class="pricing-card fade-in">
                         <div class="pricing-tier">Nivel III</div>
                         <div class="pricing-name">Enterprise</div>
-                        <div class="pricing-price">€20<span>/ha/año</span></div>
+                        <div class="pricing-price">€3<span>/ha/mes</span></div>
                         <div class="pricing-description">Plataforma completa con insights IA y preparación PAC.</div>
                         <ul class="pricing-features">
                             <li>Todo en Professional</li>
@@ -2986,15 +2986,15 @@
                         <div class="calc-field">
                             <label>Plan seleccionado</label>
                             <select id="calc-plan" onchange="updatePriceCalc()">
-                                <option value="6">Essential — €6/ha/año</option>
-                                <option value="12" selected>Professional — €12/ha/año</option>
-                                <option value="20">Enterprise — €20/ha/año</option>
+                                <option value="1">Essential — €1/ha/mes</option>
+                                <option value="2" selected>Professional — €2/ha/mes</option>
+                                <option value="3">Enterprise — €3/ha/mes</option>
                             </select>
                         </div>
                     </div>
                     <div class="calc-result">
-                        <div class="calc-price" id="calc-total">€600<span>/año</span></div>
-                        <div class="calc-detail" id="calc-monthly">€50/mes · 50 ha × €12/ha/año</div>
+                        <div class="calc-price" id="calc-total">€40<span>/mes</span></div>
+                        <div class="calc-detail" id="calc-monthly">€20 ha × €2/ha/mes<</div>
                     </div>
                 </div>
 
@@ -3090,9 +3090,9 @@
                             <label class="form-label">Plan Seleccionado</label>
                             <select class="form-select" id="plan" required>
                                 <option value="">Selecciona un plan...</option>
-                                <option value="essential">Essential - €6/ha/año</option>
-                                <option value="professional">Professional - €12/ha/año (Recomendado)</option>
-                                <option value="enterprise">Enterprise - €20/ha/año</option>
+                                <option value="essential">Essential - €1/ha/mes</option>
+                                <option value="professional">Professional - €2/ha/mes (Recomendado)</option>
+                                <option value="enterprise">Enterprise - €3/ha/mes</option>
                             </select>
                         </div>
 
@@ -4663,7 +4663,7 @@ async fetchFarm() {
             
             if (totalEl) totalEl.innerHTML = `€${annual.toLocaleString('es-ES')}<span>/año</span>`;
             if (detailEl) {
-                const planNames = {'6': 'Essential', '12': 'Professional', '20': 'Enterprise'};
+                const planNames = {'1': 'Essential', '2': 'Professional', '3': 'Enterprise'};
                 const planName = planNames[pricePerHa.toString()] || '';
                 if (ha * pricePerHa < 250 && ha > 0) {
                     detailEl.textContent = `€${monthly}/mes · ${ha} ha × €${pricePerHa}/ha/año (mínimo €250/año aplicado)`;
