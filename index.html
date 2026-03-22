@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Mu.Orbita - Inteligencia satelital empresarial para agricultura de precisión. Transforma datos espaciales en decisiones accionables.">
-    <title>Mu.Orbita | Precisión desde Órbita – Sostenibilidad desde Datos</title>
+    <meta name="description" content="Mu.Orbita - Plataforma de agricultura de precisión con imágenes satelitales Sentinel-2. Monitoreo de olivar, viña y almendro en Andalucía. Informes agronómicos automáticos cada 15 días con IA. Preparación PAC.">
+    <title>Mu.Orbita | Agricultura de Precisión con Imágenes Satelitales</title>
 
 <!-- Favicon -->
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -50,8 +50,10 @@
             --red: #cc4444;
             --blue: #0077cc;
             --accent-green: #228B22;
-            --elegant-green: #228B22;
+            --elegant-green: #1B4332;
             --subtle-green: #2D5016;
+            --dark-green: #14532D;
+            --dark-green-light: #1B6B3A;
             --nav-bg: rgba(249, 247, 242, 0.95);
             --border-color: rgba(62, 43, 29, 0.15);
         }
@@ -389,7 +391,7 @@
 
         .pricing-card.featured {
             background: var(--mid-gray);
-            border-color: var(--white);
+            border-color: var(--elegant-green);
             transform: scale(1.05);
         }
 
@@ -694,6 +696,555 @@
             text-align: center;
             color: var(--light-gray);
             font-size: 0.85rem;
+        }
+
+        /* ============================================
+           PIPELINE / HOW IT WORKS
+           ============================================ */
+        .pipeline-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+            position: relative;
+        }
+
+        .pipeline-grid::before {
+            content: '';
+            position: absolute;
+            top: 50px;
+            left: 12.5%;
+            width: 75%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--elegant-green), var(--dark-green-light), var(--elegant-green));
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        .pipeline-step {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pipeline-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--elegant-green), var(--dark-green-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2.5rem;
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(27, 67, 50, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .pipeline-step:hover .pipeline-icon {
+            transform: scale(1.08);
+            box-shadow: 0 12px 35px rgba(27, 67, 50, 0.6);
+        }
+
+        .pipeline-step-number {
+            position: absolute;
+            top: -8px;
+            right: calc(50% - 60px);
+            width: 28px;
+            height: 28px;
+            background: var(--white);
+            color: var(--black);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .pipeline-step h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 0.6rem;
+        }
+
+        .pipeline-step p {
+            font-size: 0.9rem;
+            color: var(--light-gray);
+            line-height: 1.6;
+        }
+
+        .pipeline-step .pipeline-time {
+            display: inline-block;
+            margin-top: 0.8rem;
+            padding: 0.3rem 0.8rem;
+            background: rgba(27, 67, 50, 0.2);
+            color: var(--dark-green-light);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Informe Preview */
+        .informe-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .informe-preview-card {
+            background: var(--dark-gray);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .informe-preview-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+            border-color: var(--dark-green-light);
+        }
+
+        .informe-preview-card .preview-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            object-position: top;
+            display: block;
+        }
+
+        .informe-preview-card .preview-label {
+            padding: 0.8rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--white);
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+
+        /* ============================================
+           SOCIAL PROOF / DATA SOURCES
+           ============================================ */
+        .data-sources-strip {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+            padding: 2rem 0;
+        }
+
+        .data-source-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .data-source-item:hover {
+            opacity: 1;
+        }
+
+        .data-source-item .source-icon {
+            font-size: 2rem;
+        }
+
+        .data-source-item .source-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--light-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .data-source-item .source-detail {
+            font-size: 0.7rem;
+            color: var(--light-gray);
+            opacity: 0.7;
+        }
+
+        /* ============================================
+           PAC HIGHLIGHT SECTION
+           ============================================ */
+        .pac-highlight {
+            background: linear-gradient(135deg, rgba(27, 67, 50, 0.15), rgba(20, 83, 45, 0.08));
+            border: 1px solid rgba(27, 107, 58, 0.25);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-top: 4rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .pac-highlight-content h3 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        .pac-highlight-content p {
+            color: var(--light-gray);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .pac-features-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .pac-features-list li {
+            padding: 0.5rem 0;
+            color: var(--light-gray);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+
+        .pac-features-list li .pac-check {
+            color: var(--dark-green-light);
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .pac-badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+        }
+
+        .pac-badge-alert {
+            background: rgba(27, 67, 50, 0.15);
+            color: var(--dark-green-light);
+            border: 1px solid rgba(27, 107, 58, 0.3);
+        }
+
+        .pac-badge-certified {
+            background: rgba(158, 126, 70, 0.15);
+            color: var(--green);
+            border: 1px solid rgba(158, 126, 70, 0.3);
+        }
+
+        .pac-highlight-visual {
+            background: var(--dark-gray);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .pac-highlight-visual img {
+            width: 100%;
+            border-radius: 8px;
+            max-height: 350px;
+            object-fit: contain;
+        }
+
+        /* ============================================
+           PRICE CALCULATOR
+           ============================================ */
+        .price-calculator {
+            background: var(--dark-gray);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-top: 4rem;
+            border: 1px solid var(--border-color);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .price-calculator h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--white);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .calc-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .calc-field label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--light-gray);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .calc-field input, .calc-field select {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            background: var(--mid-gray);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--white);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .calc-result {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(27, 67, 50, 0.15), rgba(20, 83, 45, 0.08));
+            border-radius: 12px;
+            border: 1px solid rgba(27, 107, 58, 0.2);
+            margin-top: 1.5rem;
+        }
+
+        .calc-result .calc-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .calc-result .calc-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--light-gray);
+        }
+
+        .calc-result .calc-detail {
+            font-size: 0.85rem;
+            color: var(--light-gray);
+            margin-top: 0.5rem;
+        }
+
+        /* ============================================
+           REGISTRATION STEPPER
+           ============================================ */
+        .reg-stepper {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .reg-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .reg-step::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: var(--dark-gray);
+            z-index: 0;
+        }
+
+        .reg-step:last-child::after {
+            display: none;
+        }
+
+        .reg-step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--dark-gray);
+            color: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .reg-step.active .reg-step-circle {
+            background: var(--elegant-green);
+            color: #fff;
+        }
+
+        .reg-step.completed .reg-step-circle {
+            background: var(--dark-green-light);
+            color: #fff;
+        }
+
+        .reg-step-label {
+            font-size: 0.7rem;
+            color: var(--light-gray);
+            margin-top: 0.4rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .reg-step.active .reg-step-label {
+            color: var(--white);
+        }
+
+        /* ============================================
+           INSTANT START BADGE
+           ============================================ */
+        .instant-start-banner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            background: linear-gradient(135deg, rgba(27, 67, 50, 0.2), rgba(20, 83, 45, 0.1));
+            border: 1px solid rgba(27, 107, 58, 0.25);
+            border-radius: 12px;
+            padding: 1.2rem 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .instant-start-banner .isb-icon {
+            font-size: 1.8rem;
+        }
+
+        .instant-start-banner .isb-text {
+            font-size: 0.9rem;
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        .instant-start-banner .isb-text strong {
+            color: var(--dark-green-light);
+        }
+
+        /* ============================================
+           FAQ IN FOOTER
+           ============================================ */
+        .footer-faq {
+            max-width: 1400px;
+            margin: 0 auto 3rem;
+            padding-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-faq h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .faq-item {
+            background: var(--dark-gray);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .faq-question {
+            padding: 1rem 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--white);
+            transition: background 0.2s;
+        }
+
+        .faq-question:hover {
+            background: var(--mid-gray);
+        }
+
+        .faq-question .faq-toggle {
+            font-size: 1.2rem;
+            color: var(--light-gray);
+            transition: transform 0.3s;
+        }
+
+        .faq-item.open .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 200px;
+        }
+
+        .faq-answer p {
+            padding: 0 1.2rem 1rem;
+            font-size: 0.85rem;
+            color: var(--light-gray);
+            line-height: 1.7;
+        }
+
+        /* ============================================
+           GREEN ACCENT DECORATIONS
+           ============================================ */
+        .green-accent-bar {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--elegant-green), var(--dark-green-light));
+            margin: 0 auto 1.5rem;
+            border-radius: 2px;
+        }
+
+        .section-dark .tech-feature {
+            border-left: 2px solid var(--elegant-green);
+        }
+
+        .section-darker .tech-feature {
+            border-left: 2px solid var(--elegant-green);
+        }
+
+        /* ============================================
+           RESPONSIVE: NEW SECTIONS
+           ============================================ */
+        @media (max-width: 768px) {
+            .pipeline-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+            .pipeline-grid::before { display: none; }
+            .informe-preview-grid { grid-template-columns: repeat(2, 1fr); }
+            .pac-highlight { grid-template-columns: 1fr; padding: 2rem; }
+            .calc-row { grid-template-columns: 1fr; }
+            .faq-grid { grid-template-columns: 1fr; }
+            .data-sources-strip { gap: 1.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .pipeline-grid { grid-template-columns: 1fr; }
+            .informe-preview-grid { grid-template-columns: 1fr 1fr; }
         }
 
         /* Animations */
@@ -1784,7 +2335,7 @@
             <ul class="nav-links" id="navLinks">
                 <li><a onclick="showLanding()" href="#tecnologia">Tecnología</a></li>
                 <li><a onclick="showLanding()" href="#dashboard">Plataforma</a></li>
-                <li><a onclick="showLanding()" href="#metricas">Métricas</a></li>
+                <li><a onclick="showLanding()" href="#como-funciona">Cómo Funciona</a></li>
                 <li><a onclick="showLanding()" href="#precios">Precios</a></li>
                 <li><a onclick="showLanding()" href="#pago">Comenzar</a></li>
                 
@@ -2117,29 +2668,62 @@
             <div class="container">
                 <div class="section-header fade-in">
                     <div class="section-label">Tecnología</div>
-                    <h2 class="section-title">Monitoreo Espacial<br>de Alta Precisión</h2>
+                    <div class="green-accent-bar"></div>
+                    <h2 class="section-title">Imágenes Satelitales<br>de Alta Precisión</h2>
                     <p class="section-description">
-                        Transformamos datos satelitales de múltiples fuentes en insights accionables para optimizar cada hectárea de tu explotación.
+                        Procesamos imágenes de los satélites más avanzados del planeta y las convertimos en inteligencia agronómica accionable para cada hectárea de tu explotación.
                     </p>
                 </div>
 
                 <div class="tech-grid">
                     <div class="tech-image fade-in">
-                        <img src="https://business.esa.int/sites/business/files/inline-images/spacesensesoc_objectives.jpg" alt="Vista satelital de agricultura de precisión">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfUye0R-SveNbD0Bdq3BkUdqA4iQ3foQ9rvg&s" alt="Vista satelital de agricultura de precisión" id="img-tech-left">
                     </div>
                     <div class="tech-content">
                         <div class="tech-feature fade-in">
-                            <h3>Multi-Satélite</h3>
-                            <p>Procesamiento automático de Sentinel-2 (10m), Landsat 8/9 (30m) y MODIS para cobertura temporal completa. Actualizaciones cada 2-5 días con máscara automática de nubes.</p>
+                            <h3>Imagery Sentinel-2 a 10 metros</h3>
+                            <p>Procesamiento automático de Sentinel-2 (resolución 10m por píxel) y MODIS. Cada 5 días el satélite captura tu explotación completa, con filtrado automático de nubes para garantizar datos limpios.</p>
                         </div>
                         <div class="tech-feature fade-in">
-                            <h3>Índices Especializados</h3>
-                            <p>NDVI, NDWI, EVI, NDCI calibrados para olivar, viña y almendro. Detección temprana de estrés hídrico, térmico y nutricional con algoritmos validados.</p>
+                            <h3>6 Índices Agronómicos Calibrados</h3>
+                            <p>NDVI, NDWI, EVI, NDCI, SAVI y VRA — calibrados específicamente para olivar, viña y almendro mediterráneo. Detección temprana de estrés hídrico, térmico y nutricional.</p>
                         </div>
                         <div class="tech-feature fade-in">
-                            <h3>Inteligencia Climática</h3>
-                            <p>Integración con ERA5-Land y MODIS LST para temperatura superficial, GDD acumulados y predicción de ventanas de riesgo (heladas, olas de calor).</p>
+                            <h3>Inteligencia Climática Integrada</h3>
+                            <p>Datos meteorológicos ERA5-Land y temperatura superficial MODIS LST. GDD acumulados, balance hídrico, y predicción de ventanas de riesgo (heladas, olas de calor) — todo en tu informe.</p>
                         </div>
+                        <div class="tech-feature fade-in">
+                            <h3>Informes con IA Agronómica</h3>
+                            <p>Cada informe incluye análisis narrativo generado por inteligencia artificial calibrada para cultivos mediterráneos: interpretación de datos, evaluación de riesgos y 3 recomendaciones concretas con plazos.</p>
+                        </div>
+                        <div class="tech-feature fade-in">
+                            <h3>Monitoreo PAC con Datos Sentinel-2</h3>
+                            <p>Sistema de alertas que monitoriza las mismas imágenes Sentinel-2 que la administración española utiliza para verificar declaraciones PAC. Te avisa si algo requiere atención antes de una posible inspección.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Sources Strip -->
+                <div class="data-sources-strip fade-in">
+                    <div class="data-source-item">
+                        <span class="source-icon">🛰️</span>
+                        <span class="source-name">Copernicus / ESA</span>
+                        <span class="source-detail">Sentinel-2 · 10m</span>
+                    </div>
+                    <div class="data-source-item">
+                        <span class="source-icon">🌍</span>
+                        <span class="source-name">NASA</span>
+                        <span class="source-detail">MODIS LST</span>
+                    </div>
+                    <div class="data-source-item">
+                        <span class="source-icon">🌡️</span>
+                        <span class="source-name">ECMWF</span>
+                        <span class="source-detail">ERA5-Land</span>
+                    </div>
+                    <div class="data-source-item">
+                        <span class="source-icon">🗺️</span>
+                        <span class="source-name">Google Earth Engine</span>
+                        <span class="source-detail">Motor de procesamiento</span>
                     </div>
                 </div>
             </div>
@@ -2149,76 +2733,188 @@
             <div class="container">
                 <div class="section-header fade-in">
                     <div class="section-label">Plataforma</div>
+                    <div class="green-accent-bar"></div>
                     <h2 class="section-title">Dashboard de Control<br>Integral</h2>
                     <p class="section-description">
-                        Visualiza, analiza y actúa desde una interfaz profesional diseñada para decisiones rápidas y fundamentadas en datos.
+                        Visualiza, analiza y actúa desde una interfaz profesional diseñada para decisiones rápidas y fundamentadas en datos satelitales reales.
                     </p>
                 </div>
 
+                <div class="instant-start-banner fade-in">
+                    <span class="isb-icon">⚡</span>
+                    <span class="isb-text"><strong>Actívalo ahora mismo.</strong> Sin instalaciones en campo, sin sensores, sin papeleo. Dibuja tu parcela en el mapa, paga, y en menos de 24 horas recibes tu primer informe completo.</span>
+                </div>
+
                 <div class="dashboard-preview fade-in">
-                    <img src="/DashboardCommercialPic.jpg" alt="Dashboard de análisis agrícola con métricas y gráficos">
+                    <img src="/DashboardCommercialPic.jpg" alt="Dashboard de análisis agrícola con métricas y gráficos" id="img-dashboard-preview">
                 </div>
 
                 <div class="stats-grid" style="margin-top: 5rem;">
                     <div class="fade-in">
-                        <div class="stat-number">18</div>
-                        <div class="stat-label">Productos de Datos</div>
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">Índices Satelitales</div>
                     </div>
                     <div class="fade-in">
-                        <div class="stat-number">5 días</div>
-                        <div class="stat-label">Frecuencia Actualización</div>
+                        <div class="stat-number">15 días</div>
+                        <div class="stat-label">Frecuencia de Informe</div>
                     </div>
                     <div class="fade-in">
                         <div class="stat-number">10m</div>
-                        <div class="stat-label">Resolución Espacial</div>
+                        <div class="stat-label">Resolución por Píxel</div>
                     </div>
                     <div class="fade-in">
-                        <div class="stat-number">95%+</div>
-                        <div class="stat-label">Precisión Predictiva</div>
+                        <div class="stat-number">&lt;24h</div>
+                        <div class="stat-label">Primer Informe Entregado</div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="metricas" class="section-dark">
+        <!-- ============================================
+             NEW: CÓMO FUNCIONA + INFORME PREVIEW (MERGED)
+             ============================================ -->
+        <section id="como-funciona" class="section-dark">
             <div class="container">
                 <div class="section-header fade-in">
-                    <div class="section-label">Impacto Cuantificable</div>
-                    <h2 class="section-title">Resultados Medibles<br>en Tu Explotación</h2>
+                    <div class="section-label">Del Satélite a Tu Decisión</div>
+                    <div class="green-accent-bar"></div>
+                    <h2 class="section-title">Cómo Funciona</h2>
                     <p class="section-description">
-                        Nuestros clientes reportan mejoras significativas en eficiencia operacional y sostenibilidad desde el primer trimestre.
+                        De la inscripción a tu primer informe completo en menos de 24 horas. Sin hardware, sin instalación en campo, sin esperar.
+                    </p>
+                </div>
+
+                <div class="pipeline-grid">
+                    <div class="pipeline-step fade-in">
+                        <span class="pipeline-step-number">1</span>
+                        <div class="pipeline-icon">🗺️</div>
+                        <h3>Dibuja tu Parcela</h3>
+                        <p>Delimita tu explotación directamente en nuestro mapa interactivo. Solo necesitas 30 segundos.</p>
+                        <span class="pipeline-time">30 segundos</span>
+                    </div>
+                    <div class="pipeline-step fade-in">
+                        <span class="pipeline-step-number">2</span>
+                        <div class="pipeline-icon">🛰️</div>
+                        <h3>Análisis Satelital</h3>
+                        <p>Nuestro sistema conecta automáticamente con Sentinel-2 y procesa toda la imagery disponible de tu parcela.</p>
+                        <span class="pipeline-time">Automático</span>
+                    </div>
+                    <div class="pipeline-step fade-in">
+                        <span class="pipeline-step-number">3</span>
+                        <div class="pipeline-icon">📊</div>
+                        <h3>Informe Baseline</h3>
+                        <p>Recibes por email un informe agronómico completo: KPIs, mapas de vigor, zonificación VRA y recomendaciones con IA.</p>
+                        <span class="pipeline-time">&lt; 24 horas</span>
+                    </div>
+                    <div class="pipeline-step fade-in">
+                        <span class="pipeline-step-number">4</span>
+                        <div class="pipeline-icon">🔄</div>
+                        <h3>Monitoreo Cada 15 Días</h3>
+                        <p>Informes bisemanales automáticos con cambios, alertas de estrés y recomendaciones actualizadas.</p>
+                        <span class="pipeline-time">Cada 15 días</span>
+                    </div>
+                </div>
+
+                <!-- Informe Preview -->
+                <div style="margin-top: 5rem;">
+                    <h3 style="text-align: center; font-size: 1.3rem; font-weight: 600; color: var(--white); margin-bottom: 0.5rem;" class="fade-in">Así es un Informe Real de Mu.Orbita</h3>
+                    <p style="text-align: center; font-size: 0.9rem; color: var(--light-gray); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;" class="fade-in">Informes profesionales generados automáticamente con datos satelitales reales y análisis de IA agronómica.</p>
+                    
+                    <div class="informe-preview-grid">
+                        <div class="informe-preview-card fade-in">
+                            <img src="/InformePreview_KPIs.jpg" alt="KPIs de rendimiento" class="preview-img" id="img-informe-kpis">
+                            <div class="preview-label">KPIs de Rendimiento</div>
+                        </div>
+                        <div class="informe-preview-card fade-in">
+                            <img src="/InformePreview_Mapas.jpg" alt="Mapas de índices" class="preview-img" id="img-informe-mapas">
+                            <div class="preview-label">Mapas Satelitales</div>
+                        </div>
+                        <div class="informe-preview-card fade-in">
+                            <img src="/InformePreview_Evolucion.jpg" alt="Evolución temporal" class="preview-img" id="img-informe-evolucion">
+                            <div class="preview-label">Evolución Temporal</div>
+                        </div>
+                        <div class="informe-preview-card fade-in">
+                            <img src="/InformePreview_VRA.jpg" alt="Zonificación VRA" class="preview-img" id="img-informe-vra">
+                            <div class="preview-label">Zonificación VRA</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             UPDATED: IMPACTO + PAC HIGHLIGHT
+             ============================================ -->
+        <section id="metricas" class="section-darker">
+            <div class="container">
+                <div class="section-header fade-in">
+                    <div class="section-label">Impacto en Tu Explotación</div>
+                    <div class="green-accent-bar"></div>
+                    <h2 class="section-title">Resultados Concretos<br>Desde el Primer Informe</h2>
+                    <p class="section-description">
+                        Información accionable que se traduce en mejor gestión de agua, detección temprana de problemas y optimización de insumos.
                     </p>
                 </div>
 
                 <div class="tech-grid" style="margin-top: 4rem;">
                     <div class="tech-content">
                         <div class="tech-feature fade-in">
-                            <h3>Ahorro de Agua: 22%</h3>
-                            <p>Optimización de riego mediante mapas de déficit hídrico (NDWI) y zonificación variable. Reducción de costes energéticos de bombeo en 18%.</p>
+                            <h3>Optimización de Riego por Zonas</h3>
+                            <p>Mapas de déficit hídrico (NDWI) con zonificación variable que identifican exactamente dónde tu cultivo necesita más agua y dónde está bien. La literatura agronómica reporta ahorros del 20-25% en explotaciones que aplican riego variable basado en datos satelitales.</p>
                         </div>
                         <div class="tech-feature fade-in">
-                            <h3>Detección Temprana de Estrés</h3>
-                            <p>Alertas automáticas cuando NDVI cae >15% en 7 días o aparecen zonas con vigor anómalo (&lt;0.35). Intervención preventiva antes de pérdidas de cosecha.</p>
+                            <h3>Detección de Estrés antes de que Sea Visible</h3>
+                            <p>Las imágenes Sentinel-2 detectan cambios en la salud del cultivo semanas antes de que sean visibles al ojo humano. Alertas automáticas cuando el NDVI cae más de un 15% o aparecen zonas con vigor anómalo, para que actúes antes de perder producción.</p>
                         </div>
                         <div class="tech-feature fade-in">
-                            <h3>Cumplimiento PAC Simplificado</h3>
-                            <p>Generación automática de reportes de sostenibilidad con series temporales de NDVI, superficie verde efectiva y mapas de cobertura para auditorías.</p>
+                            <h3>Zonificación VRA para Fertilización Diferenciada</h3>
+                            <p>Mapas de 3 zonas de manejo (bajo/medio/alto vigor) calculados automáticamente. Aplica insumos donde realmente se necesitan y reduce costes en zonas que no los requieren.</p>
                         </div>
                     </div>
                     <div class="tech-image fade-in">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfUye0R-SveNbD0Bdq3BkUdqA4iQ3foQ9rvg&s" alt="Análisis de cultivos con tecnología de precisión">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfUye0R-SveNbD0Bdq3BkUdqA4iQ3foQ9rvg&s" alt="Análisis de cultivos con tecnología de precisión" id="img-impact-right">
+                    </div>
+                </div>
+
+                <!-- PAC Highlight Block -->
+                <div class="pac-highlight fade-in">
+                    <div class="pac-highlight-content">
+                        <h3>🛡️ Preparación PAC con Datos Sentinel-2</h3>
+                        <p>La administración española (FEGA) ya utiliza imágenes Sentinel-2 para verificar las declaraciones de la PAC (Política Agraria Común). Mu.Orbita analiza los mismos datos satelitales, dándote visibilidad sobre el estado de tu explotación con los mismos criterios que usaría un inspector.</p>
+                        
+                        <ul class="pac-features-list">
+                            <li><span class="pac-check">✓</span> <strong>Alertas automáticas:</strong> te avisamos si los indicadores NDVI/NDWI de tu parcela caen por debajo de umbrales que podrían generar una incidencia en una inspección PAC.</li>
+                            <li><span class="pac-check">✓</span> <strong>Datos anuales acumulados:</strong> al final de campaña, tienes un historial completo de series temporales y superficie verde efectiva para preparar tu documentación.</li>
+                            <li><span class="pac-check">✓</span> <strong>Informe de referencia PAC:</strong> generación bajo demanda de un dossier con tus datos — útil como referencia interna o para prepararte ante inspecciones.</li>
+                        </ul>
+
+                        <div style="margin-top: 1.5rem;">
+                            <div class="pac-badge-status pac-badge-alert">
+                                🔔 Monitorización + alertas incluidas en tu plan
+                            </div>
+                        </div>
+                        <div style="margin-top: 0.8rem;">
+                            <div class="pac-badge-status pac-badge-certified">
+                                📋 Para certificación oficial, Mu.Orbita te conecta con un ingeniero agrónomo colegiado que revisa y firma el informe — convirtiéndolo en documento válido ante la administración.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pac-highlight-visual">
+                        <img src="/PACPreview.jpg" alt="Informe PAC de Mu.Orbita" id="img-pac-preview">
+                        <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--light-gray);">Ejemplo de informe de referencia PAC con estado de conformidad por condición.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="precios" class="section-darker">
+        <section id="precios" class="section-dark">
             <div class="container">
                 <div class="section-header fade-in">
                     <div class="section-label">Planes de Precios</div>
+                    <div class="green-accent-bar"></div>
                     <h2 class="section-title">Elige Tu Nivel<br>de Inteligencia</h2>
                     <p class="section-description">
-                        Transparencia total. Sin costes ocultos. Cancela cuando quieras.
+                        Transparencia total. Sin costes ocultos. Cancela cuando quieras. Empieza hoy y recibe tu primer informe mañana.
                     </p>
                 </div>
 
@@ -2244,10 +2940,10 @@
                         <div class="pricing-tier">Nivel II</div>
                         <div class="pricing-name">Professional</div>
                         <div class="pricing-price">€12<span>/ha/año</span></div>
-                        <div class="pricing-description">Analítica avanzada con inteligencia predictiva.</div>
+                        <div class="pricing-description">Análisis bisemanal con IA agronómica y alertas de estrés.</div>
                         <ul class="pricing-features">
                             <li>Todo en Essential</li>
-                            <li>Reportes bisemanales automatizados</li>
+                            <li>Reportes bisemanales (cada 15 días)</li>
                             <li>Mapeo zonas VRA (3 zonas)</li>
                             <li>Alertas detección estrés</li>
                             <li>Analítica climática (GDD, días calor)</li>
@@ -2262,12 +2958,12 @@
                         <div class="pricing-tier">Nivel III</div>
                         <div class="pricing-name">Enterprise</div>
                         <div class="pricing-price">€20<span>/ha/año</span></div>
-                        <div class="pricing-description">Plataforma completa de inteligencia con insights IA.</div>
+                        <div class="pricing-description">Plataforma completa con insights IA y preparación PAC.</div>
                         <ul class="pricing-features">
                             <li>Todo en Professional</li>
                             <li>Recomendaciones impulsadas por IA</li>
                             <li>Frecuencia reporte personalizada</li>
-                            <li>Reportes cumplimiento PAC</li>
+                            <li>Informes referencia PAC</li>
                             <li>VRA avanzado (5+ zonas)</li>
                             <li>Gestor cuenta dedicado</li>
                             <li>Acceso API completo + webhooks</li>
@@ -2279,24 +2975,67 @@
                     </div>
                 </div>
 
-                <div style="text-align: center; margin-top: 4rem;" class="fade-in">
-                    <p style="color: var(--light-gray); font-size: 0.9rem;">Compromiso mínimo: €250/año por cliente • Todos los precios excluyen IVA • Precios empresariales personalizados disponibles para 1000+ hectáreas</p>
+                <!-- Price Calculator -->
+                <div class="price-calculator fade-in">
+                    <h3>💰 Calcula Tu Inversión</h3>
+                    <div class="calc-row">
+                        <div class="calc-field">
+                            <label>Hectáreas de tu explotación</label>
+                            <input type="number" id="calc-hectares" min="1" max="5000" value="50" oninput="updatePriceCalc()">
+                        </div>
+                        <div class="calc-field">
+                            <label>Plan seleccionado</label>
+                            <select id="calc-plan" onchange="updatePriceCalc()">
+                                <option value="6">Essential — €6/ha/año</option>
+                                <option value="12" selected>Professional — €12/ha/año</option>
+                                <option value="20">Enterprise — €20/ha/año</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="calc-result">
+                        <div class="calc-price" id="calc-total">€600<span>/año</span></div>
+                        <div class="calc-detail" id="calc-monthly">€50/mes · 50 ha × €12/ha/año</div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 3rem;" class="fade-in">
+                    <p style="color: var(--light-gray); font-size: 0.9rem;">Compromiso mínimo: €250/año por cliente · Todos los precios excluyen IVA · Precios empresariales personalizados disponibles para 1000+ hectáreas</p>
                 </div>
             </div>
         </section>
 
-        <section id="pago" class="section-dark">
+        <section id="pago" class="section-darker">
             <div class="container">
                 <div class="section-header fade-in">
                     <div class="section-label">Activación Inmediata</div>
-                    <h2 class="section-title">Comenzar Ahora</h2>
+                    <div class="green-accent-bar"></div>
+                    <h2 class="section-title">Empieza Ahora Mismo</h2>
                     <p class="section-description">
-                        Pago seguro procesado por Stripe. Activa tu monitoreo satelital en menos de 2 minutos.
+                        Sin instalaciones. Sin sensores. Sin papeleo. Dibuja tu parcela, elige tu plan y recibe tu primer informe satelital en menos de 24 horas.
                     </p>
                 </div>
 
                 <div class="payment-container fade-in">
-                  
+
+                    <!-- Registration Stepper -->
+                    <div class="reg-stepper">
+                        <div class="reg-step active" id="step-1">
+                            <div class="reg-step-circle">1</div>
+                            <span class="reg-step-label">Datos</span>
+                        </div>
+                        <div class="reg-step" id="step-2">
+                            <div class="reg-step-circle">2</div>
+                            <span class="reg-step-label">Tu Finca</span>
+                        </div>
+                        <div class="reg-step" id="step-3">
+                            <div class="reg-step-circle">3</div>
+                            <span class="reg-step-label">Plan</span>
+                        </div>
+                        <div class="reg-step" id="step-4">
+                            <div class="reg-step-circle">4</div>
+                            <span class="reg-step-label">Pago</span>
+                        </div>
+                    </div>
 
                     <form id="payment-form">
                         <div class="form-group">
@@ -2321,8 +3060,11 @@
 
                         <div class="form-group">
                             <label class="form-label">Dibuja tu Finca</label>
-                            <p style="font-size: 0.85rem; color: var(--light-gray); margin-bottom: 1rem;">
-                                Usa la herramienta de polígono (■) en el mapa para dibujar el contorno de tu explotación.
+                            <p style="font-size: 0.85rem; color: var(--light-gray); margin-bottom: 0.5rem;">
+                                Usa la herramienta de polígono (■) en el mapa para dibujar el contorno de tu explotación. Haz zoom hasta tu zona y traza el perímetro completo.
+                            </p>
+                            <p style="font-size: 0.8rem; color: var(--light-gray); margin-bottom: 1rem; opacity: 0.8;">
+                                💡 ¿No encuentras tu parcela? También puedes enviarnos tu referencia SIGPAC a <strong>info@muorbita.com</strong> y nosotros la configuramos por ti.
                             </p>
                             <div id="payment-map"></div>
                         </div>
@@ -2365,7 +3107,10 @@
                         </button>
 
                         <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--light-gray);">
-                            🔒 Pago seguro con encriptación SSL • Facturación automática • Cancela cuando quieras
+                            🔒 Pago seguro con Stripe · Facturación automática · Cancela cuando quieras
+                        </p>
+                        <p style="text-align: center; margin-top: 0.5rem; font-size: 0.8rem; color: var(--light-gray); opacity: 0.8;">
+                            ⚡ Primer informe satelital completo en menos de 24 horas tras la activación
                         </p>
                     </form>
                 </div>
@@ -2373,11 +3118,72 @@
         </section>
 
         <footer>
+            <!-- FAQ Section -->
+            <div class="footer-faq" id="faq">
+                <h4>Preguntas Frecuentes</h4>
+                <div class="faq-grid">
+                    <div class="faq-item" onclick="this.classList.toggle('open')">
+                        <div class="faq-question">
+                            ¿Necesito instalar algo en mi finca?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>No. Todo funciona por satélite. No necesitas sensores, hardware ni instalación de ningún tipo. Solo necesitas dibujar el perímetro de tu parcela en nuestro mapa y nosotros hacemos el resto.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="this.classList.toggle('open')">
+                        <div class="faq-question">
+                            ¿Qué cultivos soportáis?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Actualmente estamos especializados en olivar, viñedo y almendro mediterráneo. Nuestros algoritmos e informes están calibrados para estos cultivos en Andalucía y el sur de España.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="this.classList.toggle('open')">
+                        <div class="faq-question">
+                            ¿Cada cuánto recibo informes?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Con el plan Professional, cada 15 días recibes un informe bisemanal completo con cambios, alertas y recomendaciones. El plan Essential incluye informes mensuales.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="this.classList.toggle('open')">
+                        <div class="faq-question">
+                            ¿Qué pasa si hay nubes?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Sentinel-2 captura imágenes cada 5 días. Nuestro sistema aplica filtrado automático de nubes (QA60 + SCL) y selecciona solo las imágenes limpias. En períodos muy nubosos, se utiliza la mejor imagen disponible.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="this.classList.toggle('open')">
+                        <div class="faq-question">
+                            ¿Puedo usarlo para la PAC?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Mu.Orbita te ofrece monitorización y alertas basadas en los mismos datos Sentinel-2 que usa la administración. Para obtener un informe certificado válido ante la administración, te conectamos con un ingeniero agrónomo colegiado que lo firma.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item" onclick="this.classList.toggle('open')">
+                        <div class="faq-question">
+                            ¿Cómo cancelo mi suscripción?
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Puedes cancelar en cualquier momento desde tu dashboard o enviándonos un email. Sin permanencia ni penalizaciones. Tu acceso se mantiene hasta el final del período facturado.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="footer-content">
                 <div class="footer-brand">
                     <h3>Mu.Orbita</h3>
-                    <p>Inteligencia satelital empresarial para agricultura de precisión.</p>
-                    <p style="font-size: 0.85rem; margin-top: 1.5rem;">© 2025 Mu.Orbita. Todos los derechos reservados.</p>
+                    <p>Inteligencia satelital empresarial para agricultura de precisión. Imágenes Sentinel-2 a 10 metros de resolución convertidas en decisiones agronómicas.</p>
+                    <p style="font-size: 0.85rem; margin-top: 1.5rem;">© 2026 Mu.Orbita. Todos los derechos reservados.</p>
                 </div>
 
                 <div class="footer-column">
@@ -2385,18 +3191,19 @@
                     <ul>
                         <li><a href="#tecnologia">Tecnología</a></li>
                         <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#como-funciona">Cómo Funciona</a></li>
                         <li><a href="#precios">Precios</a></li>
                         <li><a href="#">Documentación</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-column">
-                    <h4>Empresa</h4>
+                    <h4>Legal</h4>
                     <ul>
-                        <li><a href="#">Nosotros</a></li>
-                        <li><a href="#">Carreras</a></li>
-                        <li><a href="#">Socios</a></li>
-                        <li><a href="#">Prensa</a></li>
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Términos de Servicio</a></li>
+                        <li><a href="#">Política de Cookies</a></li>
+                        <li><a href="#">Aviso Legal</a></li>
                     </ul>
                 </div>
 
@@ -2411,13 +3218,14 @@
             </div>
 
             <div class="footer-bottom">
-                <p>Datos: Copernicus (ESA) • Landsat (NASA/USGS) • MODIS (NASA) • ERA5 (ECMWF)</p>
+                <p style="margin-bottom: 0.5rem;">Datos: Copernicus (ESA) · Landsat (NASA/USGS) · MODIS (NASA) · ERA5 (ECMWF)</p>
+                <p style="opacity: 0.6; font-size: 0.75rem;">Los informes de referencia PAC son documentos informativos. Para validez administrativa, se requiere firma de ingeniero agrónomo colegiado — Mu.Orbita facilita este servicio bajo solicitud.</p>
             </div>
         </footer>
 
     </div>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // =============================================
         // CONFIGURACIÓN - CAMBIAR ESTA URL PARA PRODUCCIÓN
         // =============================================
@@ -3835,6 +4643,49 @@ async fetchFarm() {
         // LANDING PAGE - LÓGICA ORIGINAL
         // =============================================
         
+        // =============================================
+        // PRICE CALCULATOR
+        // =============================================
+        function updatePriceCalc() {
+            const ha = parseFloat(document.getElementById('calc-hectares')?.value) || 0;
+            const pricePerHa = parseFloat(document.getElementById('calc-plan')?.value) || 12;
+            
+            let annual = Math.max(ha * pricePerHa, 250); // Minimum €250/year
+            if (ha * pricePerHa < 250) {
+                annual = 250;
+            } else {
+                annual = ha * pricePerHa;
+            }
+            const monthly = (annual / 12).toFixed(0);
+            
+            const totalEl = document.getElementById('calc-total');
+            const detailEl = document.getElementById('calc-monthly');
+            
+            if (totalEl) totalEl.innerHTML = `€${annual.toLocaleString('es-ES')}<span>/año</span>`;
+            if (detailEl) {
+                const planNames = {'6': 'Essential', '12': 'Professional', '20': 'Enterprise'};
+                const planName = planNames[pricePerHa.toString()] || '';
+                if (ha * pricePerHa < 250 && ha > 0) {
+                    detailEl.textContent = `€${monthly}/mes · ${ha} ha × €${pricePerHa}/ha/año (mínimo €250/año aplicado)`;
+                } else {
+                    detailEl.textContent = `€${monthly}/mes · ${ha} ha × €${pricePerHa}/ha/año`;
+                }
+            }
+        }
+
+        // =============================================
+        // REGISTRATION STEPPER
+        // =============================================
+        function updateRegStepper(stepNum) {
+            for (let i = 1; i <= 4; i++) {
+                const stepEl = document.getElementById(`step-${i}`);
+                if (!stepEl) continue;
+                stepEl.classList.remove('active', 'completed');
+                if (i < stepNum) stepEl.classList.add('completed');
+                if (i === stepNum) stepEl.classList.add('active');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
         
             // --- Verificar sesión activa ---
@@ -3955,6 +4806,26 @@ async fetchFarm() {
 
             if (passwordConfirmInput) {
                 passwordConfirmInput.addEventListener('input', validatePasswords);
+            }
+
+            // --- Registration Stepper Tracking ---
+            const emailInput = document.getElementById('email');
+            if (emailInput) {
+                emailInput.addEventListener('input', function() {
+                    if (this.value.includes('@')) updateRegStepper(2);
+                });
+            }
+            const cropSelect = document.getElementById('crop');
+            if (cropSelect) {
+                cropSelect.addEventListener('change', function() {
+                    if (this.value) updateRegStepper(3);
+                });
+            }
+            const planSelect = document.getElementById('plan');
+            if (planSelect) {
+                planSelect.addEventListener('change', function() {
+                    if (this.value) updateRegStepper(4);
+                });
             }
 
             // IMPORTANTE: Stripe primero porque clona el formulario
@@ -4550,29 +5421,4 @@ class MuOrbitaSatelliteLayers {
             onAdd: () => container
         });
         
-        this.legendControl = new LegendControl();
-        this.legendControl.addTo(this.map);
-    }
-    
-    _hideLegend() {
-        if (this.legendControl) {
-            this.map.removeControl(this.legendControl);
-            this.legendControl = null;
-        }
-    }
-    
-    destroy() {
-        this.hideAll();
-        this._hideLegend();
-        if (this.controlElement) {
-            this.map.removeControl(this.controlElement);
-        }
-        this.layers = {};
-    }
-} 
-    
-    
-    
-    </script>
-</body>
-</html>
+        this.legendControl = new LegendC
