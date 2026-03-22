@@ -5420,5 +5420,29 @@ class MuOrbitaSatelliteLayers {
             options: { position: 'bottomleft' },
             onAdd: () => container
         });
-        
-        this.legendControl = new LegendC
+        this.legendControl = new LegendControl();
+        this.legendControl.addTo(this.map);
+    }
+    
+    _hideLegend() {
+        if (this.legendControl) {
+            this.map.removeControl(this.legendControl);
+            this.legendControl = null;
+        }
+    }
+    
+    destroy() {
+        this.hideAll();
+        this._hideLegend();
+        if (this.controlElement) {
+            this.map.removeControl(this.controlElement);
+        }
+        this.layers = {};
+    }
+} 
+    
+    
+    
+    </script>
+</body>
+</html>
