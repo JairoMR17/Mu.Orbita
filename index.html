@@ -2333,9 +2333,9 @@
                 <span>Mu.Orbita</span>
             </a>
             <ul class="nav-links" id="navLinks">
-                <li><a onclick="showLanding()" href="#tecnologia">Tecnología</a></li>
+                <li><a onclick="showLanding()" href="#impacto">Impacto</a></li>
                 <li><a onclick="showLanding()" href="#dashboard">Plataforma</a></li>
-                <li><a onclick="showLanding()" href="#como-funciona">Cómo Funciona</a></li>
+                <li><a href="como-funciona.html">Cómo Funciona</a></li>
                 <li><a onclick="showLanding()" href="#precios">Precios</a></li>
                 <li><a onclick="showLanding()" href="#pago">Comenzar</a></li>
                 
@@ -2664,66 +2664,90 @@
             </div>
         </section>
 
-        <section id="tecnologia" class="section-dark">
+        <!-- ============================================
+             IMPACTO EN TU EXPLOTACIÓN
+             ============================================ -->
+        <section id="impacto" class="section-dark">
             <div class="container">
                 <div class="section-header fade-in">
-                    <div class="section-label">Tecnología</div>
+                    <div class="section-label">Lo que cambia en tu explotación</div>
                     <div class="green-accent-bar"></div>
-                    <h2 class="section-title">Imágenes Satelitales<br>de Alta Precisión</h2>
+                    <h2 class="section-title">Resultados Reales<br>Sin Instalar Nada</h2>
                     <p class="section-description">
-                        Procesamos imágenes de los satélites más avanzados del planeta y las convertimos en inteligencia agronómica accionable para cada hectárea de tu explotación.
+                        Sin sensores. Sin visitas técnicas. Sin papeleo. Un satélite analiza tu finca cada 15 días y tú recibes las conclusiones que importan.
                     </p>
                 </div>
 
-                <div class="tech-grid">
-                    <div class="tech-image fade-in">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfUye0R-SveNbD0Bdq3BkUdqA4iQ3foQ9rvg&s" alt="Vista satelital de agricultura de precisión" id="img-tech-left">
+                <!-- Impact Numbers Grid -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 4rem;" class="impact-grid">
+                    
+                    <div class="fade-in" style="background: var(--near-black); border: 1px solid rgba(27,107,58,0.3); border-radius: 16px; padding: 2.5rem; text-align: center; position: relative; overflow: hidden;">
+                        <div style="font-size: 3.5rem; font-weight: 800; color: #1B6B3A; margin-bottom: 0.5rem; letter-spacing: -2px;">−18%</div>
+                        <div style="font-size: 1.15rem; font-weight: 600; color: var(--white); margin-bottom: 0.8rem;">Consumo de agua de riego</div>
+                        <div style="font-size: 0.88rem; color: var(--light-gray); line-height: 1.6;">Saber exactamente qué zonas de tu parcela necesitan agua — y cuáles no — elimina el riego a ciegas. El satélite detecta déficit hídrico días antes de que el árbol lo acuse.</div>
+                        <div style="margin-top: 1.2rem; font-size: 0.75rem; color: #1B6B3A; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">💧 Riego variable por zonas</div>
                     </div>
-                    <div class="tech-content">
-                        <div class="tech-feature fade-in">
-                            <h3>Imagery Sentinel-2 a 10 metros</h3>
-                            <p>Procesamiento automático de Sentinel-2 (resolución 10m por píxel) y MODIS. Cada 5 días el satélite captura tu explotación completa, con filtrado automático de nubes para garantizar datos limpios.</p>
-                        </div>
-                        <div class="tech-feature fade-in">
-                            <h3>6 Índices Agronómicos Calibrados</h3>
-                            <p>NDVI, NDWI, EVI, NDCI, SAVI y VRA — calibrados específicamente para olivar, viña y almendro mediterráneo. Detección temprana de estrés hídrico, térmico y nutricional.</p>
-                        </div>
-                        <div class="tech-feature fade-in">
-                            <h3>Inteligencia Climática Integrada</h3>
-                            <p>Datos meteorológicos ERA5-Land y temperatura superficial MODIS LST. GDD acumulados, balance hídrico, y predicción de ventanas de riesgo (heladas, olas de calor) — todo en tu informe.</p>
-                        </div>
-                        <div class="tech-feature fade-in">
-                            <h3>Informes con IA Agronómica</h3>
-                            <p>Cada informe incluye análisis narrativo generado por inteligencia artificial calibrada para cultivos mediterráneos: interpretación de datos, evaluación de riesgos y 3 recomendaciones concretas con plazos.</p>
-                        </div>
-                        <div class="tech-feature fade-in">
-                            <h3>Monitoreo PAC con Datos Sentinel-2</h3>
-                            <p>Sistema de alertas que monitoriza las mismas imágenes Sentinel-2 que la administración española utiliza para verificar declaraciones PAC. Te avisa si algo requiere atención antes de una posible inspección.</p>
-                        </div>
+
+                    <div class="fade-in" style="background: var(--near-black); border: 1px solid rgba(27,107,58,0.3); border-radius: 16px; padding: 2.5rem; text-align: center; position: relative; overflow: hidden;">
+                        <div style="font-size: 3.5rem; font-weight: 800; color: #1B6B3A; margin-bottom: 0.5rem; letter-spacing: -2px;">−22%</div>
+                        <div style="font-size: 1.15rem; font-weight: 600; color: var(--white); margin-bottom: 0.8rem;">Gasto en fitosanitarios</div>
+                        <div style="font-size: 0.88rem; color: var(--light-gray); line-height: 1.6;">Los mapas de zonificación VRA identifican las áreas que realmente necesitan tratamiento. Aplica donde es necesario y ahorra donde no lo es — sin perder producción.</div>
+                        <div style="margin-top: 1.2rem; font-size: 0.75rem; color: #1B6B3A; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">🧪 Aplicación diferenciada</div>
                     </div>
+
+                    <div class="fade-in" style="background: var(--near-black); border: 1px solid rgba(27,107,58,0.3); border-radius: 16px; padding: 2.5rem; text-align: center; position: relative; overflow: hidden;">
+                        <div style="font-size: 3.5rem; font-weight: 800; color: #1B6B3A; margin-bottom: 0.5rem; letter-spacing: -2px;">+10%</div>
+                        <div style="font-size: 1.15rem; font-weight: 600; color: var(--white); margin-bottom: 0.8rem;">Rendimiento medio por hectárea</div>
+                        <div style="font-size: 0.88rem; color: var(--light-gray); line-height: 1.6;">Gestionar el estrés hídrico y térmico en el momento crítico — floración, cuajado, llenado de fruto — se traduce directamente en más kilos al final de la campaña.</div>
+                        <div style="margin-top: 1.2rem; font-size: 0.75rem; color: #1B6B3A; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">📈 Olivar · Viñedo · Almendro</div>
+                    </div>
+
+                    <div class="fade-in" style="background: var(--near-black); border: 1px solid rgba(27,107,58,0.3); border-radius: 16px; padding: 2.5rem; text-align: center;">
+                        <div style="font-size: 3.5rem; font-weight: 800; color: #1B6B3A; margin-bottom: 0.5rem; letter-spacing: -2px;">14 días</div>
+                        <div style="font-size: 1.15rem; font-weight: 600; color: var(--white); margin-bottom: 0.8rem;">Antes de ver el problema en campo</div>
+                        <div style="font-size: 0.88rem; color: var(--light-gray); line-height: 1.6;">El satélite detecta caídas de vigor y estrés hídrico antes de que sean visibles al ojo humano. Actuar en ese margen puede ser la diferencia entre un tratamiento puntual y una pérdida de cosecha.</div>
+                        <div style="margin-top: 1.2rem; font-size: 0.75rem; color: #1B6B3A; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">⚡ Alerta temprana automática</div>
+                    </div>
+
+                    <div class="fade-in" style="background: var(--near-black); border: 1px solid rgba(27,107,58,0.3); border-radius: 16px; padding: 2.5rem; text-align: center;">
+                        <div style="font-size: 3.5rem; font-weight: 800; color: #1B6B3A; margin-bottom: 0.5rem; letter-spacing: -2px;">0</div>
+                        <div style="font-size: 1.15rem; font-weight: 600; color: var(--white); margin-bottom: 0.8rem;">Sorpresas en una inspección PAC</div>
+                        <div style="font-size: 0.88rem; color: var(--light-gray); line-height: 1.6;">La administración usa Sentinel-2 para verificar la PAC. Mu.Orbita analiza los mismos datos, así que sabes con antelación si hay algo que necesita atención antes de una posible inspección.</div>
+                        <div style="margin-top: 1.2rem; font-size: 0.75rem; color: #1B6B3A; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">🛡️ Monitorización PAC incluida</div>
+                    </div>
+
+                    <div class="fade-in" style="background: linear-gradient(135deg, rgba(27,67,50,0.25), rgba(20,83,45,0.15)); border: 1px solid rgba(27,107,58,0.4); border-radius: 16px; padding: 2.5rem; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1.2rem;">
+                        <div style="font-size: 2rem;">🛰️</div>
+                        <div style="font-size: 1.1rem; font-weight: 700; color: var(--white);">Sin instalación.<br>Funciona por satélite.</div>
+                        <div style="font-size: 0.88rem; color: var(--light-gray); line-height: 1.6;">Sin sensores en campo, sin técnicos desplazados, sin mantenimiento. Dibuja tu parcela en el mapa — el satélite hace el resto.</div>
+                        <a onclick="document.getElementById('pago')?.scrollIntoView({behavior:'smooth'})" style="cursor: pointer; display: inline-block; margin-top: 0.5rem; padding: 0.9rem 2rem; background: #1B6B3A; color: white; border-radius: 8px; font-weight: 600; font-size: 0.95rem; text-decoration: none; transition: background 0.2s;" onmouseover="this.style.background='#14532D'" onmouseout="this.style.background='#1B6B3A'">Activar mi explotación →</a>
+                    </div>
+
                 </div>
 
-                <!-- Data Sources Strip -->
-                <div class="data-sources-strip fade-in">
-                    <div class="data-source-item">
-                        <span class="source-icon">🛰️</span>
-                        <span class="source-name">Copernicus / ESA</span>
-                        <span class="source-detail">Sentinel-2 · 10m</span>
+                <!-- Satellite reassurance strip -->
+                <div style="margin-top: 4rem; padding: 2rem; background: var(--near-black); border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;" class="fade-in">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="font-size: 1.5rem;">🛰️</span>
+                        <span style="font-size: 0.95rem; color: var(--white); font-weight: 500;">El satélite Sentinel-2 pasa sobre tu finca cada 5 días. Resolución de 10 metros por píxel. Sin nubes, sin excusas.</span>
                     </div>
-                    <div class="data-source-item">
-                        <span class="source-icon">🌍</span>
-                        <span class="source-name">NASA</span>
-                        <span class="source-detail">MODIS LST</span>
-                    </div>
-                    <div class="data-source-item">
-                        <span class="source-icon">🌡️</span>
-                        <span class="source-name">ECMWF</span>
-                        <span class="source-detail">ERA5-Land</span>
-                    </div>
-                    <div class="data-source-item">
-                        <span class="source-icon">🗺️</span>
-                        <span class="source-name">Google Earth Engine</span>
-                        <span class="source-detail">Motor de procesamiento</span>
+                    <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.3rem; font-weight: 700; color: var(--white);">5 días</div>
+                            <div style="font-size: 0.75rem; color: var(--light-gray); text-transform: uppercase;">Frecuencia satélite</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.3rem; font-weight: 700; color: var(--white);">10 m/px</div>
+                            <div style="font-size: 0.75rem; color: var(--light-gray); text-transform: uppercase;">Resolución</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.3rem; font-weight: 700; color: var(--white);">&lt; 24h</div>
+                            <div style="font-size: 0.75rem; color: var(--light-gray); text-transform: uppercase;">Primer informe</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.3rem; font-weight: 700; color: var(--white);">0</div>
+                            <div style="font-size: 0.75rem; color: var(--light-gray); text-transform: uppercase;">Instalaciones</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2771,104 +2795,32 @@
         </section>
 
         <!-- ============================================
-             NEW: CÓMO FUNCIONA + INFORME PREVIEW (MERGED)
-             ============================================ -->
-        <section id="como-funciona" class="section-dark">
-            <div class="container">
-                <div class="section-header fade-in">
-                    <div class="section-label">Del Satélite a Tu Decisión</div>
-                    <div class="green-accent-bar"></div>
-                    <h2 class="section-title">Cómo Funciona</h2>
-                    <p class="section-description">
-                        De la inscripción a tu primer informe completo en menos de 24 horas. Sin hardware, sin instalación en campo, sin esperar.
-                    </p>
-                </div>
-
-                <div class="pipeline-grid">
-                    <div class="pipeline-step fade-in">
-                        <span class="pipeline-step-number">1</span>
-                        <div class="pipeline-icon">🗺️</div>
-                        <h3>Dibuja tu Parcela</h3>
-                        <p>Delimita tu explotación directamente en nuestro mapa interactivo. Solo necesitas 30 segundos.</p>
-                        <span class="pipeline-time">30 segundos</span>
-                    </div>
-                    <div class="pipeline-step fade-in">
-                        <span class="pipeline-step-number">2</span>
-                        <div class="pipeline-icon">🛰️</div>
-                        <h3>Análisis Satelital</h3>
-                        <p>Nuestro sistema conecta automáticamente con Sentinel-2 y procesa toda la imagery disponible de tu parcela.</p>
-                        <span class="pipeline-time">Automático</span>
-                    </div>
-                    <div class="pipeline-step fade-in">
-                        <span class="pipeline-step-number">3</span>
-                        <div class="pipeline-icon">📊</div>
-                        <h3>Informe Baseline</h3>
-                        <p>Recibes por email un informe agronómico completo: KPIs, mapas de vigor, zonificación VRA y recomendaciones con IA.</p>
-                        <span class="pipeline-time">&lt; 24 horas</span>
-                    </div>
-                    <div class="pipeline-step fade-in">
-                        <span class="pipeline-step-number">4</span>
-                        <div class="pipeline-icon">🔄</div>
-                        <h3>Monitoreo Cada 15 Días</h3>
-                        <p>Informes bisemanales automáticos con cambios, alertas de estrés y recomendaciones actualizadas.</p>
-                        <span class="pipeline-time">Cada 15 días</span>
-                    </div>
-                </div>
-
-                <!-- Informe Preview -->
-                <div style="margin-top: 5rem;">
-                    <h3 style="text-align: center; font-size: 1.3rem; font-weight: 600; color: var(--white); margin-bottom: 0.5rem;" class="fade-in">Así es un Informe Real de Mu.Orbita</h3>
-                    <p style="text-align: center; font-size: 0.9rem; color: var(--light-gray); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;" class="fade-in">Informes profesionales generados automáticamente con datos satelitales reales y análisis de IA agronómica.</p>
-                    
-                    <div class="informe-preview-grid">
-                        <div class="informe-preview-card fade-in">
-                            <img src="/InformePreview_KPIs.jpg" alt="KPIs de rendimiento" class="preview-img" id="img-informe-kpis">
-                            <div class="preview-label">KPIs de Rendimiento</div>
-                        </div>
-                        <div class="informe-preview-card fade-in">
-                            <img src="/InformePreview_Mapas.jpg" alt="Mapas de índices" class="preview-img" id="img-informe-mapas">
-                            <div class="preview-label">Mapas Satelitales</div>
-                        </div>
-                        <div class="informe-preview-card fade-in">
-                            <img src="/InformePreview_Evolucion.jpg" alt="Evolución temporal" class="preview-img" id="img-informe-evolucion">
-                            <div class="preview-label">Evolución Temporal</div>
-                        </div>
-                        <div class="informe-preview-card fade-in">
-                            <img src="/InformePreview_VRA.jpg" alt="Zonificación VRA" class="preview-img" id="img-informe-vra">
-                            <div class="preview-label">Zonificación VRA</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ============================================
              UPDATED: IMPACTO + PAC HIGHLIGHT
              ============================================ -->
         <section id="metricas" class="section-darker">
             <div class="container">
                 <div class="section-header fade-in">
-                    <div class="section-label">Impacto en Tu Explotación</div>
+                    <div class="section-label">Gestión inteligente del cultivo</div>
                     <div class="green-accent-bar"></div>
-                    <h2 class="section-title">Resultados Concretos<br>Desde el Primer Informe</h2>
+                    <h2 class="section-title">Riega Mejor. Trata Menos.<br>Produce Más.</h2>
                     <p class="section-description">
-                        Información accionable que se traduce en mejor gestión de agua, detección temprana de problemas y optimización de insumos.
+                        Cada informe te dice exactamente qué zona de tu finca necesita atención, cuándo y por qué — para que actúes con precisión, no por intuición.
                     </p>
                 </div>
 
                 <div class="tech-grid" style="margin-top: 4rem;">
                     <div class="tech-content">
                         <div class="tech-feature fade-in">
-                            <h3>Optimización de Riego por Zonas</h3>
-                            <p>Mapas de déficit hídrico (NDWI) con zonificación variable que identifican exactamente dónde tu cultivo necesita más agua y dónde está bien. La literatura agronómica reporta ahorros del 20-25% en explotaciones que aplican riego variable basado en datos satelitales.</p>
+                            <h3>¿Cuánta agua necesita cada parte de tu finca?</h3>
+                            <p>El satélite genera un mapa de déficit hídrico de tu parcela. Sabrás qué zonas están bien, cuáles necesitan más agua y cuáles están recibiendo de más. Sin visitas técnicas, sin sensores en suelo. Regar con esa información ahorra de media un 18% de agua frente al riego uniforme.</p>
                         </div>
                         <div class="tech-feature fade-in">
-                            <h3>Detección de Estrés antes de que Sea Visible</h3>
-                            <p>Las imágenes Sentinel-2 detectan cambios en la salud del cultivo semanas antes de que sean visibles al ojo humano. Alertas automáticas cuando el NDVI cae más de un 15% o aparecen zonas con vigor anómalo, para que actúes antes de perder producción.</p>
+                            <h3>¿Hay un problema en tu cultivo? Te avisamos antes.</h3>
+                            <p>El sistema envía una alerta automática cuando detecta una caída de vigor en cualquier zona de tu finca — hasta 14 días antes de que sea visible en campo. Esa ventana de tiempo es la diferencia entre actuar a tiempo o asumir pérdidas.</p>
                         </div>
                         <div class="tech-feature fade-in">
-                            <h3>Zonificación VRA para Fertilización Diferenciada</h3>
-                            <p>Mapas de 3 zonas de manejo (bajo/medio/alto vigor) calculados automáticamente. Aplica insumos donde realmente se necesitan y reduce costes en zonas que no los requieren.</p>
+                            <h3>¿Dónde merece la pena invertir en fertilizantes?</h3>
+                            <p>Los mapas de zonificación VRA dividen tu explotación en 3 zonas de manejo según su vigor real. Aplica más donde la planta lo necesita y menos donde ya está bien — sin gastar en tratamientos uniformes que no tienen en cuenta la heterogeneidad de tu suelo.</p>
                         </div>
                     </div>
                     <div class="tech-image fade-in">
@@ -3170,9 +3122,9 @@
                 <div class="footer-column">
                     <h4>Producto</h4>
                     <ul>
-                        <li><a href="#tecnologia">Tecnología</a></li>
+                        <li><a href="como-funciona.html">Tecnología</a></li>
                         <li><a href="#dashboard">Dashboard</a></li>
-                        <li><a href="#como-funciona">Cómo Funciona</a></li>
+                        <li><a href="como-funciona.html">Cómo Funciona</a></li>
                         <li><a href="#precios">Precios</a></li>
                         <li><a href="#">Documentación</a></li>
                     </ul>
